@@ -1,0 +1,39 @@
+﻿B = bytes
+kB = kB
+MB = MB
+GB = GB
+TB = TB
+PB = PB
+EB = EB
+ZB = ZB
+YB = YB
+
+OUT_OF_SPEC = Out-of-Specification
+NOT_DEFINED = Not defined
+NOT_AVAILABLE = Not available
+UNKNOWN = Unknown
+UNSPECIFIED = Unspecified
+NOT_SPECIFIED = Not specified
+
+START_OEM_RANGE = Start Of OEM Specific Type Range
+END_OEM_RANGE = End Of OEM Specific Type Range
+
+# Type 1 - UUID
+NOT_SETTABLE = Not Settable
+NOT_PRESENT = Not Present
+
+# Type 4 - CacheHandle
+NOT_PROVIDED = Not Provided
+NO_LN_CACHE = No L{0} Cache
+
+# Type 6 - CurrentMemoryType
+NONE = None
+
+# Type 6 - ErrorStatus
+OK = OK
+
+# Type 15 - HeaderFormat
+OEM_SPECIFIC = OEM-specific
+
+# Type 15 - SupportedEventLogTypeDescriptors
+OEM_SYSTEM_SPECIFIC = System- and OEM-specific

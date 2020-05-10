@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<strings>
+    <!-- 7.3.1 -->
+    <table name="Features" alias="Features" kind="Array" reference="7.3.1">
+        <entry value="is a hosted board"/>
+        <entry value="requieres at least one daughther board"/>
+        <entry value="is removable"/>
+        <entry value="is replacable"/>
+        <entry value="is hot swappable"/>
+        <entry value="Reverved"/>
+        <entry value="Reverved"/>
+        <entry value="Reverved"/>
+    </table>
+    <!-- 7.3.2 -->
+    <table name="BoardType" alias="BoardType" kind="Ordered" reference="7.3.2">
+        <entry key="0x01" value="Unknown"/>
+        <entry key="0x02" value="Other"/>
+        <entry key="0x03" value="Server Blade"/>
+        <entry key="0x04" value="Connectivity Switch"/>
+        <entry key="0x05" value="System Management Module"/>
+        <entry key="0x06" value="Processor Module"/>
+        <entry key="0x07" value="I/O Module"/>
+        <entry key="0x08" value="Memory Module"/>
+        <entry key="0x09" value="Daughter board"/>
+        <entry key="0x0A" value="Motherboard (includes processor, memory, and I/O)"/>
+        <entry key="0x0B" value="Processor/Memory Module"/>
+        <entry key="0x0C" value="Processor/IO Module"/>
+        <entry key="0x0D" value="Interconnect board"/>
+    </table>
+</strings>

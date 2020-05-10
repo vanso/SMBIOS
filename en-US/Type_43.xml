@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<strings>
+    <!-- 7.44.1 -->
+    <table name="Characteristics" alias="Characteristics" kind="Array" reference="7.44.1">
+        <entry value="Reserved"/>
+        <entry value="Reserved"/>
+        <entry value="TPM Device characteristics are not supported"/>
+        <entry value="Family configurable via firmware update"/>
+        <entry value="Family configurable via platform software support"/>
+        <entry value="Family configurable via OEM proprietary mechanism"/>
+    </table>
+</strings>

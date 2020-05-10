@@ -1,0 +1,133 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<strings>
+    <!-- 7.10.1 -->
+    <table name="SlotType" alias="SlotType" kind="Ordered" reference="7.10.1">
+        <entry key="0x01" value="Other"/>
+        <entry key="0x02" value="Unknown"/>
+        <entry key="0x03" value="ISA"/>
+        <entry key="0x04" value="MCA"/>
+        <entry key="0x05" value="EISA"/>
+        <entry key="0x06" value="PCI"/>
+        <entry key="0x07" value="PC Card (PCMCIA)"/>
+        <entry key="0x08" value="VL-VESA"/>
+        <entry key="0x09" value="Proprietary"/>
+        <entry key="0x0A" value="Processor Card"/>
+        <entry key="0x0B" value="Proprietary Memory Card"/>
+        <entry key="0x0C" value="I/O Riser Card"/>
+        <entry key="0x0D" value="NuBus"/>
+        <entry key="0x0E" value="PCI-66"/>
+        <entry key="0x0F" value="AGP"/>
+        <entry key="0x10" value="AGP 2x"/>
+        <entry key="0x11" value="AGP 4x"/>
+        <entry key="0x12" value="PCI-X"/>
+        <entry key="0x13" value="AGP 8x"/>
+        <entry key="0x14" value="M.2 Socket 1-DP"/>
+        <entry key="0x15" value="M.2 Socket 1-SD"/>
+        <entry key="0x16" value="M.2 Socket 2"/>
+        <entry key="0x17" value="M.2 Socket 3"/>
+        <entry key="0x18" value="MXM Type I"/>
+        <entry key="0x19" value="MXM Type II"/>
+        <entry key="0x1A" value="MXM Type III"/>
+        <entry key="0x1B" value="MXM Type III-HE"/>
+        <entry key="0x1C" value="MXM Type IV"/>
+        <entry key="0x1D" value="MXM 3.0 Type A"/>
+        <entry key="0x1E" value="MXM 3.0 Type B"/>
+        <entry key="0x1F" value="PCI Express 2 SFF-8639"/>
+        <entry key="0x20" value="PCI Express 3 SFF-8639"/>
+        <entry key="0x21" value="PCI Express Mini 52-pin with bottom-side keep-outs"/>
+        <entry key="0x22" value="PCI Express Mini 52-pin without bottom-side keep-outs"/>
+        <entry key="0x23" value="PCI Express Mini 76-pin"/>
+
+        <entry key="0xA0" value="PC-98/C20"/>
+        <entry key="0xA1" value="PC-98/C24"/>
+        <entry key="0xA2" value="PC-98/E"/>
+        <entry key="0xA3" value="PC-98/Local Bus"/>
+        <entry key="0xA4" value="PC-98/Card"/>
+        <entry key="0xA5" value="PCI Express"/>
+        <entry key="0xA6" value="PCI Express x1"/>
+        <entry key="0xA7" value="PCI Express x2"/>
+        <entry key="0xA8" value="PCI Express x4"/>
+        <entry key="0xA9" value="PCI Express x8"/>
+        <entry key="0xAA" value="PCI Express x16"/>
+        <entry key="0xAB" value="PCI Express 2"/>
+        <entry key="0xAC" value="PCI Express 2 x1"/>
+        <entry key="0xAD" value="PCI Express 2 x2"/>
+        <entry key="0xAE" value="PCI Express 2 x4"/>
+        <entry key="0xAF" value="PCI Express 2 x8"/>
+        <entry key="0xB0" value="PCI Express 2 x16"/>
+        <entry key="0xB1" value="PCI Express 3"/>
+        <entry key="0xB2" value="PCI Express 3 x1"/>
+        <entry key="0xB3" value="PCI Express 3 x2"/>
+        <entry key="0xB4" value="PCI Express 3 x4"/>
+        <entry key="0xB5" value="PCI Express 3 x8"/>
+        <entry key="0xB6" value="PCI Express 3 x16"/>
+        <entry key="0xB8" value="PCI Express 4"/>
+        <entry key="0xB9" value="PCI Express 4 x1"/>
+        <entry key="0xBA" value="PCI Express 4 x2"/>
+        <entry key="0xBB" value="PCI Express 4 x4"/>
+        <entry key="0xBC" value="PCI Express 4 x8"/>
+        <entry key="0xBD" value="PCI Express 4 x16"/>
+    </table>
+    <!-- 7.10.2 -->
+    <table name="SlotDataBusWidth" alias="SlotDataBusWidth" kind="Ordered" reference="7.10.2">
+        <entry key="0x01" value="Other"/>
+        <entry key="0x02" value="Unknown"/>
+        <entry key="0x03" value="8 bit"/>
+        <entry key="0x04" value="16 bit"/>
+        <entry key="0x05" value="32 bit"/>
+        <entry key="0x06" value="64 bit"/>
+        <entry key="0x07" value="128 bit"/>
+        <entry key="0x08" value="x1"/>
+        <entry key="0x09" value="x2"/>
+        <entry key="0x0A" value="x4"/>
+        <entry key="0x0B" value="x8"/>
+        <entry key="0x0C" value="x12"/>
+        <entry key="0x0D" value="x16"/>
+        <entry key="0x0E" value="x32"/>
+    </table>
+    <!-- 7.10.3 -->
+    <table name="CurrentUsage" alias="CurrentUsage" kind="Ordered" reference="7.10.3">
+        <entry key="0x01" value="Other"/>
+        <entry key="0x02" value="Unknown"/>
+        <entry key="0x03" value="Available"/>
+        <entry key="0x04" value="In use"/>
+        <entry key="0x05" value="Unavailable"/>
+    </table>
+    <!-- 7.10.4 -->
+    <table name="SlotLength" alias="SlotLength" kind="Ordered" reference="7.10.4">
+        <entry key="0x01" value="Other"/>
+        <entry key="0x02" value="Unknown"/>
+        <entry key="0x03" value="Short Length"/>
+        <entry key="0x04" value="Long Length"/>
+        <entry key="0x05" value="2.5&quot; drive form factor"/>
+        <entry key="0x06" value="3.5&quot; drive form factor"/>
+    </table>
+    <!-- 7.10.5 -->
+    <table name="SlotID" alias="SlotID" kind="Ordered" reference="7.10.5">
+        <entry key="0x01" value="MCA"/>
+        <entry key="0x02" value="EISA"/>
+        <entry key="0x03" value="PCI"/>
+        <entry key="0x04" value="AGP"/>
+        <entry key="0x05" value="PCI-X"/>
+        <entry key="0x06" value="PCI Express"/>
+        <entry key="0x07" value="PCMCIA"/>
+    </table>
+    <!-- 7.10.6 -->
+    <table name="SlotCharacteristics1" alias="SlotCharacteristics1" kind="Array" reference="7.10.6">
+        <entry value="Unknown"/>
+        <entry value="5.0 V is provided"/>
+        <entry value="3.3 V is provided"/>
+        <entry value="Opening is shared"/>
+        <entry value="PC Card-16 is supported"/>
+        <entry value="Cardbus is supported"/>
+        <entry value="Zoom Video is supported"/>
+        <entry value="Modem ring resume is supported"/>
+    </table>
+    <!-- 7.10.7 -->
+    <table name="SlotCharacteristics2" alias="SlotCharacteristics2" kind="Array" reference="7.10.7">
+        <entry value="PME signal is supported"/>
+        <entry value="Hot-plug devices are supported"/>
+        <entry value="SMBus signal is supported"/>
+        <entry value="PCIe slot bifurcation is supported"/>
+    </table>
+</strings>

@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<strings>
+    <!-- 7.14 -->    
+    <table name="Format" alias="Format" kind="Ordered" reference="7.14">
+        <entry key="0x00" value="Long"/>
+        <entry key="0x01" value="Abbreviated"/>
+    </table>
+</strings>
+

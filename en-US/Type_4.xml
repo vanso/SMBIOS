@@ -1,0 +1,399 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<strings>
+    <!-- 7.5 -->
+    <table name="Status" alias="Status" kind="Ordered" reference="7.5">
+        <entry key="0x00" value="Unknown"/>
+        <entry key="0x01" value="Enabled"/>
+        <entry key="0x02" value="Disabled by user"/>
+        <entry key="0x03" value="Disabled by BIOS"/>
+        <entry key="0x04" value="Idle"/>
+        <entry key="0x07" value="Other"/>
+    </table>
+    <!-- 7.5.1 -->
+    <table name="ProcessorType" alias="ProcessorType" kind="Ordered" reference="7.5.1">
+        <entry key="0x01" value="Other"/>
+        <entry key="0x02" value="Unknown"/>
+        <entry key="0x03" value="Central Processor"/>
+        <entry key="0x04" value="Math Processor"/>
+        <entry key="0x05" value="DSP Processor"/>
+        <entry key="0x06" value="Video Processor"/>
+    </table>
+    <!-- 7.5.2 -->
+    <table name="Family" alias="Family" kind="Ordered" reference="7.5.2">
+        <entry key="0x01" value="Other"/>
+        <entry key="0x02" value="Unknown"/>
+        <entry key="0x03" value="8086"/>
+        <entry key="0x04" value="80286"/>
+        <entry key="0x05" value="80386"/>
+        <entry key="0x06" value="80486"/>
+        <entry key="0x07" value="8087"/>
+        <entry key="0x08" value="80287"/>
+        <entry key="0x09" value="80387"/>
+        <entry key="0x0A" value="80487"/>
+        <entry key="0x0B" value="Pentium"/>
+        <entry key="0x0C" value="Pentium Pro"/>
+        <entry key="0x0D" value="Pentium II"/>
+        <entry key="0x0E" value="Pentium MMX"/>
+        <entry key="0x0F" value="Celeron"/>
+        <entry key="0x10" value="Pentium II Xeon"/>
+        <entry key="0x11" value="Pentium III"/>
+        <entry key="0x12" value="M1"/>
+        <entry key="0x13" value="M2"/>
+        <entry key="0x14" value="Celeron M"/>
+        <entry key="0x15" value="Pentium 4 HT"/>
+
+        <entry key="0x18" value="Duron"/>
+        <entry key="0x19" value="K5"/>
+        <entry key="0x1A" value="K6"/>
+        <entry key="0x1B" value="K6-2"/>
+        <entry key="0x1C" value="K6-3"/>
+        <entry key="0x1D" value="Athlon"/>
+        <entry key="0x1E" value="AMD29000"/>
+        <entry key="0x1F" value="K6-2+"/>
+        <entry key="0x20" value="Power PC"/>
+        <entry key="0x21" value="Power PC 601"/>
+        <entry key="0x22" value="Power PC 603"/>
+        <entry key="0x23" value="Power PC 603+"/>
+        <entry key="0x24" value="Power PC 604"/>
+        <entry key="0x25" value="Power PC 620"/>
+        <entry key="0x26" value="Power PC x704"/>
+        <entry key="0x27" value="Power PC 750"/>
+        <entry key="0x28" value="Core Duo"/>
+        <entry key="0x29" value="Core Duo Mobile"/>
+        <entry key="0x2A" value="Core Solo Mobile"/>
+        <entry key="0x2B" value="Atom"/>
+        <entry key="0x2C" value="Core M"/>
+        <entry key="0x2D" value="Core m3"/>
+        <entry key="0x2E" value="Core m5"/>
+        <entry key="0x2F" value="Core m7"/>
+        <entry key="0x30" value="Alpha"/>
+        <entry key="0x31" value="Alpha 21064"/>
+        <entry key="0x32" value="Alpha 21066"/>
+        <entry key="0x33" value="Alpha 21164"/>
+        <entry key="0x34" value="Alpha 21164PC"/>
+        <entry key="0x35" value="Alpha 21164a"/>
+        <entry key="0x36" value="Alpha 21264"/>
+        <entry key="0x37" value="Alpha 21364"/>
+        <entry key="0x38" value="Turion II Ultra Dual-Core Mobile M"/>
+        <entry key="0x39" value="Turion II Dual-Core Mobile M"/>
+        <entry key="0x3A" value="Athlon II Dual-Core M"/>
+        <entry key="0x3B" value="Opteron 6100"/>
+        <entry key="0x3C" value="Opteron 4100"/>
+        <entry key="0x3D" value="Opteron 6200"/>
+        <entry key="0x3E" value="Opteron 4200"/>
+        <entry key="0x3F" value="FX"/>
+        <entry key="0x40" value="MIPS"/>
+        <entry key="0x41" value="MIPS R4000"/>
+        <entry key="0x42" value="MIPS R4200"/>
+        <entry key="0x43" value="MIPS R4400"/>
+        <entry key="0x44" value="MIPS R4600"/>
+        <entry key="0x45" value="MIPS R10000"/>
+        <entry key="0x46" value="C-Series"/>
+        <entry key="0x47" value="E-Series"/>
+        <entry key="0x48" value="A-Series"/>
+        <entry key="0x49" value="G-Series"/>
+        <entry key="0x4A" value="Z-Series"/>
+        <entry key="0x4B" value="R-Series"/>
+        <entry key="0x4C" value="Opteron 4300"/>
+        <entry key="0x4D" value="Opteron 6300"/>
+        <entry key="0x4E" value="Opteron 3300"/>
+        <entry key="0x4F" value="FirePro"/>
+        <entry key="0x50" value="SPARC"/>
+        <entry key="0x51" value="SuperSPARC"/>
+        <entry key="0x52" value="MicroSPARC II"/>
+        <entry key="0x53" value="MicroSPARC IIep"/>
+        <entry key="0x54" value="UltraSPARC"/>
+        <entry key="0x55" value="UltraSPARC II"/>
+        <entry key="0x56" value="UltraSPARC IIi"/>
+        <entry key="0x57" value="UltraSPARC III"/>
+        <entry key="0x58" value="UltraSPARC IIIi"/>
+
+        <entry key="0x60" value="68040"/>
+        <entry key="0x61" value="68xxx"/>
+        <entry key="0x62" value="68000"/>
+        <entry key="0x63" value="68010"/>
+        <entry key="0x64" value="68020"/>
+        <entry key="0x65" value="68030"/>
+        <entry key="0x66" value="Athlon X4"/>
+        <entry key="0x67" value="Opteron X1000"/>
+        <entry key="0x68" value="Opteron X2000"/>
+        <entry key="0x69" value="Opteron A-Series"/>
+        <entry key="0x6A" value="Opteron X3000"/>
+        <entry key="0x6B" value="Zen"/>
+
+        <entry key="0x70" value="Hobbit"/>
+
+        <entry key="0x78" value="Crusoe TM5000"/>
+        <entry key="0x79" value="Crusoe TM3000"/>
+        <entry key="0x7A" value="Efficeon TM8000"/>
+
+        <entry key="0x80" value="Weitek"/>
+
+        <entry key="0x82" value="Itanium"/>
+        <entry key="0x83" value="Athlon 64"/>
+        <entry key="0x84" value="Opteron"/>
+        <entry key="0x85" value="Sempron"/>
+        <entry key="0x86" value="Turion 64"/>
+        <entry key="0x87" value="Dual-Core Opteron"/>
+        <entry key="0x88" value="Athlon 64 X2"/>
+        <entry key="0x89" value="Turion 64 X2"/>
+        <entry key="0x8A" value="Quad-Core Opteron"/>
+        <entry key="0x8B" value="Third-Generation Opteron"/>
+        <entry key="0x8C" value="Phenom FX"/>
+        <entry key="0x8D" value="Phenom X4"/>
+        <entry key="0x8E" value="Phenom X2"/>
+        <entry key="0x8F" value="Athlon X2"/>
+        <entry key="0x90" value="PA-RISC"/>
+        <entry key="0x91" value="PA-RISC 8500"/>
+        <entry key="0x92" value="PA-RISC 8000"/>
+        <entry key="0x93" value="PA-RISC 7300LC"/>
+        <entry key="0x94" value="PA-RISC 7200"/>
+        <entry key="0x95" value="PA-RISC 7100LC"/>
+        <entry key="0x96" value="PA-RISC 7100"/>
+
+        <entry key="0xA0" value="V30"/>
+        <entry key="0xA1" value="Quad-Core Xeon 3200"/>
+        <entry key="0xA2" value="Dual-Core Xeon 3000"/>
+        <entry key="0xA3" value="Quad-Core Xeon 5300"/>
+        <entry key="0xA4" value="Dual-Core Xeon 5100"/>
+        <entry key="0xA5" value="Dual-Core Xeon 5000"/>
+        <entry key="0xA6" value="Dual-Core Xeon LV"/>
+        <entry key="0xA7" value="Dual-Core Xeon ULV"/>
+        <entry key="0xA8" value="Dual-Core Xeon 7100"/>
+        <entry key="0xA9" value="Quad-Core Xeon 5400"/>
+        <entry key="0xAA" value="Quad-Core Xeon"/>
+        <entry key="0xAB" value="Dual-Core Xeon 5200"/>
+        <entry key="0xAC" value="Dual-Core Xeon 7200"/>
+        <entry key="0xAD" value="Quad-Core Xeon 7300"/>
+        <entry key="0xAE" value="Quad-Core Xeon 7400"/>
+        <entry key="0xAF" value="Multi-Core Xeon 7400"/>
+        <entry key="0xB0" value="Pentium III Xeon"/>
+        <entry key="0xB1" value="Pentium III Speedstep"/>
+        <entry key="0xB2" value="Pentium 4"/>
+        <entry key="0xB3" value="Xeon"/>
+        <entry key="0xB4" value="AS400"/>
+        <entry key="0xB5" value="Xeon MP"/>
+        <entry key="0xB6" value="Athlon XP"/>
+        <entry key="0xB7" value="Athlon MP"/>
+        <entry key="0xB8" value="Itanium 2"/>
+        <entry key="0xB9" value="Pentium M"/>
+        <entry key="0xBA" value="Celeron D"/>
+        <entry key="0xBB" value="Pentium D"/>
+        <entry key="0xBC" value="Pentium EE"/>
+        <entry key="0xBD" value="Core Solo"/>
+
+        <entry key="0xBE" value="Core 2 or K7"/>
+
+        <entry key="0xBF" value="Core 2 Duo"/>
+        <entry key="0xC0" value="Core 2 Solo"/>
+        <entry key="0xC1" value="Core 2 Extreme"/>
+        <entry key="0xC2" value="Core 2 Quad"/>
+        <entry key="0xC3" value="Core 2 Extreme Mobile"/>
+        <entry key="0xC4" value="Core 2 Duo Mobile"/>
+        <entry key="0xC5" value="Core 2 Solo Mobile"/>
+        <entry key="0xC6" value="Core i7"/>
+        <entry key="0xC7" value="Dual-Core Celeron"/>
+        <entry key="0xC8" value="IBM390"/>
+        <entry key="0xC9" value="G4"/>
+        <entry key="0xCA" value="G5"/>
+        <entry key="0xCB" value="ESA/390 G6"/>
+        <entry key="0xCC" value="z/Architecture"/>
+        <entry key="0xCD" value="Core i5"/>
+        <entry key="0xCE" value="Core i3"/>
+        <entry key="0xCF" value="Core i9"/>
+
+        <entry key="0xD2" value="C7-M"/>
+        <entry key="0xD3" value="C7-D"/>
+        <entry key="0xD4" value="C7"/>
+        <entry key="0xD5" value="Eden"/>
+        <entry key="0xD6" value="Multi-Core Xeon"/>
+        <entry key="0xD7" value="Dual-Core Xeon 3xxx"/>
+        <entry key="0xD8" value="Quad-Core Xeon 3xxx"/>
+        <entry key="0xD9" value="Nano"/>
+        <entry key="0xDA" value="Dual-Core Xeon 5xxx"/>
+        <entry key="0xDB" value="Quad-Core Xeon 5xxx"/>
+
+        <entry key="0xDD" value="Dual-Core Xeon 7xxx"/>
+        <entry key="0xDE" value="Quad-Core Xeon 7xxx"/>
+        <entry key="0xDF" value="Multi-Core Xeon 7xxx"/>
+        <entry key="0xE0" value="Multi-Core Xeon 3400"/>
+
+        <entry key="0xE4" value="Opteron 3000"/>
+        <entry key="0xE5" value="Sempron II"/>
+        <entry key="0xE6" value="Embedded Opteron Quad-Core"/>
+        <entry key="0xE7" value="Phenom Triple-Core"/>
+        <entry key="0xE8" value="Turion Ultra Dual-Core Mobile"/>
+        <entry key="0xE9" value="Turion Dual-Core Mobile"/>
+        <entry key="0xEA" value="Athlon Dual-Core"/>
+        <entry key="0xEB" value="Sempron SI"/>
+        <entry key="0xEC" value="Phenom II"/>
+        <entry key="0xED" value="Athlon II"/>
+        <entry key="0xEE" value="Six-Core Opteron"/>
+        <entry key="0xEF" value="Sempron M"/>
+
+        <entry key="0xFA" value="i860"/>
+        <entry key="0xFB" value="i960"/>
+
+        <entry key="0x100" value="ARMv7"/>
+        <entry key="0x101" value="ARMv8"/>
+        <entry key="0x104" value="SH-3"/>
+        <entry key="0x105" value="SH-4"/>
+        <entry key="0x118" value="ARM"/>
+        <entry key="0x119" value="StrongARM"/>
+        <entry key="0x12C" value="6x86"/>
+        <entry key="0x12D" value="MediaGX"/>
+        <entry key="0x12E" value="MII"/>
+        <entry key="0x140" value="WinChip"/>
+        <entry key="0x15E" value="DSP"/>
+        <entry key="0x1F4" value="Video Processor"/>
+
+        <entry key="0x200" value="RISC-V RV32"/>
+        <entry key="0x201" value="RISC-V RV64"/>
+        <entry key="0x202" value="RISC-V RV128"/>
+    </table>
+    <!-- 7.5.5 -->
+    <table name="Upgrade" alias="Upgrade" kind="Ordered" reference="7.5.5">
+        <entry key="0x01" value="Other"/>
+        <entry key="0x02" value="Unknown"/>
+        <entry key="0x03" value="Daughter Board"/>
+        <entry key="0x04" value="ZIF Socket"/>
+        <entry key="0x05" value="Replaceable Piggy Back"/>
+        <entry key="0x06" value="None"/>
+        <entry key="0x07" value="LIF Socket"/>
+        <entry key="0x08" value="Slot 1"/>
+        <entry key="0x09" value="Slot 2"/>
+        <entry key="0x0A" value="370-pin Socket"/>
+        <entry key="0x0B" value="Slot A"/>
+        <entry key="0x0C" value="Slot M"/>
+        <entry key="0x0D" value="Socket 423"/>
+        <entry key="0x0E" value="Socket A (Socket 462)"/>
+        <entry key="0x0F" value="Socket 478"/>
+        <entry key="0x10" value="Socket 754"/>
+        <entry key="0x11" value="Socket 940"/>
+        <entry key="0x12" value="Socket 939"/>
+        <entry key="0x13" value="Socket mPGA604"/>
+        <entry key="0x14" value="Socket LGA771"/>
+        <entry key="0x15" value="Socket LGA775"/>
+        <entry key="0x16" value="Socket S1"/>
+        <entry key="0x17" value="Socket AM2"/>
+        <entry key="0x18" value="Socket F (1207)"/>
+        <entry key="0x19" value="Socket LGA1366"/>
+        <entry key="0x1A" value="Socket G34"/>
+        <entry key="0x1B" value="Socket AM3"/>
+        <entry key="0x1C" value="Socket C32"/>
+        <entry key="0x1D" value="Socket LGA1156"/>
+        <entry key="0x1E" value="Socket LGA1567"/>
+        <entry key="0x1F" value="Socket PGA988A"/>
+        <entry key="0x20" value="Socket BGA1288"/>
+        <entry key="0x21" value="Socket rPGA988B"/>
+        <entry key="0x22" value="Socket BGA1023"/>
+        <entry key="0x23" value="Socket BGA1224"/>
+        <entry key="0x24" value="Socket BGA1155"/>
+        <entry key="0x25" value="Socket LGA1356"/>
+        <entry key="0x26" value="Socket LGA2011"/>
+        <entry key="0x27" value="Socket FS1"/>
+        <entry key="0x28" value="Socket FS2"/>
+        <entry key="0x29" value="Socket FM1"/>
+        <entry key="0x2A" value="Socket FM2"/>
+        <entry key="0x2B" value="Socket LGA2011-3"/>
+        <entry key="0x2C" value="Socket LGA1356-3"/>
+        <entry key="0x2D" value="Socket LGA1150"/>
+        <entry key="0x2E" value="Socket BGA1168"/>
+        <entry key="0x2F" value="Socket BGA1234"/>
+        <entry key="0x30" value="Socket BGA1364"/>
+        <entry key="0x31" value="Socket AM4"/>
+        <entry key="0x32" value="Socket LGA1151"/>
+        <entry key="0x33" value="Socket BGA1356"/>
+        <entry key="0x34" value="Socket BGA1440"/>
+        <entry key="0x35" value="Socket BGA1515"/>
+        <entry key="0x36" value="Socket LGA3647-1"/>
+        <entry key="0x37" value="Socket SP3"/>
+        <entry key="0x38" value="Socket SP3r2"/>
+        <entry key="0x39" value="Socket LGA2066"/>
+        <entry key="0x3A" value="Socket BGA1392"/>
+        <entry key="0x3B" value="Socket BGA1510"/>
+        <entry key="0x3C" value="Socket BGA1528"/>
+    </table>
+    <!-- 7.5.9 -->
+    <table name="Characteristics" alias="Characteristics" kind="Array" reference="7.5.9">
+        <entry value="Reserved"/>
+        <entry value="Unknown"/>
+        <entry value="64-bit Capable"/>
+        <entry value="Multi-Core"/>
+        <entry value="Hardware Thread"/>
+        <entry value="Execute Protection"/>
+        <entry value="Enhanced Virtualization"/>
+        <entry value="Power/Performance Control"/>
+        <entry value="128-bit Capable"/>
+    </table>
+    <!-- -->
+    <table name="GenuineIntelFeatures" alias="GenuineIntelFeatures" kind="Array" reference="">
+     	<entry value="FPU (Floating Point Unit On-Chip)"/>
+		<entry value="VME (Virtual 8086 Mode Enhancements)"/>
+		<entry value="DE (Debugging Extensions)"/>
+		<entry value="PSE (Page Size Extension)"/>
+		<entry value="TSC (Time Stamp Counter)"/>
+		<entry value="MSR (Model Specific Registers RDMSR and WRMSR Instructions)"/>
+		<entry value="PAE (Physical Address Extension)"/>
+		<entry value="MCE (Machine Check Exception)"/>
+		<entry value="CX8 (CMPXCHG8B Instruction)"/>
+		<entry value="APIC (APIC On-Chip)"/>
+		<entry value="Reserved"/>
+		<entry value="SEP (SYSENTER and SYSEXIT Instructions)"/>
+		<entry value="MTRR (Memory Type Range Registers)"/>
+		<entry value="PGE (Page Global Bit)"/>
+		<entry value="MCA (Machine Check Architecture)"/>
+		<entry value="CMOV (Conditional Move Instructions)"/>
+		<entry value="PAT (Page Attribute Table)"/>
+		<entry value="PSE-36 (36-Bit Page Size Extension)"/>
+		<entry value="PSN (Processor Serial Number)"/>
+		<entry value="CLFSH (CLFLUSH Instruction)"/>
+		<entry value="Reserved"/>
+		<entry value="DS (Debug Store)"/>
+		<entry value="ACPI (Thermal Monitor and Software Controlled Clock Facilities)"/>
+		<entry value="MMX (Intel MMX Technology)"/>
+		<entry value="FXSR (FXSAVE and FXRSTOR Instructions)"/>
+		<entry value="SSE (Streaming SIMD Extensions)"/>
+		<entry value="SSE2 (Streaming SIMD Extensions 2)"/>
+		<entry value="SS (Self Snoop)"/>
+		<entry value="HTT (Hyper-Threading)"/>
+		<entry value="TM (Thermal Monitor)"/>
+		<entry value="Reserved"/>
+		<entry value="PBE (Pending Break Enable)"/>
+    </table>
+    <!-- -->
+    <table name="AuthenticAMDFeatures" alias="AuthenticAMDFeatures" kind="Array" reference="">
+     	<entry value="FPU (x87 floating point unit on-chip)"/>
+		<entry value="VME (virtual-mode enhancements)"/>
+		<entry value="DE (debugging extensions)"/>
+		<entry value="PSE (page-size extensions)"/>
+		<entry value="TSC (time stamp counter)"/>
+		<entry value="MSR (AMD model-specific registers)"/>
+		<entry value="PAE (physical-address extensions)"/>
+		<entry value="MCE (Machine check exception)"/>
+		<entry value="CX8 (CMPXCHG8B instruction)"/>
+		<entry value="APIC (advanced programmable interrupt controller)"/>
+		<entry value="Reserved"/>
+		<entry value="SEP (SYSENTER and SYSEXIT instructions)"/>
+		<entry value="MTRR (memory-type range registers)"/>
+		<entry value="PGE (page global extension)"/>
+		<entry value="MCA (machine check architecture)"/>
+		<entry value="CMOV (conditional move instructions)"/>
+		<entry value="PAT (page attribute table)"/>
+		<entry value="PSE36 (page-size extensions)"/>
+		<entry value="Reserved"/>
+		<entry value="CLFSH (CLFLUSH instruction support)"/>
+		<entry value="Reserved"/>
+		<entry value="Reserved"/>
+		<entry value="Reserved"/>
+		<entry value="MMX (MMX™ instructions)"/>
+		<entry value="FXSR (FXSAVE and FXRSTOR instructions.)"/>
+		<entry value="SSE (SSE instruction support)"/>
+		<entry value="SSE2 (SSE2 instruction support)"/>
+		<entry value="Reserved"/>
+		<entry value="HTT (hyper-threading technology)"/>
+		<entry value="Reserved"/>
+		<entry value="Reserved"/>
+		<entry value="Reserved"/>
+    </table>
+</strings>

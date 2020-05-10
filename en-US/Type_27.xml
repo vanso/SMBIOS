@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<strings>
+    <!-- 7.28 -->
+    <table name="NominalSpeed" alias="NominalSpeed" kind="Ordered" reference="7.28">
+        <entry key="0x8000" value="Unknown Or Non-rotating"/>
+    </table>
+    <!-- 7.28.1 -->
+    <table name="Status" alias="Status" kind="Ordered" reference="7.28.1">
+        <entry key="0x01" value="Other"/>
+        <entry key="0x02" value="Unknown"/>
+        <entry key="0x03" value="OK"/>
+        <entry key="0x04" value="Non-critical"/>
+        <entry key="0x05" value="Critical"/>
+        <entry key="0x06" value="Non-recoverable"/>     
+    </table>
+    <!-- 7.28.1 -->
+    <table name="DeviceType" alias="DeviceType" kind="Ordered" reference="7.28.1">
+        <entry key="0x01" value="Other"/>
+        <entry key="0x02" value="Unknown"/>
+        <entry key="0x03" value="Fan"/>
+        <entry key="0x04" value="Centrifugal Blower"/>
+        <entry key="0x05" value="Chip Fan"/>
+        <entry key="0x06" value="Cabinet Fan"/>     
+        <entry key="0x07" value="Power Supply Fan"/>
+        <entry key="0x08" value="Heat Pipe"/>
+        <entry key="0x09" value="Integrated Refrigeration"/>
+        <entry key="0x10" value="Active Cooling"/>   
+        <entry key="0x11" value="Passive Cooling"/> 
+    </table>    
+</strings>

@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<strings>
+    <!-- 7.42 -->
+   <table name="DeviceStatus" alias="DeviceStatus" kind="Ordered" reference="7.42">
+        <entry key="0x00" value="Disabled"/>
+        <entry key="0x01" value="Enabled"/>
+    </table>
+    <!-- 7.42.2 -->
+    <table name="DeviceType" alias="DeviceType" kind="Ordered" reference="7.42.2">
+        <entry key="0x01" value="Other"/>
+        <entry key="0x02" value="Unknown"/>
+        <entry key="0x03" value="Video"/>
+        <entry key="0x04" value="SCSI Controller"/>
+        <entry key="0x05" value="Ethernet"/>
+        <entry key="0x06" value="Token Ring"/>
+        <entry key="0x07" value="Sound"/>
+        <entry key="0x08" value="PATA Controller"/>
+        <entry key="0x09" value="SATA Controller"/>
+        <entry key="0x0A" value="SAS Controller"/>
+    </table>
+</strings>

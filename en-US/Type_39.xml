@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<strings>
+    <!-- 7.40.1 -->
+    <table name="PowerSupplyType" alias="PowerSupplyType" kind="Ordered" reference="7.40.1">
+        <entry key="0x01" value="Other"/>
+        <entry key="0x02" value="Unknown"/>
+        <entry key="0x03" value="Linear"/>
+        <entry key="0x04" value="Switching"/>
+        <entry key="0x05" value="Battery"/>
+        <entry key="0x06" value="UPS"/>
+        <entry key="0x07" value="Converter"/>
+        <entry key="0x08" value="Regulator"/>
+    </table>
+    <!-- 7.40.1 -->
+    <table name="PowerSupplyStatus" alias="PowerSupplyStatus" kind="Ordered" reference="7.40.1">
+        <entry key="0x01" value="Other"/>
+        <entry key="0x02" value="Unknown"/>
+        <entry key="0x03" value="OK"/>
+        <entry key="0x04" value="Non-critical"/>
+        <entry key="0x05" value="Critical"/>
+    </table>
+    <!-- 7.40.1 -->
+    <table name="InputVoltageRangeSwitching" alias="InputVoltageRangeSwitching" kind="Ordered" reference="7.40.1">
+        <entry key="0x01" value="Other"/>
+        <entry key="0x02" value="Unknown"/>
+        <entry key="0x03" value="Manual"/>
+        <entry key="0x04" value="Auto-switch"/>
+        <entry key="0x05" value="Wide range"/>
+        <entry key="0x06" value="Not applicable"/>
+    </table>
+    <!-- 7.40.1 -->
+    <table name="Characteristics" alias="Characteristics" kind="Array" reference="7.40.1">
+        <entry value="Power supply is hot-replaceable"/>
+        <entry value="Power supply is present"/>
+        <entry value="Power supply is unplugged from the wall"/>
+    </table>
+</strings>

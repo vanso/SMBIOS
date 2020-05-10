@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<strings>
+    <!-- 7.8 -->
+    <table name="OperationalMode" alias="OperationalMode" kind="Ordered" reference="7.8">
+        <entry key="0x00" value="Write Through"/>
+        <entry key="0x01" value="Write Back"/>
+        <entry key="0x02" value="Varies with Memory Address"/>
+        <entry key="0x03" value="Unknown"/>
+    </table>
+    <!-- 7.8 -->
+    <table name="Location" alias="Location" kind="Ordered" reference="7.8">
+        <entry key="0x00" value="Internal"/>
+        <entry key="0x01" value="External"/>
+        <entry key="0x02" value="Reserved"/>
+        <entry key="0x03" value="Unknown"/>
+    </table>
+    <!-- 7.8.2 -->
+    <table name="_SRAMType" alias="_SRAMType" kind="Array" reference="7.8.2">
+        <entry value="Other"/>
+        <entry value="Unknown"/>
+        <entry value="Non-burst"/>
+        <entry value="Burst"/>
+        <entry value="Pipeline Burst"/>
+        <entry value="Synchronous"/>
+        <entry value="Asynchronous"/>
+    </table>
+    <!-- 7.8.3 -->
+    <table name="ErrorCorrectionType" alias="ErrorCorrectionType" kind="Ordered" reference="7.8.3">
+        <entry key="0x01" value="Other"/>
+        <entry key="0x02" value="Unknown"/>
+        <entry key="0x04" value="Parity"/>
+        <entry key="0x05" value="Single-bit ECC"/>
+        <entry key="0x06" value="Multi-bit ECC"/>
+    </table>
+    <!-- 7.8.4 -->
+    <table name="SystemCacheType" alias="SystemCacheType" kind="Ordered" reference="7.8.4">
+        <entry key="0x01" value="Other"/>
+        <entry key="0x02" value="Unknown"/>
+        <entry key="0x03" value="Instruction"/>
+        <entry key="0x04" value="Data"/>
+        <entry key="0x05" value="Unified"/>
+    </table>
+    <!-- 7.8.5 -->
+    <table name="Associativity" alias="Associativity" kind="Ordered" reference="7.8.5">
+        <entry key="0x01" value="Other"/>
+        <entry key="0x02" value="Unknown"/>
+        <entry key="0x03" value="Direct Mapped"/>
+        <entry key="0x04" value="2-way Set-associative"/>
+        <entry key="0x05" value="4-way Set-associative"/>
+        <entry key="0x06" value="Fully Associative"/>
+        <entry key="0x07" value="8-way Set-associative"/>
+        <entry key="0x08" value="16-way Set-associative"/>
+        <entry key="0x09" value="12-way Set-associative"/>
+        <entry key="0x0A" value="24-way Set-associative"/>
+        <entry key="0x0B" value="32-way Set-associative"/>
+        <entry key="0x0C" value="48-way Set-associative"/>
+        <entry key="0x0D" value="64-way Set-associative"/>
+        <entry key="0x0E" value="20-way Set-associative"/>
+    </table>
+</strings>

@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<strings>
+    <!-- 7.2.2 -->
+    <table name="WakeUpType" alias="WakeUpType" kind="Ordered" reference="7.2.2">
+        <entry key="0x00" value="Reserved"/>
+        <entry key="0x01" value="Other"/>
+        <entry key="0x02" value="Unknown"/>
+        <entry key="0x03" value="APM Timer"/>
+        <entry key="0x04" value="Modem Ring"/>
+        <entry key="0x05" value="LAN Remote"/>
+        <entry key="0x06" value="Power Switch"/>
+        <entry key="0x07" value="PCI PME#"/>
+        <entry key="0x08" value="AC Power Restored"/>
+    </table>
+</strings>
+

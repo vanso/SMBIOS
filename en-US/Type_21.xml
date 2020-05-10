@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<strings>
+    <!-- 7.22.1 -->
+    <table name="Type" alias="Type" kind="Ordered" reference="7.22.1">
+        <entry key="0x01" value="Other"/>
+        <entry key="0x02" value="Unknown"/>
+        <entry key="0x03" value="Mouse"/>
+        <entry key="0x04" value="Track Ball"/>
+        <entry key="0x05" value="Track Point"/>
+        <entry key="0x06" value="Glide Point"/>
+        <entry key="0x07" value="Touch Pad"/>
+        <entry key="0x08" value="Touch Screen"/>
+        <entry key="0x09" value="Optical Sensor"/>
+    </table>
+    <!-- 7.22.2 -->
+    <table name="Interface" alias="Interface" kind="Ordered" reference="7.22.2">
+        <entry key="0x01" value="Other"/>
+        <entry key="0x02" value="Unknown"/>
+        <entry key="0x03" value="Serial"/>
+        <entry key="0x04" value="PS/2"/>
+        <entry key="0x05" value="Infrared"/>
+        <entry key="0x06" value="HP-HIL"/>
+        <entry key="0x07" value="Bus mouse"/>
+        <entry key="0x08" value="ADB (Apple Desktop Bus)"/>
+        <entry key="0x09" value="Bus mouse DB-9"/>
+        <entry key="0x0A" value="Bus mouse micro-DIN"/>
+        <entry key="0x0B" value="USB"/>
+    </table>
+</strings>

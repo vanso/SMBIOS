@@ -1,0 +1,424 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<strings>
+    <!-- 7.16 -->
+    <table name="AccessMethod" alias="AccessMethod" kind="Ordered" reference="7.16">
+        <entry key="0x00" value="Indexed I/O, one 8-bit index port, one 8-bit data port"/>
+        <entry key="0x01" value="Indexed I/O, two 8-bit index ports, one 8-bit data port"/>
+        <entry key="0x02" value="Indexed I/O, one 16-bit index port, one 8-bit data port"/>
+        <entry key="0x03" value="Memory-mapped physical 32-bit address"/>
+        <entry key="0x04" value="General-purpose non-volatile data functions"/>
+        <entry key="0x80" value="OEM-specific"/>
+    </table>
+    <!-- 7.16 -->
+    <table name="StatusValid" alias="StatusValid" kind="Ordered" reference="7.16">
+        <entry key="0x00" value="Invalid"/>
+        <entry key="0x01" value="Valid"/>
+    </table>
+    <!-- 7.16 -->
+    <table name="StatusFull" alias="StatusFull" kind="Ordered" reference="7.16">
+        <entry key="0x00" value="Not Full"/>
+        <entry key="0x01" value="Full"/>
+    </table>
+    <!-- 7.16 -->
+    <table name="ChangeToken" alias="ChangeToken" kind="Ordered" reference="7.16">
+        <entry key="0x01" value="Operating System"/>
+        <entry key="0x02" value="System Utilities"/>
+        <entry key="0x03" value="Do Not Reboot"/>
+    </table>
+    <!-- 7.16 -->
+    <table name="Address" alias="Address" kind="Ordered" reference="7.16">
+        <entry key="0xFF" value="Unknown"/>
+    </table>
+    <!-- 7.16.5 -->
+    <table name="HeaderFormat" alias="HeaderFormat" kind="Ordered" reference="7.16.5">
+        <entry key="0x00" value="No Header"/>
+        <entry key="0x01" value="Type 1"/>
+        <entry key="0x80" value="OEM-specific"/>
+        <entry key="0x81" value="OEM-specific"/>
+        <entry key="0x82" value="OEM-specific"/>
+        <entry key="0x83" value="OEM-specific"/>
+        <entry key="0x84" value="OEM-specific"/>
+        <entry key="0x85" value="OEM-specific"/>
+        <entry key="0x86" value="OEM-specific"/>
+        <entry key="0x87" value="OEM-specific"/>
+        <entry key="0x88" value="OEM-specific"/>
+        <entry key="0x89" value="OEM-specific"/>
+        <entry key="0x8A" value="OEM-specific"/>
+        <entry key="0x8B" value="OEM-specific"/>
+        <entry key="0x8C" value="OEM-specific"/>
+        <entry key="0x8D" value="OEM-specific"/>
+        <entry key="0x8E" value="OEM-specific"/>
+        <entry key="0x8F" value="OEM-specific"/>
+        <entry key="0x90" value="OEM-specific"/>
+        <entry key="0x91" value="OEM-specific"/>
+        <entry key="0x92" value="OEM-specific"/>
+        <entry key="0x93" value="OEM-specific"/>
+        <entry key="0x94" value="OEM-specific"/>
+        <entry key="0x95" value="OEM-specific"/>
+        <entry key="0x96" value="OEM-specific"/>
+        <entry key="0x97" value="OEM-specific"/>
+        <entry key="0x98" value="OEM-specific"/>
+        <entry key="0x99" value="OEM-specific"/>
+        <entry key="0x9A" value="OEM-specific"/>
+        <entry key="0x9B" value="OEM-specific"/>
+        <entry key="0x9C" value="OEM-specific"/>
+        <entry key="0x9D" value="OEM-specific"/>
+        <entry key="0x9E" value="OEM-specific"/>
+        <entry key="0x9F" value="OEM-specific"/>
+        <entry key="0xA0" value="OEM-specific"/>
+        <entry key="0xA1" value="OEM-specific"/>
+        <entry key="0xA2" value="OEM-specific"/>
+        <entry key="0xA3" value="OEM-specific"/>
+        <entry key="0xA4" value="OEM-specific"/>
+        <entry key="0xA5" value="OEM-specific"/>
+        <entry key="0xA6" value="OEM-specific"/>
+        <entry key="0xA7" value="OEM-specific"/>
+        <entry key="0xA8" value="OEM-specific"/>
+        <entry key="0xA9" value="OEM-specific"/>
+        <entry key="0xAA" value="OEM-specific"/>
+        <entry key="0xAB" value="OEM-specific"/>
+        <entry key="0xAC" value="OEM-specific"/>
+        <entry key="0xAD" value="OEM-specific"/>
+        <entry key="0xAE" value="OEM-specific"/>
+        <entry key="0xAF" value="OEM-specific"/>
+        <entry key="0xB0" value="OEM-specific"/>
+        <entry key="0xB1" value="OEM-specific"/>
+        <entry key="0xB2" value="OEM-specific"/>
+        <entry key="0xB3" value="OEM-specific"/>
+        <entry key="0xB4" value="OEM-specific"/>
+        <entry key="0xB5" value="OEM-specific"/>
+        <entry key="0xB6" value="OEM-specific"/>
+        <entry key="0xB7" value="OEM-specific"/>
+        <entry key="0xB8" value="OEM-specific"/>
+        <entry key="0xB9" value="OEM-specific"/>
+        <entry key="0xBA" value="OEM-specific"/>
+        <entry key="0xBB" value="OEM-specific"/>
+        <entry key="0xBC" value="OEM-specific"/>
+        <entry key="0xBD" value="OEM-specific"/>
+        <entry key="0xBE" value="OEM-specific"/>
+        <entry key="0xBF" value="OEM-specific"/>
+        <entry key="0xC0" value="OEM-specific"/>
+        <entry key="0xC1" value="OEM-specific"/>
+        <entry key="0xC2" value="OEM-specific"/>
+        <entry key="0xC3" value="OEM-specific"/>
+        <entry key="0xC4" value="OEM-specific"/>
+        <entry key="0xC5" value="OEM-specific"/>
+        <entry key="0xC6" value="OEM-specific"/>
+        <entry key="0xC7" value="OEM-specific"/>
+        <entry key="0xC8" value="OEM-specific"/>
+        <entry key="0xC9" value="OEM-specific"/>
+        <entry key="0xCA" value="OEM-specific"/>
+        <entry key="0xCB" value="OEM-specific"/>
+        <entry key="0xCC" value="OEM-specific"/>
+        <entry key="0xCD" value="OEM-specific"/>
+        <entry key="0xCE" value="OEM-specific"/>
+        <entry key="0xCF" value="OEM-specific"/>
+        <entry key="0xD0" value="OEM-specific"/>
+        <entry key="0xD1" value="OEM-specific"/>
+        <entry key="0xD2" value="OEM-specific"/>
+        <entry key="0xD3" value="OEM-specific"/>
+        <entry key="0xD4" value="OEM-specific"/>
+        <entry key="0xD5" value="OEM-specific"/>
+        <entry key="0xD6" value="OEM-specific"/>
+        <entry key="0xD7" value="OEM-specific"/>
+        <entry key="0xD8" value="OEM-specific"/>
+        <entry key="0xD9" value="OEM-specific"/>
+        <entry key="0xDA" value="OEM-specific"/>
+        <entry key="0xDB" value="OEM-specific"/>
+        <entry key="0xDC" value="OEM-specific"/>
+        <entry key="0xDD" value="OEM-specific"/>
+        <entry key="0xDE" value="OEM-specific"/>
+        <entry key="0xDF" value="OEM-specific"/>
+        <entry key="0xE0" value="OEM-specific"/>
+        <entry key="0xE1" value="OEM-specific"/>
+        <entry key="0xE2" value="OEM-specific"/>
+        <entry key="0xE3" value="OEM-specific"/>
+        <entry key="0xE4" value="OEM-specific"/>
+        <entry key="0xE5" value="OEM-specific"/>
+        <entry key="0xE6" value="OEM-specific"/>
+        <entry key="0xE7" value="OEM-specific"/>
+        <entry key="0xE8" value="OEM-specific"/>
+        <entry key="0xE9" value="OEM-specific"/>
+        <entry key="0xEA" value="OEM-specific"/>
+        <entry key="0xEB" value="OEM-specific"/>
+        <entry key="0xEC" value="OEM-specific"/>
+        <entry key="0xED" value="OEM-specific"/>
+        <entry key="0xEE" value="OEM-specific"/>
+        <entry key="0xEF" value="OEM-specific"/>
+        <entry key="0xF0" value="OEM-specific"/>
+        <entry key="0xF1" value="OEM-specific"/>
+        <entry key="0xF2" value="OEM-specific"/>
+        <entry key="0xF3" value="OEM-specific"/>
+        <entry key="0xF4" value="OEM-specific"/>
+        <entry key="0xF5" value="OEM-specific"/>
+        <entry key="0xF6" value="OEM-specific"/>
+        <entry key="0xF7" value="OEM-specific"/>
+        <entry key="0xF8" value="OEM-specific"/>
+        <entry key="0xF9" value="OEM-specific"/>
+        <entry key="0xFA" value="OEM-specific"/>
+        <entry key="0xFB" value="OEM-specific"/>
+        <entry key="0xFC" value="OEM-specific"/>
+        <entry key="0xFD" value="OEM-specific"/>
+        <entry key="0xFE" value="OEM-specific"/>
+        <entry key="0xFF" value="OEM-specific"/>
+    </table>
+    <!-- 7.16.6.1 -->
+    <table name="EventLogType" alias="EventLogType" kind="Ordered" reference="7.16.6.1">
+        <entry key="0x01" value="Single-bit ECC memory error"/>
+        <entry key="0x02" value="Multi-bit ECC memory error"/>
+        <entry key="0x03" value="Parity memory error"/>
+        <entry key="0x04" value="Bus time-out"/>
+        <entry key="0x05" value="I/O Channel Check"/>
+        <entry key="0x06" value="Software NMI"/>
+        <entry key="0x07" value="POST Memory Resize"/>
+        <entry key="0x08" value="POST Error"/>
+        <entry key="0x09" value="PCI Parity Error"/>
+        <entry key="0x0A" value="PCI System Error"/>
+        <entry key="0x0B" value="CPU Failure"/>
+        <entry key="0x0C" value="EISA FailSafe Timer time-out"/>
+        <entry key="0x0D" value="Correctable memory log disabled"/>
+        <entry key="0x0E" value="Logging disabled"/>
+        <entry key="0x0F" value="Reserved"/>
+        <entry key="0x10" value="System Limit Exceeded"/>
+        <entry key="0x11" value="Asynchronous hardware timer expired and issued a system reset"/>
+        <entry key="0x12" value="System configuration information"/>
+        <entry key="0x13" value="Hard-disk information"/>
+        <entry key="0x14" value="System reconfigured"/>
+        <entry key="0x15" value="Uncorrectable CPU-complex error"/>
+        <entry key="0x16" value="Log Area Reset/Cleared"/>
+        <entry key="0x17" value="System boot"/>
+        <entry key="0x80" value="System- and OEM-specific"/>
+        <entry key="0x81" value="System- and OEM-specific"/>
+        <entry key="0x82" value="System- and OEM-specific"/>
+        <entry key="0x83" value="System- and OEM-specific"/>
+        <entry key="0x84" value="System- and OEM-specific"/>
+        <entry key="0x85" value="System- and OEM-specific"/>
+        <entry key="0x86" value="System- and OEM-specific"/>
+        <entry key="0x87" value="System- and OEM-specific"/>
+        <entry key="0x88" value="System- and OEM-specific"/>
+        <entry key="0x89" value="System- and OEM-specific"/>
+        <entry key="0x8A" value="System- and OEM-specific"/>
+        <entry key="0x8B" value="System- and OEM-specific"/>
+        <entry key="0x8C" value="System- and OEM-specific"/>
+        <entry key="0x8D" value="System- and OEM-specific"/>
+        <entry key="0x8E" value="System- and OEM-specific"/>
+        <entry key="0x8F" value="System- and OEM-specific"/>
+        <entry key="0x90" value="System- and OEM-specific"/>
+        <entry key="0x91" value="System- and OEM-specific"/>
+        <entry key="0x92" value="System- and OEM-specific"/>
+        <entry key="0x93" value="System- and OEM-specific"/>
+        <entry key="0x94" value="System- and OEM-specific"/>
+        <entry key="0x95" value="System- and OEM-specific"/>
+        <entry key="0x96" value="System- and OEM-specific"/>
+        <entry key="0x97" value="System- and OEM-specific"/>
+        <entry key="0x98" value="System- and OEM-specific"/>
+        <entry key="0x99" value="System- and OEM-specific"/>
+        <entry key="0x9A" value="System- and OEM-specific"/>
+        <entry key="0x9B" value="System- and OEM-specific"/>
+        <entry key="0x9C" value="System- and OEM-specific"/>
+        <entry key="0x9D" value="System- and OEM-specific"/>
+        <entry key="0x9E" value="System- and OEM-specific"/>
+        <entry key="0x9F" value="System- and OEM-specific"/>
+        <entry key="0xA0" value="System- and OEM-specific"/>
+        <entry key="0xA1" value="System- and OEM-specific"/>
+        <entry key="0xA2" value="System- and OEM-specific"/>
+        <entry key="0xA3" value="System- and OEM-specific"/>
+        <entry key="0xA4" value="System- and OEM-specific"/>
+        <entry key="0xA5" value="System- and OEM-specific"/>
+        <entry key="0xA6" value="System- and OEM-specific"/>
+        <entry key="0xA7" value="System- and OEM-specific"/>
+        <entry key="0xA8" value="System- and OEM-specific"/>
+        <entry key="0xA9" value="System- and OEM-specific"/>
+        <entry key="0xAA" value="System- and OEM-specific"/>
+        <entry key="0xAB" value="System- and OEM-specific"/>
+        <entry key="0xAC" value="System- and OEM-specific"/>
+        <entry key="0xAD" value="System- and OEM-specific"/>
+        <entry key="0xAE" value="System- and OEM-specific"/>
+        <entry key="0xAF" value="System- and OEM-specific"/>
+        <entry key="0xB0" value="System- and OEM-specific"/>
+        <entry key="0xB1" value="System- and OEM-specific"/>
+        <entry key="0xB2" value="System- and OEM-specific"/>
+        <entry key="0xB3" value="System- and OEM-specific"/>
+        <entry key="0xB4" value="System- and OEM-specific"/>
+        <entry key="0xB5" value="System- and OEM-specific"/>
+        <entry key="0xB6" value="System- and OEM-specific"/>
+        <entry key="0xB7" value="System- and OEM-specific"/>
+        <entry key="0xB8" value="System- and OEM-specific"/>
+        <entry key="0xB9" value="System- and OEM-specific"/>
+        <entry key="0xBA" value="System- and OEM-specific"/>
+        <entry key="0xBB" value="System- and OEM-specific"/>
+        <entry key="0xBC" value="System- and OEM-specific"/>
+        <entry key="0xBD" value="System- and OEM-specific"/>
+        <entry key="0xBE" value="System- and OEM-specific"/>
+        <entry key="0xBF" value="System- and OEM-specific"/>
+        <entry key="0xC0" value="System- and OEM-specific"/>
+        <entry key="0xC1" value="System- and OEM-specific"/>
+        <entry key="0xC2" value="System- and OEM-specific"/>
+        <entry key="0xC3" value="System- and OEM-specific"/>
+        <entry key="0xC4" value="System- and OEM-specific"/>
+        <entry key="0xC5" value="System- and OEM-specific"/>
+        <entry key="0xC6" value="System- and OEM-specific"/>
+        <entry key="0xC7" value="System- and OEM-specific"/>
+        <entry key="0xC8" value="System- and OEM-specific"/>
+        <entry key="0xC9" value="System- and OEM-specific"/>
+        <entry key="0xCA" value="System- and OEM-specific"/>
+        <entry key="0xCB" value="System- and OEM-specific"/>
+        <entry key="0xCC" value="System- and OEM-specific"/>
+        <entry key="0xCD" value="System- and OEM-specific"/>
+        <entry key="0xCE" value="System- and OEM-specific"/>
+        <entry key="0xCF" value="System- and OEM-specific"/>
+        <entry key="0xD0" value="System- and OEM-specific"/>
+        <entry key="0xD1" value="System- and OEM-specific"/>
+        <entry key="0xD2" value="System- and OEM-specific"/>
+        <entry key="0xD3" value="System- and OEM-specific"/>
+        <entry key="0xD4" value="System- and OEM-specific"/>
+        <entry key="0xD5" value="System- and OEM-specific"/>
+        <entry key="0xD6" value="System- and OEM-specific"/>
+        <entry key="0xD7" value="System- and OEM-specific"/>
+        <entry key="0xD8" value="System- and OEM-specific"/>
+        <entry key="0xD9" value="System- and OEM-specific"/>
+        <entry key="0xDA" value="System- and OEM-specific"/>
+        <entry key="0xDB" value="System- and OEM-specific"/>
+        <entry key="0xDC" value="System- and OEM-specific"/>
+        <entry key="0xDD" value="System- and OEM-specific"/>
+        <entry key="0xDE" value="System- and OEM-specific"/>
+        <entry key="0xDF" value="System- and OEM-specific"/>
+        <entry key="0xE0" value="System- and OEM-specific"/>
+        <entry key="0xE1" value="System- and OEM-specific"/>
+        <entry key="0xE2" value="System- and OEM-specific"/>
+        <entry key="0xE3" value="System- and OEM-specific"/>
+        <entry key="0xE4" value="System- and OEM-specific"/>
+        <entry key="0xE5" value="System- and OEM-specific"/>
+        <entry key="0xE6" value="System- and OEM-specific"/>
+        <entry key="0xE7" value="System- and OEM-specific"/>
+        <entry key="0xE8" value="System- and OEM-specific"/>
+        <entry key="0xE9" value="System- and OEM-specific"/>
+        <entry key="0xEA" value="System- and OEM-specific"/>
+        <entry key="0xEB" value="System- and OEM-specific"/>
+        <entry key="0xEC" value="System- and OEM-specific"/>
+        <entry key="0xED" value="System- and OEM-specific"/>
+        <entry key="0xEE" value="System- and OEM-specific"/>
+        <entry key="0xEF" value="System- and OEM-specific"/>
+        <entry key="0xF0" value="System- and OEM-specific"/>
+        <entry key="0xF1" value="System- and OEM-specific"/>
+        <entry key="0xF2" value="System- and OEM-specific"/>
+        <entry key="0xF3" value="System- and OEM-specific"/>
+        <entry key="0xF4" value="System- and OEM-specific"/>
+        <entry key="0xF5" value="System- and OEM-specific"/>
+        <entry key="0xF6" value="System- and OEM-specific"/>
+        <entry key="0xF7" value="System- and OEM-specific"/>
+        <entry key="0xF8" value="System- and OEM-specific"/>
+        <entry key="0xF9" value="System- and OEM-specific"/>
+        <entry key="0xFA" value="System- and OEM-specific"/>
+        <entry key="0xFB" value="System- and OEM-specific"/>
+        <entry key="0xFC" value="System- and OEM-specific"/>
+        <entry key="0xFD" value="System- and OEM-specific"/>
+        <entry key="0xFE" value="System- and OEM-specific"/>
+        <entry key="0xFF" value="End of log"/>
+    </table>
+    <!-- 7.16.6.2 -->
+    <table name="EventLogVariableDataFormatType" alias="EventLogVariableDataFormatType" kind="Ordered" reference="7.16.6.2">
+        <entry key="0x00" value="None"/>
+        <entry key="0x01" value="Handle"/>
+        <entry key="0x02" value="Multiple-Event"/>
+        <entry key="0x03" value="Multiple-Event Handle"/>
+        <entry key="0x04" value="POST Results Bitmap"/>
+        <entry key="0x05" value="System Management Type"/>
+        <entry key="0x06" value="System Management Type"/>
+        <entry key="0xFF" value="OEM-specific"/>
+    </table>
+    <!-- 7.16.6.4 -->
+    <table name="POSTResultsBitmapFirstDoubleWord" alias="POSTResultsBitmapFirstDoubleWord" kind="Array" reference="7.16.6.4">
+        <entry value="Channel 2 Timer error"/>
+        <entry value="Master PIC (8259 #1) error"/>
+        <entry value="Slave PIC (8259 #2) error"/>
+        <entry value="CMOS RAM Battery Failure"/>
+        <entry value="CMOS RAM System Options Not Set"/>
+        <entry value="CMOS RAM Checksum Error"/>
+        <entry value="CMOS RAM Configuration Error"/>
+        <entry value="Mouse and Keyboard Swapped"/>
+        <entry value="Keyboard Locked"/>
+        <entry value="Keyboard Not Functional"/>
+        <entry value="Keyboard Controller Not Functional"/>
+        <entry value="CMOS Memory Size Different"/>
+        <entry value="Memory Decreased in Size"/>
+        <entry value="Cache Memory Error"/>
+        <entry value="Floppy Drive 0 Error"/>
+        <entry value="Floppy Drive 1 Error"/>
+        <entry value="Floppy Controller Failure"/>
+        <entry value="Number of ATA Drives Reduced Error"/>
+        <entry value="RTC Time Not Set"/>
+        <entry value="DDC Monitor Configuration Change"/>
+        <entry value="Reserved"/>
+        <entry value="Reserved"/> 
+        <entry value="Reserved"/>
+        <entry value="Reserved"/> 
+        <entry value="Second DWORD has valid data"/>
+        <entry value="Reserved"/>
+        <entry value="Reserved"/>
+        <entry value="Reserved"/>
+        <entry value="OEM-specific"/> 
+        <entry value="OEM-specific"/> 
+        <entry value="OEM-specific"/>
+        <entry value="OEM-specific"/> 
+    </table>
+    <!-- 7.16.6.4 -->
+    <table name="POSTResultsBitmapSecondDoubleWord" alias="POSTResultsBitmaSecondDoubleWord" kind="Array" reference="7.16.6.4">
+        <entry value="OEM-specific"/>
+        <entry value="OEM-specific"/> 
+        <entry value="OEM-specific"/>
+        <entry value="OEM-specific"/>
+        <entry value="OEM-specific"/> 
+        <entry value="OEM-specific"/> 
+        <entry value="OEM-specific"/>
+        <entry value="PCI Memory Conflict"/>
+        <entry value="PCI I/O Conflict"/>
+        <entry value="PCI IRQ Conflict"/>
+        <entry value="PNP Memory Conflict"/>
+        <entry value="PNP 32 bit Memory Conflict"/>
+        <entry value="PNP I/O Conflict"/>
+        <entry value="PNP IRQ Conflict"/>
+        <entry value="PNP DMA Conflict"/>
+        <entry value="Bad PNP Serial ID Checksum"/>
+        <entry value="Bad PNP Resource Data Checksum"/>
+        <entry value="Static Resource Conflict"/>
+        <entry value="NVRAM Checksum Error, NVRAM Cleared"/>
+        <entry value="System Board Device Resource Conflict"/>
+        <entry value="Primary Output Device Not Found"/>
+        <entry value="Primary Input Device Not Found"/>
+        <entry value="Primary Boot Device Not Found"/>
+        <entry value="NVRAM Cleared By Jumper"/>
+        <entry value="NVRAM Data Invalid, NVRAM Cleared"/>
+        <entry value="FDC Resource Conflict"/>
+        <entry value="Primary ATA Controller Resource Conflict"/>
+        <entry value="Secondary ATA Controller Resource Conflict"/>
+        <entry value="Parallel Port Resource Conflict"/>
+        <entry value="Serial Port 1 Resource Conflict"/>
+        <entry value="Serial Port 2 Resource Conflict"/>
+        <entry value="Audio Resource Conflict"/>
+    </table>
+    <!-- 7.16.6.5 -->
+    <table name="SystemManagementType" alias="SystemManagementType" kind="Ordered" reference="7.16.6.5">
+        <entry key="0x00" value="+2.5V Out of range, #1"/>
+        <entry key="0x01" value="+2.5V Out of range, #2"/>
+        <entry key="0x02" value="+3.3V Out of range"/>
+        <entry key="0x03" value="+5V Out of range"/>
+        <entry key="0x04" value="-5V Out of range"/>
+        <entry key="0x05" value="+12V Out of range"/>
+        <entry key="0x06" value="-12V Out of range"/>
+        <entry key="0x10" value="System board temperature out of range"/>
+        <entry key="0x11" value="Processor #1 temperature out of range"/>
+        <entry key="0x12" value="Processor #2 temperature out of range"/>
+        <entry key="0x13" value="Processor #3 temperature out of range"/>
+        <entry key="0x14" value="Processor #4 temperature out of range"/>
+        <entry key="0x20" value="Fan n (n = 0 to 7) Out of range"/>
+        <entry key="0x21" value="Fan n (n = 0 to 7) Out of range"/>
+        <entry key="0x22" value="Fan n (n = 0 to 7) Out of range"/>
+        <entry key="0x23" value="Fan n (n = 0 to 7) Out of range"/>
+        <entry key="0x24" value="Fan n (n = 0 to 7) Out of range"/>
+        <entry key="0x25" value="Fan n (n = 0 to 7) Out of range"/>
+        <entry key="0x26" value="Fan n (n = 0 to 7) Out of range"/>
+        <entry key="0x27" value="Fan n (n = 0 to 7) Out of range"/>
+        <entry key="0x30" value="Chassis secure switch activated"/>
+    </table>
+</strings>

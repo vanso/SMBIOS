@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<strings>
+    <!-- 7.35.1 -->
+    <table name="DeviceType" alias="DeviceType" kind="Ordered" reference="7.35.1">
+        <entry key="0x01" value="Other"/>
+        <entry key="0x02" value="Unknown"/>
+        <entry key="0x03" value="National Semiconductor LM75"/>
+        <entry key="0x04" value="National Semiconductor LM78"/>
+        <entry key="0x05" value="National Semiconductor LM79"/>
+        <entry key="0x06" value="National Semiconductor LM80"/>
+        <entry key="0x07" value="National Semiconductor LM81"/>
+        <entry key="0x08" value="Analog Devices ADM9240"/>
+        <entry key="0x09" value="Dallas Semiconductor DS1780"/>
+        <entry key="0x0A" value="Maxim 1617"/>
+        <entry key="0x0B" value="Genesys GL518SM"/>
+        <entry key="0x0C" value="Winbond W83781D"/>
+        <entry key="0x0D" value="Holtek HT82H791"/>
+    </table>
+    <!-- 7.35.2 -->
+    <table name="AddressType" alias="AddressType" kind="Ordered" reference="7.35.2">
+        <entry key="0x01" value="Other"/>
+        <entry key="0x02" value="Unknown"/>
+        <entry key="0x03" value="I/O Port"/>
+        <entry key="0x04" value="Memory"/>
+        <entry key="0x05" value="SM Bus"/>
+    </table>
+</strings>

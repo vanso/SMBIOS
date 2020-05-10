@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<strings>
+   <!-- 7.19.1 -->
+   <table name="ErrorType" alias="ErrorType" kind="Ordered" reference="7.19.1">
+      <entry key="0x01" value="Other"/>
+      <entry key="0x02" value="Unknown"/>
+      <entry key="0x03" value="OK"/>
+      <entry key="0x04" value="Bad read"/>
+      <entry key="0x05" value="Parity error"/>
+      <entry key="0x06" value="Single-bit error"/>
+      <entry key="0x07" value="Double-bit error"/>
+      <entry key="0x08" value="Multi-bit error"/>
+      <entry key="0x09" value="Nibble error"/>
+      <entry key="0x0A" value="Checksum error"/>
+      <entry key="0x0B" value="CRC error"/>
+      <entry key="0x0C" value="Corrected single-bit error"/>
+      <entry key="0x0D" value="Corrected error"/>
+      <entry key="0x0E" value="Uncorrectable error"/>
+   </table>
+   <!-- 7.19.2 -->
+   <table name="ErrorGranularity" alias="ErrorGranularity" kind="Ordered" reference="7.19.2">
+      <entry key="0x01" value="None"/>
+      <entry key="0x02" value="Unknown"/>
+      <entry key="0x03" value="Device level"/>
+      <entry key="0x04" value="Memory partition level"/>
+   </table>
+   <!-- 7.18.3 -->
+   <table name="ErrorOperation" alias="ErrorOperation" kind="Ordered" reference="7.18.3">
+      <entry key="0x01" value="Other"/>
+      <entry key="0x02" value="Unknown"/>
+      <entry key="0x03" value="Read"/>
+      <entry key="0x04" value="Write"/>
+      <entry key="0x05" value="Partial write"/>
+   </table>
+</strings>

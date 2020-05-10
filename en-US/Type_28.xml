@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<strings>
+    <!-- 7.29.1 -->
+    <table name="Status" alias="Status" kind="Ordered" reference="7.29.1">
+        <entry key="0x01" value="Other"/>
+        <entry key="0x02" value="Unknown"/>
+        <entry key="0x03" value="OK"/>
+        <entry key="0x04" value="Non-critical"/>
+        <entry key="0x05" value="Critical"/>
+        <entry key="0x06" value="Non-recoverable"/>     
+    </table>
+    <!-- 7.29.1 -->
+    <table name="Location" alias="Location" kind="Ordered" reference="7.29.1">
+        <entry key="0x01" value="Other"/>
+        <entry key="0x02" value="Unknown"/>
+        <entry key="0x03" value="Processor"/>
+        <entry key="0x04" value="Disk"/>
+        <entry key="0x05" value="Peripheral Bay"/>
+        <entry key="0x06" value="System Management Module"/>     
+        <entry key="0x07" value="Motherboard"/>
+        <entry key="0x08" value="Memory Module"/>
+        <entry key="0x09" value="Processor Module"/>
+        <entry key="0x0A" value="Power Unit"/>   
+        <entry key="0x0B" value="Add-in Card"/>
+        <entry key="0x0C" value="Front Panel Board"/>
+        <entry key="0x0D" value="Back Panel Board"/>
+        <entry key="0x0E" value="Power System Board"/>   
+        <entry key="0x0F" value="Drive Back Plane"/>  
+    </table>  
+</strings>

@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<strings>
+    <!-- 7.7 -->
+    <table name="ErrorStatus" alias="ErrorStatus" kind="Array" reference="7.7">
+        <entry value="OK"/>
+        <entry value="Uncorrectable Errors"/>
+        <entry value="Correctable Errors"/>
+        <entry value="Correctable and Uncorrectable Errors"/>
+    </table>
+    <!-- 7.7.1 -->
+    <table name="CurrentMemoryType" alias="CurrentMemoryType" kind="Array" reference="7.7.1">
+        <entry value="Other"/>
+        <entry value="Unknown"/>
+        <entry value="Standard"/>
+        <entry value="Fast Page Mode"/>
+        <entry value="EDO"/>
+        <entry value="Parity"/>
+        <entry value="ECC"/>
+        <entry value="SIMM"/>
+        <entry value="DIMM"/>
+        <entry value="Burst EDO"/>
+        <entry value="SDRAM"/>
+    </table>
+    <!-- 7.7.2 -->
+    <table name="_Size" alias="_Size" kind="Ordered" reference="7.7.2">
+        <entry key="0x7D" value="Not determinable"/>
+        <entry key="0x7E" value="Module is installed"/>
+        <entry key="0x7F" value="Not installed"/>
+    </table>
+</strings>

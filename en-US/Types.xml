@@ -1,0 +1,521 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<strings>
+    <!-- 6.1.2-->
+    <table name="SMBIOSType" alias="SMBIOSType" kind="Ordered" reference="6.1.2">
+        <entry key="00" value="BIOS"/>
+        <entry key="01" value="System"/>
+        <entry key="02" value="Baseboard"/>
+        <entry key="03" value="Chassis"/>
+        <entry key="04" value="Processor"/>
+        <entry key="05" value="Memory Controller"/>
+        <entry key="06" value="Memory Module"/>
+        <entry key="07" value="Cache"/>
+        <entry key="08" value="Port Connector"/>
+        <entry key="09" value="System Slots"/>
+        <entry key="10" value="On Board Devices"/>
+        <entry key="11" value="OEM Strings"/>
+        <entry key="12" value="System Configuration Options"/>
+        <entry key="13" value="BIOS Language"/>
+        <entry key="14" value="Group Associations"/>
+        <entry key="15" value="System Event Log"/>
+        <entry key="16" value="Physical Memory Array"/>
+        <entry key="17" value="Memory Device"/>
+        <entry key="18" value="32-bit Memory Error"/>
+        <entry key="19" value="Memory Array Mapped Address"/>
+        <entry key="20" value="Memory Device Mapped Address"/>
+        <entry key="21" value="Built-in Pointing Device"/>
+        <entry key="22" value="Portable Battery"/>
+        <entry key="23" value="System Reset"/>
+        <entry key="24" value="Hardware Security"/>
+        <entry key="25" value="System Power Controls"/>
+        <entry key="26" value="Voltage Probe"/>
+        <entry key="27" value="Cooling Device"/>
+        <entry key="28" value="Temperature Probe"/>
+        <entry key="29" value="Electrical Current Probe"/>
+        <entry key="30" value="Out-of-band Remote Access"/>
+        <entry key="31" value="Boot Integrity Services"/>
+        <entry key="32" value="System Boot"/>
+        <entry key="33" value="64-bit Memory Error"/>
+        <entry key="34" value="Management Device"/>
+        <entry key="35" value="Management Device Component"/>
+        <entry key="36" value="Management Device Threshold Data"/>
+        <entry key="37" value="Memory Channel"/>
+        <entry key="38" value="IPMI Device"/>
+        <entry key="39" value="Power Supply"/>
+        <entry key="40" value="Additional Information"/>
+        <entry key="41" value="Onboard Device"/>
+        <entry key="42" value="Management Controller Host Interface"/>
+        <entry key="43" value="TPM Device"/>
+        <entry key="44" value="Processor Additional Information"/>
+        <entry key="45" value="Reserved"/>
+        <entry key="46" value="Reserved"/>
+        <entry key="47" value="Reserved"/>
+        <entry key="48" value="Reserved"/>
+        <entry key="49" value="Reserved"/>
+        <entry key="50" value="Reserved"/>
+        <entry key="51" value="Reserved"/>
+        <entry key="52" value="Reserved"/>
+        <entry key="53" value="Reserved"/>
+        <entry key="54" value="Reserved"/>
+        <entry key="55" value="Reserved"/>
+        <entry key="56" value="Reserved"/>
+        <entry key="57" value="Reserved"/>
+        <entry key="58" value="Reserved"/>
+        <entry key="59" value="Reserved"/>
+        <entry key="60" value="Reserved"/>
+        <entry key="61" value="Reserved"/>
+        <entry key="62" value="Reserved"/>
+        <entry key="63" value="Reserved"/>
+        <entry key="64" value="Reserved"/>
+        <entry key="65" value="Reserved"/>
+        <entry key="66" value="Reserved"/>
+        <entry key="67" value="Reserved"/>
+        <entry key="68" value="Reserved"/>
+        <entry key="69" value="Reserved"/>
+        <entry key="70" value="Reserved"/>
+        <entry key="71" value="Reserved"/>
+        <entry key="72" value="Reserved"/>
+        <entry key="73" value="Reserved"/>
+        <entry key="74" value="Reserved"/>
+        <entry key="75" value="Reserved"/>
+        <entry key="76" value="Reserved"/>
+        <entry key="77" value="Reserved"/>
+        <entry key="78" value="Reserved"/>
+        <entry key="79" value="Reserved"/>
+        <entry key="80" value="Reserved"/>
+        <entry key="81" value="Reserved"/>
+        <entry key="82" value="Reserved"/>
+        <entry key="83" value="Reserved"/>
+        <entry key="84" value="Reserved"/>
+        <entry key="85" value="Reserved"/>
+        <entry key="86" value="Reserved"/>
+        <entry key="87" value="Reserved"/>
+        <entry key="88" value="Reserved"/>
+        <entry key="89" value="Reserved"/>
+        <entry key="90" value="Reserved"/>
+        <entry key="91" value="Reserved"/>
+        <entry key="92" value="Reserved"/>
+        <entry key="93" value="Reserved"/>
+        <entry key="94" value="Reserved"/>
+        <entry key="95" value="Reserved"/>
+        <entry key="96" value="Reserved"/>
+        <entry key="97" value="Reserved"/>
+        <entry key="98" value="Reserved"/>
+        <entry key="99" value="Reserved"/>
+        <entry key="100" value="Reserved"/>
+        <entry key="101" value="Reserved"/>
+        <entry key="102" value="Reserved"/>
+        <entry key="103" value="Reserved"/>
+        <entry key="104" value="Reserved"/>
+        <entry key="105" value="Reserved"/>
+        <entry key="106" value="Reserved"/>
+        <entry key="107" value="Reserved"/>
+        <entry key="108" value="Reserved"/>
+        <entry key="109" value="Reserved"/>
+        <entry key="110" value="Reserved"/>
+        <entry key="111" value="Reserved"/>
+        <entry key="112" value="Reserved"/>
+        <entry key="113" value="Reserved"/>
+        <entry key="114" value="Reserved"/>
+        <entry key="115" value="Reserved"/>
+        <entry key="116" value="Reserved"/>
+        <entry key="117" value="Reserved"/>
+        <entry key="118" value="Reserved"/>
+        <entry key="119" value="Reserved"/>
+        <entry key="120" value="Reserved"/>
+        <entry key="121" value="Reserved"/>
+        <entry key="122" value="Reserved"/>
+        <entry key="123" value="Reserved"/>
+        <entry key="124" value="Reserved"/>
+        <entry key="125" value="Reserved"/>
+        <entry key="126" value="Inactive"/>
+        <entry key="127" value="End Of Table"/>
+        <entry key="128" value="OEM Specific"/>
+        <entry key="129" value="OEM Specific"/>
+        <entry key="130" value="OEM Specific"/>
+        <entry key="131" value="OEM Specific"/>
+        <entry key="132" value="OEM Specific"/>
+        <entry key="133" value="OEM Specific"/>
+        <entry key="134" value="OEM Specific"/>
+        <entry key="135" value="OEM Specific"/>
+        <entry key="136" value="OEM Specific"/>
+        <entry key="137" value="OEM Specific"/>
+        <entry key="138" value="OEM Specific"/>
+        <entry key="139" value="OEM Specific"/>
+        <entry key="140" value="OEM Specific"/>
+        <entry key="141" value="OEM Specific"/>
+        <entry key="142" value="OEM Specific"/>
+        <entry key="143" value="OEM Specific"/>
+        <entry key="144" value="OEM Specific"/>
+        <entry key="145" value="OEM Specific"/>
+        <entry key="146" value="OEM Specific"/>
+        <entry key="147" value="OEM Specific"/>
+        <entry key="148" value="OEM Specific"/>
+        <entry key="149" value="OEM Specific"/>
+        <entry key="150" value="OEM Specific"/>
+        <entry key="151" value="OEM Specific"/>
+        <entry key="152" value="OEM Specific"/>
+        <entry key="153" value="OEM Specific"/>
+        <entry key="154" value="OEM Specific"/>
+        <entry key="155" value="OEM Specific"/>
+        <entry key="156" value="OEM Specific"/>
+        <entry key="157" value="OEM Specific"/>
+        <entry key="158" value="OEM Specific"/>
+        <entry key="159" value="OEM Specific"/>
+        <entry key="160" value="OEM Specific"/>
+        <entry key="161" value="OEM Specific"/>
+        <entry key="162" value="OEM Specific"/>
+        <entry key="163" value="OEM Specific"/>
+        <entry key="164" value="OEM Specific"/>
+        <entry key="165" value="OEM Specific"/>
+        <entry key="166" value="OEM Specific"/>
+        <entry key="167" value="OEM Specific"/>
+        <entry key="168" value="OEM Specific"/>
+        <entry key="169" value="OEM Specific"/>
+        <entry key="170" value="OEM Specific"/>
+        <entry key="171" value="OEM Specific"/>
+        <entry key="172" value="OEM Specific"/>
+        <entry key="173" value="OEM Specific"/>
+        <entry key="174" value="OEM Specific"/>
+        <entry key="175" value="OEM Specific"/>
+        <entry key="176" value="OEM Specific"/>
+        <entry key="177" value="OEM Specific"/>
+        <entry key="178" value="OEM Specific"/>
+        <entry key="179" value="OEM Specific"/>
+        <entry key="180" value="OEM Specific"/>
+        <entry key="181" value="OEM Specific"/>
+        <entry key="182" value="OEM Specific"/>
+        <entry key="183" value="OEM Specific"/>
+        <entry key="184" value="OEM Specific"/>
+        <entry key="185" value="OEM Specific"/>
+        <entry key="186" value="OEM Specific"/>
+        <entry key="187" value="OEM Specific"/>
+        <entry key="188" value="OEM Specific"/>
+        <entry key="189" value="OEM Specific"/>
+        <entry key="190" value="OEM Specific"/>
+        <entry key="191" value="OEM Specific"/>
+        <entry key="192" value="OEM Specific"/>
+        <entry key="193" value="OEM Specific"/>
+        <entry key="194" value="OEM Specific"/>
+        <entry key="195" value="OEM Specific"/>
+        <entry key="196" value="OEM Specific"/>
+        <entry key="197" value="OEM Specific"/>
+        <entry key="198" value="OEM Specific"/>
+        <entry key="199" value="OEM Specific"/>
+        <entry key="200" value="OEM Specific"/>
+        <entry key="201" value="OEM Specific"/>
+        <entry key="202" value="OEM Specific"/>
+        <entry key="203" value="OEM Specific"/>
+        <entry key="204" value="OEM Specific"/>
+        <entry key="205" value="OEM Specific"/>
+        <entry key="206" value="OEM Specific"/>
+        <entry key="207" value="OEM Specific"/>
+        <entry key="208" value="OEM Specific"/>
+        <entry key="209" value="OEM Specific"/>
+        <entry key="210" value="OEM Specific"/>
+        <entry key="211" value="OEM Specific"/>
+        <entry key="212" value="OEM Specific"/>
+        <entry key="213" value="OEM Specific"/>
+        <entry key="214" value="OEM Specific"/>
+        <entry key="215" value="OEM Specific"/>
+        <entry key="216" value="OEM Specific"/>
+        <entry key="217" value="OEM Specific"/>
+        <entry key="218" value="OEM Specific"/>
+        <entry key="219" value="OEM Specific"/>
+        <entry key="220" value="OEM Specific"/>
+        <entry key="221" value="OEM Specific"/>
+        <entry key="222" value="OEM Specific"/>
+        <entry key="223" value="OEM Specific"/>
+        <entry key="224" value="OEM Specific"/>
+        <entry key="225" value="OEM Specific"/>
+        <entry key="226" value="OEM Specific"/>
+        <entry key="227" value="OEM Specific"/>
+        <entry key="228" value="OEM Specific"/>
+        <entry key="229" value="OEM Specific"/>
+        <entry key="230" value="OEM Specific"/>
+        <entry key="231" value="OEM Specific"/>
+        <entry key="232" value="OEM Specific"/>
+        <entry key="233" value="OEM Specific"/>
+        <entry key="234" value="OEM Specific"/>
+        <entry key="235" value="OEM Specific"/>
+        <entry key="236" value="OEM Specific"/>
+        <entry key="237" value="OEM Specific"/>
+        <entry key="238" value="OEM Specific"/>
+        <entry key="239" value="OEM Specific"/>
+        <entry key="240" value="OEM Specific"/>
+        <entry key="241" value="OEM Specific"/>
+        <entry key="242" value="OEM Specific"/>
+        <entry key="243" value="OEM Specific"/>
+        <entry key="244" value="OEM Specific"/>
+        <entry key="245" value="OEM Specific"/>
+        <entry key="246" value="OEM Specific"/>
+        <entry key="247" value="OEM Specific"/>
+        <entry key="248" value="OEM Specific"/>
+        <entry key="249" value="OEM Specific"/>
+        <entry key="250" value="OEM Specific"/>
+        <entry key="251" value="OEM Specific"/>
+        <entry key="252" value="OEM Specific"/>
+        <entry key="253" value="OEM Specific"/>
+        <entry key="254" value="OEM Specific"/>
+        <entry key="255" value="OEM Specific"/>
+    </table>
+    <!-- 6.1.2 -->
+    <table name="SMBIOSTypeDescription" alias="SMBIOSTypeDescription" kind="Ordered" reference="6.1.2">
+        <entry key="00" value="BIOS Information"/>
+        <entry key="01" value="System Information"/>
+        <entry key="02" value="Baseboard (or Module) Information"/>
+        <entry key="03" value="System Enclosure or Chassis"/>
+        <entry key="04" value="Processor Information"/>
+        <entry key="05" value="Memory Controller Information"/>
+        <entry key="06" value="Memory Module Information"/>
+        <entry key="07" value="Cache Information"/>
+        <entry key="08" value="Port Connector Information"/>
+        <entry key="09" value="System Slots"/>
+        <entry key="10" value="On Board Devices Information"/>
+        <entry key="11" value="OEM Strings"/>
+        <entry key="12" value="System Configuration Options"/>
+        <entry key="13" value="BIOS Language Information"/>
+        <entry key="14" value="Group Associations"/>
+        <entry key="15" value="System Event Log"/>
+        <entry key="16" value="Physical Memory Array"/>
+        <entry key="17" value="Memory Device"/>
+        <entry key="18" value="32-bit Memory Error Information"/>
+        <entry key="19" value="Memory Array Mapped Address"/>
+        <entry key="20" value="Memory Device Mapped Address"/>
+        <entry key="21" value="Built-in Pointing Device"/>
+        <entry key="22" value="Portable Battery"/>
+        <entry key="23" value="System Reset"/>
+        <entry key="24" value="Hardware Security"/>
+        <entry key="25" value="System Power Controls"/>
+        <entry key="26" value="Voltage Probe"/>
+        <entry key="27" value="Cooling Device"/>
+        <entry key="28" value="Temperature Probe"/>
+        <entry key="29" value="Electrical Current Probe"/>
+        <entry key="30" value="Out-of-band Remote Access"/>
+        <entry key="31" value="Boot Integrity Services (BIS) Entry Point"/>
+        <entry key="32" value="System Boot Information"/>
+        <entry key="33" value="64-bit Memory Error Information"/>
+        <entry key="34" value="Management Device"/>
+        <entry key="35" value="Management Device Component"/>
+        <entry key="36" value="Management Device Threshold Data"/>
+        <entry key="37" value="Memory Channel"/>
+        <entry key="38" value="IPMI Device"/>
+        <entry key="39" value="Power Supply"/>
+        <entry key="40" value="Additional Information"/>
+        <entry key="41" value="Onboard Device"/>
+        <entry key="42" value="Management Controller Host Interface"/>
+        <entry key="43" value="TPM Device"/>
+        <entry key="44" value="Processor Additional Information"/>
+        <entry key="45" value="Reserved"/>
+        <entry key="46" value="Reserved"/>
+        <entry key="47" value="Reserved"/>
+        <entry key="48" value="Reserved"/>
+        <entry key="49" value="Reserved"/>
+        <entry key="50" value="Reserved"/>
+        <entry key="51" value="Reserved"/>
+        <entry key="52" value="Reserved"/>
+        <entry key="53" value="Reserved"/>
+        <entry key="54" value="Reserved"/>
+        <entry key="55" value="Reserved"/>
+        <entry key="56" value="Reserved"/>
+        <entry key="57" value="Reserved"/>
+        <entry key="58" value="Reserved"/>
+        <entry key="59" value="Reserved"/>
+        <entry key="60" value="Reserved"/>
+        <entry key="61" value="Reserved"/>
+        <entry key="62" value="Reserved"/>
+        <entry key="63" value="Reserved"/>
+        <entry key="64" value="Reserved"/>
+        <entry key="65" value="Reserved"/>
+        <entry key="66" value="Reserved"/>
+        <entry key="67" value="Reserved"/>
+        <entry key="68" value="Reserved"/>
+        <entry key="69" value="Reserved"/>
+        <entry key="70" value="Reserved"/>
+        <entry key="71" value="Reserved"/>
+        <entry key="72" value="Reserved"/>
+        <entry key="73" value="Reserved"/>
+        <entry key="74" value="Reserved"/>
+        <entry key="75" value="Reserved"/>
+        <entry key="76" value="Reserved"/>
+        <entry key="77" value="Reserved"/>
+        <entry key="78" value="Reserved"/>
+        <entry key="79" value="Reserved"/>
+        <entry key="80" value="Reserved"/>
+        <entry key="81" value="Reserved"/>
+        <entry key="82" value="Reserved"/>
+        <entry key="83" value="Reserved"/>
+        <entry key="84" value="Reserved"/>
+        <entry key="85" value="Reserved"/>
+        <entry key="86" value="Reserved"/>
+        <entry key="87" value="Reserved"/>
+        <entry key="88" value="Reserved"/>
+        <entry key="89" value="Reserved"/>
+        <entry key="90" value="Reserved"/>
+        <entry key="91" value="Reserved"/>
+        <entry key="92" value="Reserved"/>
+        <entry key="93" value="Reserved"/>
+        <entry key="94" value="Reserved"/>
+        <entry key="95" value="Reserved"/>
+        <entry key="96" value="Reserved"/>
+        <entry key="97" value="Reserved"/>
+        <entry key="98" value="Reserved"/>
+        <entry key="99" value="Reserved"/>
+        <entry key="100" value="Reserved"/>
+        <entry key="101" value="Reserved"/>
+        <entry key="102" value="Reserved"/>
+        <entry key="103" value="Reserved"/>
+        <entry key="104" value="Reserved"/>
+        <entry key="105" value="Reserved"/>
+        <entry key="106" value="Reserved"/>
+        <entry key="107" value="Reserved"/>
+        <entry key="108" value="Reserved"/>
+        <entry key="109" value="Reserved"/>
+        <entry key="110" value="Reserved"/>
+        <entry key="111" value="Reserved"/>
+        <entry key="112" value="Reserved"/>
+        <entry key="113" value="Reserved"/>
+        <entry key="114" value="Reserved"/>
+        <entry key="115" value="Reserved"/>
+        <entry key="116" value="Reserved"/>
+        <entry key="117" value="Reserved"/>
+        <entry key="118" value="Reserved"/>
+        <entry key="119" value="Reserved"/>
+        <entry key="120" value="Reserved"/>
+        <entry key="121" value="Reserved"/>
+        <entry key="122" value="Reserved"/>
+        <entry key="123" value="Reserved"/>
+        <entry key="124" value="Reserved"/>
+        <entry key="125" value="Reserved"/>
+        <entry key="126" value="Inactive"/>
+        <entry key="127" value="End Of Table"/>
+        <entry key="128" value="OEM Specific Information"/>
+        <entry key="129" value="OEM Specific Information"/>
+        <entry key="130" value="OEM Specific Information"/>
+        <entry key="131" value="OEM Specific Information"/>
+        <entry key="132" value="OEM Specific Information"/>
+        <entry key="133" value="OEM Specific Information"/>
+        <entry key="134" value="OEM Specific Information"/>
+        <entry key="135" value="OEM Specific Information"/>
+        <entry key="136" value="OEM Specific Information"/>
+        <entry key="137" value="OEM Specific Information"/>
+        <entry key="138" value="OEM Specific Information"/>
+        <entry key="139" value="OEM Specific Information"/>
+        <entry key="140" value="OEM Specific Information"/>
+        <entry key="141" value="OEM Specific Information"/>
+        <entry key="142" value="OEM Specific Information"/>
+        <entry key="143" value="OEM Specific Information"/>
+        <entry key="144" value="OEM Specific Information"/>
+        <entry key="145" value="OEM Specific Information"/>
+        <entry key="146" value="OEM Specific Information"/>
+        <entry key="147" value="OEM Specific Information"/>
+        <entry key="148" value="OEM Specific Information"/>
+        <entry key="149" value="OEM Specific Information"/>
+        <entry key="150" value="OEM Specific Information"/>
+        <entry key="151" value="OEM Specific Information"/>
+        <entry key="152" value="OEM Specific Information"/>
+        <entry key="153" value="OEM Specific Information"/>
+        <entry key="154" value="OEM Specific Information"/>
+        <entry key="155" value="OEM Specific Information"/>
+        <entry key="156" value="OEM Specific Information"/>
+        <entry key="157" value="OEM Specific Information"/>
+        <entry key="158" value="OEM Specific Information"/>
+        <entry key="159" value="OEM Specific Information"/>
+        <entry key="160" value="OEM Specific Information"/>
+        <entry key="161" value="OEM Specific Information"/>
+        <entry key="162" value="OEM Specific Information"/>
+        <entry key="163" value="OEM Specific Information"/>
+        <entry key="164" value="OEM Specific Information"/>
+        <entry key="165" value="OEM Specific Information"/>
+        <entry key="166" value="OEM Specific Information"/>
+        <entry key="167" value="OEM Specific Information"/>
+        <entry key="168" value="OEM Specific Information"/>
+        <entry key="169" value="OEM Specific Information"/>
+        <entry key="170" value="OEM Specific Information"/>
+        <entry key="171" value="OEM Specific Information"/>
+        <entry key="172" value="OEM Specific Information"/>
+        <entry key="173" value="OEM Specific Information"/>
+        <entry key="174" value="OEM Specific Information"/>
+        <entry key="175" value="OEM Specific Information"/>
+        <entry key="176" value="OEM Specific Information"/>
+        <entry key="177" value="OEM Specific Information"/>
+        <entry key="178" value="OEM Specific Information"/>
+        <entry key="179" value="OEM Specific Information"/>
+        <entry key="180" value="OEM Specific Information"/>
+        <entry key="181" value="OEM Specific Information"/>
+        <entry key="182" value="OEM Specific Information"/>
+        <entry key="183" value="OEM Specific Information"/>
+        <entry key="184" value="OEM Specific Information"/>
+        <entry key="185" value="OEM Specific Information"/>
+        <entry key="186" value="OEM Specific Information"/>
+        <entry key="187" value="OEM Specific Information"/>
+        <entry key="188" value="OEM Specific Information"/>
+        <entry key="189" value="OEM Specific Information"/>
+        <entry key="190" value="OEM Specific Information"/>
+        <entry key="191" value="OEM Specific Information"/>
+        <entry key="192" value="OEM Specific Information"/>
+        <entry key="193" value="OEM Specific Information"/>
+        <entry key="194" value="OEM Specific Information"/>
+        <entry key="195" value="OEM Specific Information"/>
+        <entry key="196" value="OEM Specific Information"/>
+        <entry key="197" value="OEM Specific Information"/>
+        <entry key="198" value="OEM Specific Information"/>
+        <entry key="199" value="OEM Specific Information"/>
+        <entry key="200" value="OEM Specific Information"/>
+        <entry key="201" value="OEM Specific Information"/>
+        <entry key="202" value="OEM Specific Information"/>
+        <entry key="203" value="OEM Specific Information"/>
+        <entry key="204" value="OEM Specific Information"/>
+        <entry key="205" value="OEM Specific Information"/>
+        <entry key="206" value="OEM Specific Information"/>
+        <entry key="207" value="OEM Specific Information"/>
+        <entry key="208" value="OEM Specific Information"/>
+        <entry key="209" value="OEM Specific Information"/>
+        <entry key="210" value="OEM Specific Information"/>
+        <entry key="211" value="OEM Specific Information"/>
+        <entry key="212" value="OEM Specific Information"/>
+        <entry key="213" value="OEM Specific Information"/>
+        <entry key="214" value="OEM Specific Information"/>
+        <entry key="215" value="OEM Specific Information"/>
+        <entry key="216" value="OEM Specific Information"/>
+        <entry key="217" value="OEM Specific Information"/>
+        <entry key="218" value="OEM Specific Information"/>
+        <entry key="219" value="OEM Specific Information"/>
+        <entry key="220" value="OEM Specific Information"/>
+        <entry key="221" value="OEM Specific Information"/>
+        <entry key="222" value="OEM Specific Information"/>
+        <entry key="223" value="OEM Specific Information"/>
+        <entry key="224" value="OEM Specific Information"/>
+        <entry key="225" value="OEM Specific Information"/>
+        <entry key="226" value="OEM Specific Information"/>
+        <entry key="227" value="OEM Specific Information"/>
+        <entry key="228" value="OEM Specific Information"/>
+        <entry key="229" value="OEM Specific Information"/>
+        <entry key="230" value="OEM Specific Information"/>
+        <entry key="231" value="OEM Specific Information"/>
+        <entry key="232" value="OEM Specific Information"/>
+        <entry key="233" value="OEM Specific Information"/>
+        <entry key="234" value="OEM Specific Information"/>
+        <entry key="235" value="OEM Specific Information"/>
+        <entry key="236" value="OEM Specific Information"/>
+        <entry key="237" value="OEM Specific Information"/>
+        <entry key="238" value="OEM Specific Information"/>
+        <entry key="239" value="OEM Specific Information"/>
+        <entry key="240" value="OEM Specific Information"/>
+        <entry key="241" value="OEM Specific Information"/>
+        <entry key="242" value="OEM Specific Information"/>
+        <entry key="243" value="OEM Specific Information"/>
+        <entry key="244" value="OEM Specific Information"/>
+        <entry key="245" value="OEM Specific Information"/>
+        <entry key="246" value="OEM Specific Information"/>
+        <entry key="247" value="OEM Specific Information"/>
+        <entry key="248" value="OEM Specific Information"/>
+        <entry key="249" value="OEM Specific Information"/>
+        <entry key="250" value="OEM Specific Information"/>
+        <entry key="251" value="OEM Specific Information"/>
+        <entry key="252" value="OEM Specific Information"/>
+        <entry key="253" value="OEM Specific Information"/>
+        <entry key="254" value="OEM Specific Information"/>
+        <entry key="255" value="OEM Specific Information"/>
+    </table>
+</strings>    

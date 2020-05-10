@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<strings>
+    <!-- 7.31 -->
+    <table name="Status" alias="Status" kind="Ordered" reference="7.31">
+        <entry key="0x00" value="Disabled"/>
+        <entry key="0x01" value="Enabled"/>
+    </table>
+</strings>

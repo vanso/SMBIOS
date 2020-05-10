@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<strings>
+    <!-- 7.24 -->
+    <table name="Status" alias="Status" kind="Ordered" reference="7.24">
+        <entry key="0x00" value="Disabled"/>
+        <entry key="0x01" value="Enabled"/>
+    </table>
+    <!-- 7.24 -->
+    <table name="WatchdogTimer" alias="WatchdogTimer" kind="Ordered" reference="7.24">
+        <entry key="0x00" value="Not Present"/>
+        <entry key="0x01" value="Present"/>
+    </table>
+    <!-- 7.24 -->
+    <table name="BootOption" alias="BootOption" kind="Ordered" reference="7.24">
+        <entry key="0x01" value="Operating System"/>
+        <entry key="0x02" value="System Utilities"/>
+        <entry key="0x03" value="Do Not Reboot"/>
+    </table>
+</strings>

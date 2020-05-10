@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<strings>
+    <!-- 7.23.1 -->
+    <table name="DeviceChemistry" alias="DeviceChemistry" kind="Ordered" reference="7.23.1">
+        <entry key="0x01" value="Other"/>
+        <entry key="0x02" value="Unknown"/>
+        <entry key="0x03" value="Lead Acid"/>
+        <entry key="0x04" value="Nickel Cadmium"/>
+        <entry key="0x05" value="Nickel metal hydride"/>
+        <entry key="0x06" value="Lithium-ion"/>
+        <entry key="0x07" value="Zinc air"/>
+        <entry key="0x08" value="Lithium Polymer"/>
+    </table>
+</strings>

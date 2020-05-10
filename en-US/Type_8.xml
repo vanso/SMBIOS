@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<strings>
+    <!-- 7.9.2-->
+    <table name="_ConnectorType" alias="InternalConnectorType,ExternalConnectorType" kind="Ordered" reference="7.9.2">
+        <entry key="0x00" value="None"/>
+        <entry key="0x01" value="Centronics"/>
+        <entry key="0x02" value="Mini Centronics"/>
+        <entry key="0x03" value="Proprietary"/>
+        <entry key="0x04" value="DB-25 male"/>
+        <entry key="0x05" value="DB-25 female"/>
+        <entry key="0x06" value="DB-15 male"/>
+        <entry key="0x07" value="DB-15 female"/>
+        <entry key="0x08" value="DB-9 male"/>
+        <entry key="0x09" value="DB-9 female"/>
+        <entry key="0x0A" value="RJ-11"/>
+        <entry key="0x0B" value="RJ-45"/>
+        <entry key="0x0C" value="50 Pin MiniSCSI"/>
+        <entry key="0x0D" value="Mini DIN"/>
+        <entry key="0x0E" value="Micro DIN"/>
+        <entry key="0x0F" value="PS/2"/>
+        <entry key="0x10" value="Infrared"/>
+        <entry key="0x11" value="HP-HIL"/>
+        <entry key="0x12" value="Access Bus (USB)"/>
+        <entry key="0x13" value="SSA SCSI"/>
+        <entry key="0x14" value="Circular DIN-8 male"/>
+        <entry key="0x15" value="Circular DIN-8 female"/>
+        <entry key="0x16" value="On Board IDE"/>
+        <entry key="0x17" value="On Board Floppy"/>
+        <entry key="0x18" value="9 Pin Dual Inline (pin 10 cut)"/>
+        <entry key="0x19" value="25 Pin Dual Inline (pin 26 cut)"/>
+        <entry key="0x1A" value="50 Pin Dual Inline"/>
+        <entry key="0x1B" value="68 Pin Dual Inline"/>
+        <entry key="0x1C" value="On Board Sound Input From CD-ROM"/>
+        <entry key="0x1D" value="Mini Centronics Type-14"/>
+        <entry key="0x1E" value="Mini Centronics Type-26"/>
+        <entry key="0x1F" value="Mini Jack (headphones)"/>
+        <entry key="0x20" value="BNC"/>
+        <entry key="0x21" value="IEEE 1394"/>
+        <entry key="0x23" value="SAS/SATA Plug Receptacle"/>
+        <entry key="0x24" value="USB Type-C Receptacle"/>
+
+        <entry key="0xA0" value="PC-98"/>
+        <entry key="0xA1" value="PC-98Hireso"/>
+        <entry key="0xA2" value="PC-H98"/>
+        <entry key="0xA3" value="PC-98Note"/>
+        <entry key="0xA4" value="PC-98Full"/>
+
+        <entry key="0xFF" value="Other"/>
+    </table>
+    <!-- 7.9.3 -->
+    <table name="PortType" alias="PortType" kind="Ordered" reference="7.9.3">
+        <entry key="0x00" value="None"/>
+        <entry key="0x01" value="Parallel Port XT/AT Compatible"/>
+        <entry key="0x02" value="Parallel Port PS/2"/>
+        <entry key="0x03" value="Parallel Port ECP"/>
+        <entry key="0x04" value="Parallel Port EPP"/>
+        <entry key="0x05" value="Parallel Port ECP/EPP"/>
+        <entry key="0x06" value="Serial Port XT/AT Compatible"/>
+        <entry key="0x07" value="Serial Port 16450 Compatible"/>
+        <entry key="0x08" value="Serial Port 16550 Compatible"/>
+        <entry key="0x09" value="Serial Port 16550A Compatible"/>
+        <entry key="0x0A" value="SCSI Port"/>
+        <entry key="0x0B" value="MIDI Port"/>
+        <entry key="0x0C" value="Joystick Port"/>
+        <entry key="0x0D" value="Keyboard Port"/>
+        <entry key="0x0E" value="Mouse Port"/>
+        <entry key="0x0F" value="SSA SCSI"/>
+        <entry key="0x10" value="USB"/>
+        <entry key="0x11" value="Firewire (IEEE P1394)"/>
+        <entry key="0x12" value="PCMCIA Type I"/>
+        <entry key="0x13" value="PCMCIA Type II"/>
+        <entry key="0x14" value="PCMCIA Type III"/>
+        <entry key="0x15" value="Cardbus"/>
+        <entry key="0x16" value="Access Bus Port"/>
+        <entry key="0x17" value="SCSI II"/>
+        <entry key="0x18" value="SCSI Wide"/>
+        <entry key="0x19" value="PC-98"/>
+        <entry key="0x1A" value="PC-98-Hireso"/>
+        <entry key="0x1B" value="PC-H98"/>
+        <entry key="0x1C" value="Video Port"/>
+        <entry key="0x1D" value="Audio Port"/>
+        <entry key="0x1E" value="Modem Port"/>
+        <entry key="0x1F" value="Network Port"/>
+        <entry key="0x20" value="SATA"/>
+        <entry key="0x21" value="SAS"/>
+        <entry key="0x22" value="MFDP (Multi-Function Display Port)"/>
+        <entry key="0x23" value="Thunderbolt"/>
+        <entry key="0xA0" value="8251 Compatible"/>
+        <entry key="0xA1" value="8251 FIFO Compatible"/>
+        <entry key="0xFF" value="Other"/>
+    </table>
+</strings>

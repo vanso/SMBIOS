@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<strings>
+    <!-- 7.6 -->
+   <table name="MemoryModuleVoltage" alias="MemoryModuleVoltage" kind="Array" reference="7.6">
+        <entry value="5 V"/>
+        <entry value="3.3 V"/>
+        <entry value="2.9 V"/>
+    </table>
+    <!-- 7.6.1 -->
+    <table name="ErrorDetectingMethod" alias="ErrorDetectingMethod" kind="Ordered" reference="7.6.1">
+        <entry key="0x01" value="Other"/>
+        <entry key="0x02" value="Unknown"/>
+        <entry key="0x03" value="None"/>
+        <entry key="0x04" value="8-bit Parity"/>
+        <entry key="0x05" value="32-bit ECC"/>
+        <entry key="0x06" value="64-bit ECC"/>
+        <entry key="0x07" value="128-bit ECC"/>
+        <entry key="0x08" value="CRC"/>
+    </table>
+    <!-- 7.6.2 -->
+    <table name="ErrorCorrectingCapabilities" alias="ErrorCorrectingCapabilities" kind="Array" reference="7.6.2">
+        <entry value="Other"/>
+        <entry value="Unknown"/>
+        <entry value="None"/>
+        <entry value="Single-Bit Error Correcting"/>
+        <entry value="Double-Bit Error Correcting"/>
+        <entry value="Error Scrubbing"/>
+    </table>
+    <!-- 7.6.3 -->
+    <table name="_Interleave" alias="SupportedInterleave,CurrentInterleave" kind="Ordered" reference="7.6.3">
+        <entry key="0x01" value="Other"/>
+        <entry key="0x02" value="Unknown"/>
+        <entry key="0x03" value="One-Way Interleave"/>
+        <entry key="0x04" value="Two-Way Interleave"/>
+        <entry key="0x05" value="Four-Way Interleave"/>
+        <entry key="0x06" value="Eight-Way Interleave"/>
+        <entry key="0x07" value="Sixteen-Way Interleave"/>
+    </table>
+    <!-- 7.6.4 -->
+    <table name="SupportedSpeeds" alias="SupportedSpeeds" kind="Array" reference="7.6.4">
+        <entry value="Other"/>
+        <entry value="Unknown"/>
+        <entry value="70 ns"/>
+        <entry value="60 ns"/>
+        <entry value="50 ns"/>
+    </table>
+    <!-- 7.7.1 -->
+    <table name="SupportedMemoryTypes" alias="SupportedMemoryTypes" kind="Array" reference="7.7.1">
+        <entry value="Other"/>
+        <entry value="Unknown"/>
+        <entry value="Standard"/>
+        <entry value="Fast Page Mode"/>
+        <entry value="EDO"/>
+        <entry value="Parity"/>
+        <entry value="ECC"/>
+        <entry value="SIMM"/>
+        <entry value="DIMM"/>
+        <entry value="Burst EDO"/>
+        <entry value="SDRAM"/>
+    </table>
+</strings>

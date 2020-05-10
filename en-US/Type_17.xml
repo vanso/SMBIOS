@@ -1,0 +1,112 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<strings>
+    <!-- 7.18 -->
+    <table name="MemoryErrorInformationHandle" alias="MemoryErrorInformationHandle" kind="Ordered" reference="7.18">
+        <entry key="0xFFFE" value="Not Provided"/>
+        <entry key="0xFFFF" value="No Error"/>
+    </table>
+    <!-- 7.18 -->
+    <table name="Size" alias="Size" kind="Ordered" reference="7.18">
+        <entry key="0x0000" value="No Module Installed"/>
+        <entry key="0xFFFF" value="Unknown"/>
+    </table>
+    <!-- 7.18 -->
+    <table name="DeviceSet" alias="DeviceSet" kind="Ordered" reference="7.18">
+        <entry key="0x00" value="None"/>
+        <entry key="0xFF" value="Unknown"/>
+    </table>
+    <!-- 7.18.1 -->
+    <table name="FormFactor" alias="FormFactor" kind="Ordered" reference="7.18.1">
+        <entry key="0x01" value="Other"/>
+        <entry key="0x02" value="Unknown"/>
+        <entry key="0x03" value="SIMM"/>
+        <entry key="0x04" value="SIP"/>
+        <entry key="0x05" value="Chip"/>
+        <entry key="0x06" value="DIP"/>
+        <entry key="0x07" value="ZIP"/>
+        <entry key="0x08" value="Proprietary Card"/>
+        <entry key="0x09" value="DIMM"/>
+        <entry key="0x0A" value="TSOP"/>
+        <entry key="0x0B" value="Row of chips"/>
+        <entry key="0x0C" value="RIMM"/>
+        <entry key="0x0D" value="SODIMM"/>
+        <entry key="0x0E" value="SRIMM"/>
+        <entry key="0x0F" value="FB-DIMM"/>
+        <entry key="0x10" value="Die"/>
+    </table>
+    <!-- 7.18.2 -->
+    <table name="MemoryType" alias="MemoryType" kind="Ordered" reference="7.18.2">
+        <entry key="0x01" value="Other"/>
+        <entry key="0x02" value="Unknown"/>
+        <entry key="0x03" value="DRAM"/>
+        <entry key="0x04" value="EDRAM"/>
+        <entry key="0x05" value="VRAM"/>
+        <entry key="0x06" value="SRAM"/>
+        <entry key="0x07" value="RAM"/>
+        <entry key="0x08" value="ROM"/>
+        <entry key="0x09" value="FLASH"/>
+        <entry key="0x0A" value="EEPROM"/>
+        <entry key="0x0B" value="FEPROM"/>
+        <entry key="0x0C" value="EPROM"/>
+        <entry key="0x0D" value="CDRAM"/>
+        <entry key="0x0E" value="3DRAM"/>
+        <entry key="0x0F" value="SDRAM"/>
+        <entry key="0x10" value="SGRAM"/>
+        <entry key="0x11" value="RDRAM"/>
+        <entry key="0x12" value="DDR"/>
+        <entry key="0x13" value="DDR2"/>
+        <entry key="0x14" value="DDR2 FB-DIMM"/>
+
+        <entry key="0x18" value="DDR3"/>
+        <entry key="0x19" value="FBD2"/>
+        <entry key="0x1A" value="DDR4"/>
+        <entry key="0x1B" value="LPDDR"/>
+        <entry key="0x1C" value="LPDDR2"/>
+        <entry key="0x1D" value="LPDDR3"/>
+        <entry key="0x1E" value="LPDDR4"/>
+        <entry key="0x1F" value="Logical non-volatile device"/>
+        <entry key="0x20" value="HBM (High Bandwidth Memory)"/>
+        <entry key="0x21" value="HBM2 (High Bandwidth Memory Generation 2)"/>
+    </table>
+    <!-- 7.18.3 -->
+    <table name="TypeDetail" alias="TypeDetail" kind="Array" reference="7.18.3">
+        <entry value="Reserved"/>
+        <entry value="Other"/>
+        <entry value="Unknown"/>
+        <entry value="Fast-paged"/>
+        <entry value="Static column"/>
+        <entry value="Pseudo-static"/>
+        <entry value="RAMBUS"/>
+        <entry value="Synchronous"/>
+        <entry value="CMOS"/>
+        <entry value="EDO"/>
+        <entry value="Window DRAM"/>
+        <entry value="Cache DRAM"/>
+        <entry value="Non-volatile"/>
+        <entry value="Registered (Buffered)"/>
+        <entry value="Unbuffered (Unregistered)"/>
+        <entry value="LRDIMM"/>
+    </table>
+    <!-- 7.18.6 -->
+    <table name="MemoryTechnology" alias="MemoryTechnology" kind="Ordered" reference="7.18.6">
+        <entry key="0x00" value="Not Defined"/>
+        <entry key="0x01" value="Other"/>
+        <entry key="0x02" value="Unknown"/>
+        <entry key="0x03" value="DRAM"/>
+        <entry key="0x04" value="NVDIMM-N"/>
+        <entry key="0x05" value="NVDIMM-F"/>
+        <entry key="0x06" value="NVDIMM-P"/>
+        <entry key="0x07" value="Intel Optane DC Persistent Memory"/>
+    </table>
+    <!-- 7.18.7 -->
+    <table name="MemoryOperatingModeCapability" alias="MemoryOperatingModeCapability" kind="Array" reference="7.18.7">
+        <entry value="Reserved"/>
+        <entry value="Other"/>
+        <entry value="Unknown"/>
+        <entry value="Volatile memory"/>
+        <entry value="Static column"/>
+        <entry value="Byte-accessible persistent memory"/>
+        <entry value="RAMBUS"/>
+        <entry value="Block-accessible persistent memory"/>
+    </table>
+</strings>

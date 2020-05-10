@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<strings>
+    <!-- 7.33.1 -->
+     <table name="Status" alias="Status" kind="Ordered" reference="7.33.1">
+        <entry key="0x00" value="No errors detected"/>
+        <entry key="0x01" value="No bootable media"/>
+        <entry key="0x02" value="Firmware-detected hardware failure"/>
+        <entry key="0x03" value="Operating system-detected hardware failure"/>
+        <entry key="0x04" value="User-requested boot"/>
+        <entry key="0x05" value="System security violation"/>
+        <entry key="0x06" value="Previously-requested image"/>
+        <entry key="0x07" value="System watchdog timer expired"/>
+        <entry key="0x80" value="OEM-specific"/>
+        <entry key="0xC0" value="Product-specific"/>  
+    </table>
+</strings>

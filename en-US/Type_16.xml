@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<strings>
+    <!-- 7.17 -->
+    <table name="MemoryErrorInformationHandle" alias="MemoryErrorInformationHandle" kind="Ordered" reference="7.17">
+        <entry key="0xFFFE" value="Not Provided"/>
+        <entry key="0xFFFF" value="No Error"/>
+    </table>
+    <!-- 7.17.1 -->
+    <table name="Location" alias="Location" kind="Ordered" reference="7.17.1">
+        <entry key="0x01" value="Other"/>
+        <entry key="0x02" value="Unknown"/>
+        <entry key="0x03" value="System board or motherboard"/>
+        <entry key="0x04" value="ISA add-on card"/>
+        <entry key="0x05" value="EISA add-on card"/>
+        <entry key="0x06" value="PCI add-on card"/>
+        <entry key="0x07" value="MCA add-on card"/>
+        <entry key="0x08" value="PCMCIA add-on card"/>
+        <entry key="0x09" value="Proprietary add-on card"/>
+        <entry key="0x0A" value="NuBus"/>
+        <entry key="0xA0" value="PC-98/C20 add-on card"/>
+        <entry key="0xA1" value="PC-98/C24 add-on card"/>
+        <entry key="0xA2" value="PC-98/E add-on card"/>
+        <entry key="0xA3" value="PC-98/Local bus add-on card"/>
+    </table>
+    <!-- 7.17.2 -->
+    <table name="Use" alias="Use" kind="Ordered" reference="7.17.2">
+        <entry key="0x01" value="Other"/>
+        <entry key="0x02" value="Unknown"/>
+        <entry key="0x03" value="System memory"/>
+        <entry key="0x04" value="Video memory"/>
+        <entry key="0x05" value="Flash memory"/>
+        <entry key="0x06" value="Non-volatile RAM"/>
+        <entry key="0x07" value="Cache memory"/>
+    </table>
+    <!-- 7.17.3 -->
+    <table name="MemoryErrorCorrection" alias="MemoryErrorCorrection" kind="Ordered" reference="7.17.3">
+        <entry key="0x01" value="Other"/>
+        <entry key="0x02" value="Unknown"/>
+        <entry key="0x03" value="None"/>
+        <entry key="0x04" value="Parity"/>
+        <entry key="0x05" value="Single-bit ECC"/>
+        <entry key="0x06" value="Multi-bit ECC"/>
+        <entry key="0x07" value="CRC"/>
+    </table>
+</strings>

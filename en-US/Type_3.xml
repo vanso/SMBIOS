@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<strings>
+    <!-- 7.4 -->
+    <table name="Lock" alias="Lock" kind="Ordered" reference="7.4">
+        <entry key="0x00" value="Not Present"/>
+        <entry key="0x01" value="Present"/>
+    </table>
+    <!-- 7.4.1 -->
+    <table name="ChassisType" alias="ChassisType" kind="Ordered" reference="7.4.1">
+        <entry key="0x01" value="Other"/>
+        <entry key="0x02" value="Unknown"/>
+        <entry key="0x03" value="Desktop"/>
+        <entry key="0x04" value="Low Profile Desktop"/>
+        <entry key="0x05" value="Pizza Box"/>
+        <entry key="0x06" value="Mini Tower"/>
+        <entry key="0x07" value="Tower"/>
+        <entry key="0x08" value="Portable"/>
+        <entry key="0x09" value="Laptop"/>
+        <entry key="0x0A" value="Notebook"/>
+        <entry key="0x0B" value="Hand Held"/>
+        <entry key="0x0C" value="Docking Station"/>
+        <entry key="0x0D" value="All In One"/>
+        <entry key="0x0E" value="Sub Notebook"/>
+        <entry key="0x0F" value="Space-saving"/>
+        <entry key="0x10" value="Lunch Box"/>
+        <entry key="0x11" value="Main Server Chassis"/>
+        <entry key="0x12" value="Expansion Chassis"/>
+        <entry key="0x13" value="Sub Chassis"/>
+        <entry key="0x14" value="Bus Expansion Chassis"/>
+        <entry key="0x15" value="Peripheral Chassis"/>
+        <entry key="0x16" value="RAID Chassis"/>
+        <entry key="0x17" value="Rack Mount Chassis"/>
+        <entry key="0x18" value="Sealed-case PC"/>
+        <entry key="0x19" value="Multi-system chassis"/>
+        <entry key="0x1A" value="Compact PCI"/>
+        <entry key="0x1B" value="Advanced TCA"/>
+        <entry key="0x1C" value="Blade"/>
+        <entry key="0x1D" value="Blade Enclosing"/>
+        <entry key="0x1E" value="Tablet"/>
+        <entry key="0x1F" value="Convertible"/>
+        <entry key="0x20" value="Detachable"/>
+        <entry key="0x21" value="IoT Gateway"/>
+        <entry key="0x22" value="Embedded PC"/>
+        <entry key="0x23" value="Mini PC"/>
+        <entry key="0x24" value="Stick PC"/>
+    </table>
+    <!-- 7.4.2 -->
+    <table name="_State" alias="BootUpState,PowerSupplyState,ThermalState" kind="Ordered" reference="7.4.2">
+        <entry key="0x01" value="Other"/>
+        <entry key="0x02" value="Unknown"/>
+        <entry key="0x03" value="Safe"/>
+        <entry key="0x04" value="Warning"/>
+        <entry key="0x05" value="Critical"/>
+        <entry key="0x06" value="Non-recoverable"/>
+    </table>
+    <!-- 7.4.3 -->
+    <table name="SecurityStatus" alias="SecurityStatus" kind="Ordered" reference="7.4.3">
+        <entry key="0x01" value="Other"/>
+        <entry key="0x02" value="Unknown"/>
+        <entry key="0x03" value="None"/>
+        <entry key="0x04" value="External Interface Locked Out"/>
+        <entry key="0x05" value="External Interface Enabled"/>
+    </table>
+</strings>

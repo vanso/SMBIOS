@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<strings>
+    <!-- 7.1.1 -->
+    <table name="Characteristics" alias="Characteristics" kind="Array" reference="7.1.1">
+        <entry value="Reserved"/>
+        <entry value="Reserved"/>
+        <entry value="Unknown"/>
+        <entry value="BIOS Characteristics are not supported"/>
+        <entry value="ISA is supported"/>
+        <entry value="MCA is supported"/>
+        <entry value="EISA is supported"/>
+        <entry value="PCI is supported"/>
+        <entry value="PC card (PCMCIA) is supported"/>
+        <entry value="Plug and Play is supported"/>
+        <entry value="APM is supported"/>
+        <entry value="BIOS is upgradeable (Flash)"/>
+        <entry value="BIOS shadowing is allowed"/>
+        <entry value="VL-VESA is supported"/>
+        <entry value="ESCD support is available"/>
+        <entry value="Boot from CD is supported"/>
+        <entry value="Selectable boot is supported"/>
+        <entry value="BIOS ROM is socketed"/>
+        <entry value="Boot from PC card (PCMCIA) is supported"/>
+        <entry value="EDD specification is supported"/>
+        <entry value="Int 13h — Japanese floppy for NEC 9800 1.2 MB (3.5&quot;, 1K bytes/sector, 360 RPM) is supported"/>
+        <entry value="Int 13h — Japanese floppy for Toshiba 1.2 MB (3.5&quot;, 360 RPM) is supported"/>
+        <entry value="Int 13h — 5.25&quot; / 360 kB floppy services are supported"/>
+        <entry value="Int 13h — 5.25&quot; / 1.2 MB floppy services are supported"/>
+        <entry value="Int 13h — 3.5&quot; / 720 kB floppy services are supported"/>
+        <entry value="Int 13h — 3.5&quot; / 2.88 MB floppy services are supported"/>
+        <entry value="Int 5h, print screen service is supported"/>
+        <entry value="Int 9h, 8042 keyboard services are supported"/>
+        <entry value="Int 14h, serial services are supported"/>
+        <entry value="Int 17h, printer services are supported"/>
+        <entry value="Int 10h, CGA/Mono Video Services are supported"/>
+        <entry value="NEC PC-98"/>
+    </table>
+    <!-- 7.1.1 -->
+    <table name="ReservedCharacteristics" alias="ReservedCharacteristics" kind="Array" reference="7.1.1">
+        <entry value="BIOS Vendor Specific Information"/>
+        <entry value="BIOS Vendor Specific Information"/>
+        <entry value="BIOS Vendor Specific Information"/>
+        <entry value="BIOS Vendor Specific Information"/>
+        <entry value="BIOS Vendor Specific Information"/>
+        <entry value="BIOS Vendor Specific Information"/>
+        <entry value="BIOS Vendor Specific Information"/>
+        <entry value="BIOS Vendor Specific Information"/>
+        <entry value="BIOS Vendor Specific Information"/>
+        <entry value="BIOS Vendor Specific Information"/>
+        <entry value="BIOS Vendor Specific Information"/>
+        <entry value="BIOS Vendor Specific Information"/>
+        <entry value="BIOS Vendor Specific Information"/>
+        <entry value="BIOS Vendor Specific Information"/>
+        <entry value="BIOS Vendor Specific Information"/>
+        <entry value="BIOS Vendor Specific Information"/>
+        <entry value="System Vendor Specific Information"/>
+        <entry value="System Vendor Specific Information"/>
+        <entry value="System Vendor Specific Information"/>
+        <entry value="System Vendor Specific Information"/>
+        <entry value="System Vendor Specific Information"/>
+        <entry value="System Vendor Specific Information"/>
+        <entry value="System Vendor Specific Information"/>
+        <entry value="System Vendor Specific Information"/>
+        <entry value="System Vendor Specific Information"/>
+        <entry value="System Vendor Specific Information"/>
+        <entry value="System Vendor Specific Information"/>
+        <entry value="System Vendor Specific Information"/>
+        <entry value="System Vendor Specific Information"/>
+        <entry value="System Vendor Specific Information"/>
+        <entry value="System Vendor Specific Information"/>
+        <entry value="System Vendor Specific Information"/>
+    </table>
+    <!-- 7.1.2.1 -->
+    <table name="CharacteristicsByte1" alias="CharacteristicsByte1" kind="Array" reference="7.1.2.1">
+        <entry value="ACPI is supported"/>
+        <entry value="USB Legacy is supported"/>
+        <entry value="AGP is supported"/>
+        <entry value="I2O boot is supported"/>
+        <entry value="LS-120 SuperDisk boot is supported"/>
+        <entry value="ATAPI ZIP drive boot is supported"/>
+        <entry value="1394 boot is supported"/>
+        <entry value="Smart battery is supported"/>
+    </table>
+    <!-- 7.1.2.2 -->
+    <table name="CharacteristicsByte2" alias="CharacteristicsByte2" kind="Array" reference="7.1.2.2">
+        <entry value="BIOS Boot Specification is supported"/>
+        <entry value="Function key-initiated network service boot is supported"/>
+        <entry value="Enable targeted content distribution"/>
+        <entry value="UEFI Specification is supported"/>
+        <entry value="SMBIOS table describes a virtual machine"/>
+        <entry value="Reserved"/>
+        <entry value="Reserved"/>
+        <entry value="Reserved"/>
+    </table>
+</strings>
