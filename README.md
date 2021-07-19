@@ -71,6 +71,7 @@ The following types are not currently fully supported :
 
 | Type | Name                                 |
 |-----:|:-------------------------------------|
+| 25   | System Power Controls                |
 | 31   | Boot Integrity Services              |
 | 37   | Memory Channel                       |
 | 38   | IPMI Device                          |
