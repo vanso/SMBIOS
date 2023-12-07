@@ -80,6 +80,6 @@ The following types are not currently fully supported :
 
 ## License
 
-This module is released under the terms of the GNU General Public License (GPL), Version 3.
+This module is released under the terms of the GNU General Public License (GPL), Version 2.
 
 It uses parts of the [DMI Decode](https://www.nongnu.org/dmidecode/) project, also available on [GitHub](https://github.com/mirror/dmidecode).
