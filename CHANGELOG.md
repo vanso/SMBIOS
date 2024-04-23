@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.8] - 2020-05-10
+## [0.8] - 2020-05-11
 
 - First public release.
 
