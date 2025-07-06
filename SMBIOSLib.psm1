@@ -2,7 +2,7 @@
 
 SMBIOSLib
 
-Copyright (C) 2020 Vincent Anso
+Copyright (C) 2020-2025 Vincent Anso
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -21,7 +21,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 This program was inspired by DMI Decode.
 
 Copyright (C) 2000-2002 Alan Cox <alan@redhat.com>
-Copyright (C) 2002-2020 Jean Delvare <jdelvare@suse.de>
+Copyright (C) 2002-2024 Jean Delvare <jdelvare@suse.de>
 
 https://www.nongnu.org/dmidecode/
 
@@ -31,6 +31,9 @@ using namespace System.Collections
 using namespace System.Collections.Generic
 using namespace System.Collections.Specialized
 using namespace System.Globalization
+using namespace System.Text
+using namespace System.Net
+using namespace System.Net.NetworkInformation
 
 #
 # Used for compatibility with Windows PowerShell 5.x 
@@ -52,6 +55,8 @@ class Settings
     static [TemperatureUnit]$TemperatureUnit
     static [Boolean]$Verbose
     static [Boolean]$Expand
+    static [Boolean]$HideHeader
+    static [Boolean]$NoEmphasis
 }
 
 #
@@ -63,11 +68,15 @@ class Localization
     
     static Localization()
     {
-        $localizableFilePath = "$PSScriptRoot/en-US/Strings.txt"
-        
-        if (Test-Path -Path $localizableFilePath)
+        $cultureName = (Get-Culture).Name
+
+        if ( Test-Path -Path $(Join-Path -Path $PSScriptRoot -ChildPath $cultureName) )
         {
-            [Localization]::LocalisedStrings = ConvertFrom-StringData -StringData (Get-Content -Path $localizableFilePath -Raw)
+            [Localization]::LocalisedStrings = Import-LocalizedData -UICulture $cultureName
+        }
+        else
+        {
+            [Localization]::LocalisedStrings = Import-LocalizedData -UICulture "en-US"
         }
     }
     
@@ -79,9 +88,18 @@ class Localization
         }
         else
         {
-            return "Localized string not found"
+            return "Localized string not found for $string."
         }
     }
+}
+
+function Get-LocalizedString
+{
+    param(
+        [String]$String
+    )
+
+    [Localization]::LocalizedString($String)
 }
 
 #
@@ -95,18 +113,22 @@ class BitField
     }
     
     static [int]Extract([Object]$bitField, [int]$offset, [int]$length)
-    {
+    {    
         return (($bitField -shr $offset) -band (1 -shl ($length)) -1)
     }
 
     static [UInt32]LowUInt64([UInt64]$int)
     {
-        return $int -band 0x000000007FFFFFFF
-    }
+        $bytes = [BitConverter]::GetBytes($int)
+
+        return [BitConverter]::ToUInt32($bytes, 0)
+    }                               
 
     static [UInt32]HighUInt64([UInt64]$int)
-    {
-        return ($int -shr 32) -band 0xFFFFFFFF
+    {  
+        $bytes = [BitConverter]::GetBytes($int)
+        
+        return [BitConverter]::ToUInt32($bytes, 2)
     }
 }
 
@@ -138,30 +160,26 @@ class BitFieldConverter
     }
 
     #
-    # ToStringArray
+    # ToArray
     #
-    static [Array]ToStringArray([Object]$bitField, [Array]$names)
+    static [Array]ToArray([Object]$bitField, [Array]$names)
     {
-        return [BitFieldConverter]::ToStringArray($bitField, [BitFieldConverter]::Length($bitField), $names)
+        return [BitFieldConverter]::ToArray($bitField, [BitFieldConverter]::Length($bitField), $names)
     }
 
-    static [Array]ToStringArray([Object]$bitField, [int]$length, [Array]$names)
-    {
+    static [Array]ToArray([Object]$bitField, [int]$length, [Array]$names)
+    {        
         $list = [ArrayList]::new()
 
         for ($i = 0; $i -le $length - 1 ; $i++)
         {
             if ($bitField -band (1 -shl $i))
-            {         
+            {                         
                 $list.Add($names[$i]) | Out-Null
-            }
-            else
-            {
-                $list.Add($null) | Out-Null
             }
         }
 
-        return $list.ToArray()
+        return $list
     }
 
     static [StringValue]ToStringValue([Object]$bitField, [String]$dictionaryName, [ref]$classRef)
@@ -185,6 +203,11 @@ class BitFieldConverter
 
     static [StringValue]ToStringValue([Object]$bitField, [int]$length, [Array]$names)
     {
+        if ($bitField -eq 0)
+        {          
+            return [StringValue]::new(-1, $(Get-LocalizedString "NONE"))
+        }
+        
         for ($i = 0; $i -le $length - 1 ; $i++)
         {
             if ($bitField -band (1 -shl $i))
@@ -199,17 +222,17 @@ class BitFieldConverter
     #
     # ToStringValueArray
     #
-    static [Array]ToStringValueArray([Object]$bitField, [String]$dictionaryName, [ref]$classRef)
+    static [StringValue[]]ToStringValueArray([Object]$bitField, [String]$dictionaryName, [ref]$classRef)
     {    
         return [BitFieldConverter]::ToStringValueArray($bitField, [BitFieldConverter]::Length($bitField), $dictionaryName, 0, $classRef)
     }
 
-    static [Array]ToStringValueArray([Object]$bitField, [int]$length, [String]$dictionaryName, [ref]$classRef)
+    static [StringValue[]]ToStringValueArray([Object]$bitField, [int]$length, [String]$dictionaryName, [ref]$classRef)
     {
         return [BitFieldConverter]::ToStringValueArray($bitField, $length, $dictionaryName, 0, $classRef)
     }
 
-    static [Array]ToStringValueArray([Object]$bitField, [int]$length, [String]$dictionaryName, [int]$offset, [ref]$classRef)
+    static [StringValue[]]ToStringValueArray([Object]$bitField, [int]$length, [String]$dictionaryName, [int]$offset, [ref]$classRef)
     {     
         $class = $classRef.Value
 
@@ -218,25 +241,46 @@ class BitFieldConverter
         return [BitFieldConverter]::ToStringValueArray($bitField, $length, $names, $offset)
     }
 
-    static [Array]ToStringValueArray([Object]$bitField, [Array]$names)
+    static [StringValue[]]ToStringValueArray([Object]$bitField, [Array]$names)
     {
         return [BitFieldConverter]::ToStringValueArray($bitField, [BitFieldConverter]::Length($bitField), $names, 0)
     }
 
-    static [Array]ToStringValueArray([Object]$bitField, [int]$length, [Array]$names)
+    static [StringValue[]]ToStringValueArray([Object]$bitField, [int]$length, [Array]$names)
     {
         return [BitFieldConverter]::ToStringValueArray($bitField, $length, $names, 0)
     }
 
-    static [Array]ToStringValueArray([Object]$bitField, [int]$length, [Array]$names, [int]$offset)
+    static [StringValue[]]ToStringValueArray([Object]$bitField, [int]$length, [Array]$names, [int]$offset)
     {
+        if ($bitField -eq 0)
+        {
+            return [StringValue]::new(-1, $(Get-LocalizedString "NONE"))
+        }
+        
         $list = [ArrayList]::new()
         
+        $expand = $false
+
         for ($i = 0; $i -le $length - 1 ; $i++)
         {
-            if ($bitField -band (1 -shl $i))
-            {         
-                $list.Add( [StringValue]::new($i + $offset, $names[$i]) ) | Out-Null
+            if ($expand)
+            {
+                if ($bitField -band (1 -shl $i))
+                {         
+                    $list.Add( [StringValue]::new($i + $offset, $names[$i], $true) ) | Out-Null
+                }
+                else
+                {
+                    $list.Add( [StringValue]::new($i + $offset, $names[$i], $false) ) | Out-Null 
+                }
+            }
+            else
+            {
+                if ($bitField -band (1 -shl $i))
+                {         
+                    $list.Add( [StringValue]::new($i + $offset, $names[$i]) ) | Out-Null
+                }
             }
         }
 
@@ -315,13 +359,13 @@ class BitFieldConverter
 
 class SMBString : PSObject
 { 
-    SMBString([Object]$value, [Byte]$index) : base($value)
+    SMBString([Object]$value, [Byte]$index)
     {
         if ( [String]::IsNullOrEmpty($value) )
         {
             $this | Add-Member Value $null
 
-            $this | Add-Member DisplayValue $([Localization]::LocalizedString("NOT_SPECIFIED"))
+            $this | Add-Member DisplayValue "$(Get-LocalizedString "N/A")"
         }
         else
         {
@@ -333,16 +377,88 @@ class SMBString : PSObject
         $this | Add-Member Index $index
     }
 
+    SMBString([String]$string)
+    {
+        $this | Add-Member Value $string
+
+        $this | Add-Member DisplayValue $string
+
+        $this | Add-Member Index -1
+    }
+
     [String]ToString()
     {
         if ([Settings]::Expand)
         {                       
-            return [String]::Format("Strings[{0}] ({1})", $this.Index, $this.DisplayValue)
+            if ([Settings]::NoEmphasis)
+            {
+                return [String]::Format("Strings[{0}] ({1})", $this.Index, $this.DisplayValue)
+            }
+            else 
+            {
+                return [char]0x001b + "[1m" + [String]::Format("Strings[{0}] ({1})", $this.Index, $this.DisplayValue) + [char]0x001b + "[0m"
+            }
         }
         else
         {       
-            return $this.DisplayValue
+            $allWhiteSpace = [Linq.Enumerable]::All([char[]]$this.DisplayValue, [Func[char,bool]]{ [char]::IsWhiteSpace($args[0]) })
+            
+            if ( ($allWhiteSpace) -or ($this.DisplayValue.StartsWith(" ")) -or ($this.DisplayValue.EndsWith(" ")) )
+            {
+                if ([Settings]::NoEmphasis)
+                {
+                    return "`"" + "$($this.DisplayValue)" + "`""
+                }
+                else 
+                {
+                    return [char]0x001b + "[1m" + "`"" + "$($this.DisplayValue)" + "`"" + [char]0x001b + "[0m"
+                }
+                
+            }
+            else 
+            {
+                if ([Settings]::NoEmphasis)
+                {
+                    return $($this.DisplayValue)
+                }
+                else
+                {
+                    return [char]0x001b + "[1m" + "$($this.DisplayValue)" + [char]0x001b + "[0m" 
+                }
+            }
         }
+    }
+}
+
+class SMBHandle
+{
+    hidden [UInt16]$Value
+    
+    SMBHandle()
+    {
+        $this.Value = [UInt16]::MaxValue
+    }
+    
+    SMBHandle([UInt16]$value)
+    {
+        $this.Value = $value
+    }
+
+    [String]ToString()
+    {
+        if ($this.Value -eq [UInt16]::MaxValue)
+        {
+            return Get-LocalizedString "N/A"
+        }
+        else 
+        {
+            return [String]::Format("0x{0:X4}", $this.Value)
+        }
+    }
+
+    static [UInt16]op_Implicit([SMBHandle]$value)
+    {
+        return $value.Value
     }
 }
 
@@ -357,14 +473,16 @@ class StringValue : IFormattable
 
     StringValue()
     {
-        $this.DisplayValue = [Localization]::LocalizedString("NOT_AVAILABLE")
+        $this.Value = $null
+        $this.DisplayValue = Get-LocalizedString "NOT_AVAILABLE"
     }
     
     StringValue([Object]$value)
     {   
-        if ($value -eq $null)
+        if ($null -eq $value)
         {
-            $this.DisplayValue = [Localization]::LocalizedString("NOT_AVAILABLE")
+            $this.Value = $value
+            $this.DisplayValue = Get-LocalizedString "NOT_AVAILABLE"
         }
         else
         {
@@ -376,14 +494,14 @@ class StringValue : IFormattable
 
     StringValue([Object]$value, [String]$format)
     {
-        if ($value -eq $null)
+        if ($null -eq $value)
         {
-            $this.DisplayValue = [Localization]::LocalizedString("NOT_AVAILABLE")
+            $this.DisplayValue = Get-LocalizedString "NOT_AVAILABLE"
         }
         else
         {
             $this.Value = $value
-
+    
             $this.DisplayValue = [String]::Format($format, $this.Value)
 
             $this.Resolved = $true
@@ -396,14 +514,24 @@ class StringValue : IFormattable
         
         $exception = $false
         
-        if ($value -eq $exceptionValue)
+        if ($exceptionValue -is [Array])
         {
-            $exception = $true
+            if ($exceptionValue -contains $value)
+            {
+                $exception = $true
+            }
         }
-
+        else
+        {
+            if ($value -eq $exceptionValue)
+            {
+                $exception = $true
+            }
+        }
+        
         if ($exception)
         {
-            $this.Displayvalue = [Localization]::LocalizedString($exceptionString)
+            $this.Displayvalue = Get-LocalizedString $exceptionString
         }
         else
         {
@@ -431,17 +559,17 @@ class StringValue : IFormattable
 
         if ($exception)
         {
-            $this.Displayvalue = [Localization]::LocalizedString($exceptionString)
+            $this.Displayvalue = Get-LocalizedString $exceptionString
         }
         else
         {
             if ( [String]::IsNullOrEmpty($format) )
             {
-                $this.DisplayValue = $effectiveValue
+                $this.DisplayValue = $value
             }
             else
             {
-                $this.DisplayValue = [String]::Format($format, $effectiveValue)
+                $this.DisplayValue = [String]::Format($format, $value)
             }
         }
     }
@@ -466,7 +594,7 @@ class StringValue : IFormattable
 
         if ($exception)
         {
-            $this.Displayvalue = [Localization]::LocalizedString($exceptionString)
+            $this.Displayvalue = Get-LocalizedString $exceptionString
         }
         else
         {
@@ -496,7 +624,7 @@ class StringValue : IFormattable
         }
         else 
         {                
-            $outOfSpecification = [Localization]::LocalizedString("OUT_OF_SPEC")
+            $outOfSpecification = Get-LocalizedString "OUT_OF_SPEC"
                 
             $this.DisplayValue = [String]::Format("{0} ($outOfSpecification)", $value)
         }
@@ -520,14 +648,32 @@ class StringValue : IFormattable
         }
         else 
         {                
-            $outOfSpecification = [Localization]::LocalizedString("OUT_OF_SPEC")
+            $outOfSpecification = Get-LocalizedString "OUT_OF_SPEC"
                 
             $this.DisplayValue = [String]::Format("{0} ($outOfSpecification)", $value)
         }
+
+        if ((-not ($names.[int]0)) -and ($value -eq 0))
+        {
+            $this.Resolved = $false
+            
+            $this.DisplayValue = Get-LocalizedString "NONE"
+        }
+
+    }
+
+    [String]ToString()
+    {
+        return $this.ToString("G", [CultureInfo]::CurrentCulture);
+    }
+ 
+    [String]ToString([String]$format)
+    {
+        return $this.ToString($format, [CultureInfo]::CurrentCulture);
     }
 
     [String]ToString([String]$format, [IFormatProvider]$formatProvider)
-    {   
+    {          
         if (-Not ($formatProvider))
         {
             $formatProvider = [CultureInfo]::CurrentCulture
@@ -539,7 +685,7 @@ class StringValue : IFormattable
             {
                 $formattedValue = $this.Value
                 
-                if ($this.Value -eq $null)
+                if ($null -eq $this.Value)
                 {
                     $formattedValue = "`$null"
                 }
@@ -568,6 +714,31 @@ class StringValue : IFormattable
     }
 }
 
+class StringValueArray : StringValue
+{
+    [Boolean]$Supported
+
+   StringValueArray([Object]$value, [String]$name, [Boolean]$supported)
+   {   
+        if ([String]::IsNullOrEmpty($name))
+        {
+          $outOfSpecification = Get-LocalizedString "OUT_OF_SPEC"
+                
+          $this.DisplayValue = [String]::Format("{0} ($outOfSpecification)", $value)
+
+          $this.Value = $value
+        }
+        else
+        {
+            $this.Value = $value
+
+            $this.DisplayValue = $name
+
+            $this.Supported = $supported
+        }
+    }
+}
+
 #
 # Data storage size units.
 #
@@ -583,34 +754,94 @@ enum MemorySizeUnit
     ZB
     YB
     Auto
+    None
+    Unknown
 }
 
 class StringValueMemorySize : StringValue
 {
-    [Object]$Value
-    [String]$DisplayValue
     [Object]$SizeInBytes
     [MemorySizeUnit]$Unit
 
-    StringValueMemorySize([Object]$sizeInBytes, [MemorySizeUnit]$Unit) : base()
-    { 
-        $dataSizes = @(1, 1kb, 1mb, 1gb, 1tb, 1pb, 1.15292150460685E+18, 1.18059162071741E+21, 1.20892581961463E+24)
+    static [MemorySizeUnit]AdjustSizeUnit([Object]$sizeInBytes)
+    {
+        # Useless therefore essential
+        $1eb = 1.15292150460685E+18
+        $1zb = 1.18059162071741E+21
+        $1yb = 1.20892581961463E+24
         
+        if ($sizeInBytes -ge $1yb)
+        {
+            return [MemorySizeUnit]::YB
+        }
+        elseif ($sizeInBytes -ge $1zb)
+        {
+            return [MemorySizeUnit]::ZB
+        }
+        elseif ($sizeInBytes -ge $1eb)
+        {
+            return [MemorySizeUnit]::EB
+        }
+        elseif ($sizeInBytes -ge 1pb)
+        {
+            return [MemorySizeUnit]::PB
+        }
+        elseif ($sizeInBytes -ge 1tb)
+        {
+            return [MemorySizeUnit]::TB
+        }
+        elseif ($sizeInBytes -ge 1gb)
+        {
+            return [MemorySizeUnit]::GB
+        }
+        elseif ($sizeInBytes -ge 1mb)
+        {
+            return [MemorySizeUnit]::MB
+        }
+        elseif ($sizeInBytes -ge 1kb)
+        {
+            return [MemorySizeUnit]::kB
+        }
+        else
+        {
+            return [MemorySizeUnit]::B
+        }
+    }
+
+    StringValueMemorySize([Object]$sizeInBytes, [MemorySizeUnit]$unit) : base()
+    { 
+        $1eb = 1.15292150460685E+18
+        $1zb = 1.18059162071741E+21
+        $1yb = 1.20892581961463E+24
+
+        $dataSizes = @(1, 1kb, 1mb, 1gb, 1tb, 1pb, $1eb, $1zb, $1yb)
+
         if ([Settings]::MemorySizeUnit -eq [MemorySizeUnit]::Auto)
         {
-            $_Unit = $unit
+            if ($unit -eq [MemorySizeUnit]::Auto)
+            {
+                $_unit = [StringValueMemorySize]::AdjustSizeUnit($sizeInBytes)
+
+                $localizedUnit = Get-LocalizedString $_unit
             
-            $localizedUnit = [Localization]::LocalizedString($unit)
+                $dataSize = $dataSizes[[int]$_unit]
+            }
+            else 
+            {
+                $_unit = $unit
             
-            $dataSize = $dataSizes[[int]$unit]
+                $localizedUnit = Get-LocalizedString $unit
+            
+                $dataSize = $dataSizes[[int]$unit]
+            }   
         }
         else
         {
             $customUnit = [Settings]::MemorySizeUnit
 
-            $_Unit = $customUnit
+            $_unit = $customUnit
             
-            $localizedUnit = [Localization]::LocalizedString($customUnit)
+            $localizedUnit = Get-LocalizedString $customUnit
             
             $dataSize = $dataSizes[[int]$customUnit]   
         }
@@ -621,7 +852,35 @@ class StringValueMemorySize : StringValue
 
         $this.DisplayValue = [String]::Format("{0:N0} $localizedUnit", $this.Value)
 
-        $this.Unit = $_Unit
+        $this.Unit = $_unit
+    }
+
+    StringValueMemorySize([Object]$value, [String]$dictionaryName, [ref]$classRef, [Object]$SizeInBytes, [MemorySizeUnit]$unit) : base()
+    {        
+        $this.Value = $value
+        
+        $this.SizeInBytes = $SizeInBytes
+
+        $this.Unit = $unit
+
+        $class = $classRef.Value
+
+        $names = $class::StringArrays["$dictionaryName"]
+        
+        $result = $names.[int]$value
+        
+        if ($result)
+        {
+            $this.Resolved = $true
+
+            $this.DisplayValue = $result
+        }
+        else 
+        {                
+            $outOfSpecification = Get-LocalizedString "OUT_OF_SPEC"
+                
+            $this.DisplayValue = [String]::Format("{0} ($outOfSpecification)", $value)
+        }
     }
 }
 
@@ -630,43 +889,72 @@ class StringValueMemorySize : StringValue
 #
 enum TemperatureUnit
 {
+   Auto
    Celsius
    Fahrenheit
+   Unknown
 }
 
-class StringValueTemperature
+class StringValueTemperature : StringValue
 {
     [Object]$Value
     [String]$DisplayValue
     [TemperatureUnit]$Unit
     hidden [Sbyte]$Precision
     
+    StringValueTemperature([Object]$temperature, [String]$string) : base()
+    {
+        $this.Value = $temperature
+
+        $this.DisplayValue = $string
+
+        $this.Unit = [TemperatureUnit]::Unknown
+
+        $this.Precision = -1
+    }
+
     StringValueTemperature([Object]$temperatureInCelsius, [TemperatureUnit]$unit, [Sbyte]$precision) : base()
     {
-        if ([Settings]::TemperatureUnit -eq [TemperatureUnit]::Celsiuselsius)
-        {
-            $_Unit = [TemperatureUnit]::Celsiuselsius
-            
-            $localizedUnit = [Localization]::LocalizedString("Celsius")
+        $temperature = 0
+        $localizedUnit = ""
+
+        if ([Settings]::TemperatureUnit -eq [TemperatureUnit]::Celsius)
+        {   
+            $localizedUnit = Get-LocalizedString "CELSIUS"
             
             $temperature = $temperatureInCelsius
         }
-        else
+        elseif ([Settings]::TemperatureUnit -eq [TemperatureUnit]::Fahrenheit)
         {
-            $_Unit = [TemperatureUnit]::Fahrenheit
-            
-            $localizedUnit = [Localization]::LocalizedString("Fahrenheit")
+            $localizedUnit = Get-LocalizedString "FAHRENHEIT"
             
             $temperature = ($temperatureInCelsius * 9/5) + 32 
+        }
+        elseif ([Settings]::TemperatureUnit -eq [TemperatureUnit]::Auto) 
+        {
+            $cultureName = (Get-Culture).Name
 
+            $region = [RegionInfo]::new($cultureName)
             
+            if ($region.IsMetric)
+            {
+                $localizedUnit = Get-LocalizedString "CELSIUS"
+            
+                $temperature = $temperatureInCelsius
+            }
+            else 
+            {
+                $localizedUnit = Get-LocalizedString "FAHRENHEIT"
+            
+                $temperature = ($temperatureInCelsius * 9/5) + 32     
+            }
         }
         
         $this.Value = $temperature
 
         $this.DisplayValue = [String]::Format("{0:F$($precision)} $localizedUnit", $this.Value)
 
-        $this.Unit = $_Unit
+        $this.Unit = $unit
 
         $this.Precision = $precision
     }
@@ -675,7 +963,7 @@ class StringValueTemperature
     {
         $temperature = ($this.Value * 9/5) + 32 
 
-        $localizedUnit = [Localization]::LocalizedString("Fahrenheit")
+        $localizedUnit = Get-LocalizedString "FAHRENHEIT"
 
         $string = [String]::Format("{0:F$($this.Precision)} $localizedUnit", $this.Value)
 
@@ -683,21 +971,75 @@ class StringValueTemperature
     }
 }
 
+
+class StringValueVersion : StringValue
+{
+    StringValueVersion([Object]$value, [String]$format) : base($value, $format)
+    {
+    }
+
+    StringValueVersion([Object]$value, [Object]$exceptionValue, [String]$format, [String]$exceptionString) : base($value, $exceptionValue, $format, $exceptionString)
+    {
+    }
+
+    static [Version]op_Implicit([StringValueVersion]$stringValueVersion)
+    {
+        return $stringValueVersion.Value
+    }
+}
+
 class StringValueDateTime : StringValue
 {
-    [string]$Format
+    hidden [string]$Format
+    
+    StringValueDateTime() : base()
+    {
+        $notDefined = Get-LocalizedString "NOT_DEFINED"
+
+        $this.DisplayValue = $notDefined
+    }
     
     StringValueDateTime([Object]$value) : base($value)
     {
+        $pattern = [CultureInfo]::CurrentCulture.DateTimeFormat.LongDatePattern
+        
+        $this.Format = "{0:$pattern}"
+
+        if ($null -eq $value)
+        {   
+            $this.DisplayValue = Get-LocalizedString "NOT_DEFINED"
+        }
     }
     
     StringValueDateTime([Object]$value, [String]$format) : base($value, $format)
     {
         $this.Format = $format
+
+        if ($null -eq $value)
+        {   
+            $notDefined = [Localization]::LocalizedString("NOT_DEFINED")
+            
+            $this.DisplayValue = $notDefined
+        }
+    }
+
+    [String]ToString()
+    {
+        return $this.ToString("G", [CultureInfo]::CurrentCulture);
+    }
+ 
+    [String]ToString([String]$format)
+    {
+        return $this.ToString($format, [CultureInfo]::CurrentCulture);
     }
 
     [String]ToString([String]$format, [IFormatProvider]$formatProvider)
-    {   
+    {           
+        if ($null -eq $this.value)
+        {
+            return $this.DisplayValue
+        }
+
         if (-Not ($formatProvider))
         {
             $formatProvider = [CultureInfo]::CurrentCulture
@@ -707,7 +1049,7 @@ class StringValueDateTime : StringValue
         {           
             if ($this.Format)
             {
-                $longDateString = $this.Format
+                 $longDateString = [String]::Format($formatProvider, $this.Format, $this.Value)
             }
             else
             {
@@ -735,26 +1077,15 @@ class StringValueDateTime : StringValue
     }
 }
 
-class StringValueVersion : StringValue
-{
-    StringValueVersion([Object]$value, [String]$format) : base($value, $format)
-    {
-    }
-
-    StringValueVersion([Object]$value, [Object]$exceptionValue, [String]$format, [String]$exceptionString) : base($value, $exceptionValue, $format, $exceptionString)
-    {
-    }
-
-    static [Version]op_Implicit([StringValueVersion]$stringValueVersion)
-    {
-        return $stringValueVersion.Value
-    }
-}
-
 class StringValueOrderedDictionary : StringValue
-{
+{   
+    StringValueOrderedDictionary() : base()
+    {
+    }
+
     StringValueOrderedDictionary([Object]$value) : base($value)
     {
+        $this.DisplayValue = ( $value.GetEnumerator() | ForEach-Object { "$($_.Key) $($_.Value)" } ) -Join " "
     }
     
     StringValueOrderedDictionary([Object]$value, [String]$format) : base($value, $format)
@@ -766,12 +1097,21 @@ class StringValueOrderedDictionary : StringValue
         return $stringValueOrderedDictionary.Value
     }
 
+    [String]toString()
+    {
+        return $this.DisplayValue
+    }
+
     [String]ToString([String]$format, [IFormatProvider]$formatProvider)
-    {   
+    {
+        return $this.DisplayValue
+        
         if (-Not ($formatProvider))
         {
             $formatProvider = [CultureInfo]::CurrentCulture
         }
+
+        $string = ( $this.Value.GetEnumerator() | ForEach-Object { "$($_.Key) $($_.Value)" } ) -Join " "
 
         if (($format -eq "0") -or ($format -eq [String]::Empty))
         {
@@ -785,7 +1125,7 @@ class StringValueOrderedDictionary : StringValue
             }
             else
             {
-                return $string
+                return $this.DisplayValue
             }
         }
         else
@@ -795,6 +1135,32 @@ class StringValueOrderedDictionary : StringValue
     }
 }
 
+class StringValueFormated : StringValue
+{
+    StringValueFormated([Object]$value, [OrderedDictionary]$values, [Array]$formats) 
+    {
+        $this.Value = $values
+
+        $result = ""
+
+        for ($index = 0; $index -lt $values.Count; $index++) 
+        {
+            $item = $values[$index].Value
+            $format = $formats[$index] 
+        
+            $result = $result + [String]::Format($format, $item)
+        }
+
+        $this.DisplayValue = $result
+    }
+
+    [String]toString()
+    {
+        return $this.DisplayValue
+    }
+}
+
+
 #
 # Defines a SMBIOSType
 #
@@ -803,6 +1169,12 @@ class SMBIOSType
     [int]$Type
     [string]$Name
     hidden [string[]]$Keywords
+
+    SMBIOSType([int]$type, [string]$name)
+    {
+        $this.Type = $type
+        $this.Name = $name
+    }
 
     SMBIOSType([int]$type, [string]$name, [string[]]$keywords)
     {
@@ -814,6 +1186,25 @@ class SMBIOSType
     [String]ToString()
     {
         return $this.Name
+    }
+}
+
+#
+# Defines a SMBIOSAvailableType
+#
+class SMBIOSAvailableType
+{
+    [int]$Count
+    [int]$Type
+    [string]$Name
+    [UInt16[]]$Handle
+
+    SMBIOSAvailableType([int]$count, [int]$type, [string]$name, [UInt16[]]$handle)
+    {
+        $this.Count = $count
+        $this.Type = $type
+        $this.Name = $name
+        $this.Handle = $handle
     }
 }
 
@@ -842,17 +1233,24 @@ class SMBIOSTypeDescription
 #
 class SMBIOS
 {
+    static [Version]$SupportedVersion
     static [Version]$Version
+    static [Encoding]$Encoding
     static [Array]$Types
     static [Array]$Descriptions
     static [Array]$AvailableTypes
     static [List[Hashtable]]$Structures
     static [Byte[]]$TableData
-    static [int]$TableDataSize
+    static [UInt32]$TableDataSize
     static [Byte[]]$EntryPoint
+    static [UInt64]$StructureTableAddress
+    static [String]$Hash
 
     static SMBIOS()
     {
+        # Define the supported vesion of SMBIOS
+        [SMBIOS]::SupportedVersion = [Version]::new("3.8.0")
+        
         # Generates SMBIOS types list
         $typesList = [ArrayList]::new()
 
@@ -860,7 +1258,7 @@ class SMBIOS
 
         foreach ( $type in $SMBIOSTypes.GetEnumerator() )
         {
-            $typesList.Add( [SMBIOSType]::new( $type.Key, $type.Value, @() ) )
+            $typesList.Add( [SMBIOSType]::new( $type.Key, $type.Value ) )
         }
 
         [SMBIOS]::Types = $typesList
@@ -878,24 +1276,28 @@ class SMBIOS
         [SMBIOS]::Descriptions = $descriptionsList
     }
 
-    # Read SMBIOS on a Macintosh using the ioreg tool instead of an interop class due to the notarization requirements on macOS.
+    # Using the ioreg tool to retrieve SMBIOS information on Mac.
     # The SMBIOS-EPS property contains the entry point of the SMBIOS.
     # The SMBIOS property contains the SMBIOS table.
+    # SMBIOS is not longer used by Apple on Mac with Apple silicon.
     static [Byte[]] ReadAppleSMBIOSProperty([String]$property)
     {    
+        $tableDataList = [List[Byte]]::new()
+        
         $AppleSMBIOSProperty = /usr/sbin/ioreg -c AppleSMBIOS -r | Select-String $property
     
-        $SMBIOSProperty = ($AppleSMBIOSProperty -Split "= ")[1].TrimStart("<").TrimEnd(">")
-
-        $tableDataList = [List[Byte]]::new()
-
-        $length = $SMBIOSProperty.Length / 2
-
-        for ($i = 0; $i -lt $length ; $i++) 
+        if ($AppleSMBIOSProperty)
         {
-            $hex = $SMBIOSProperty.SubString($i * 2, 2)
-            $byte = [Convert]::ToByte($hex, 16)
-            $tableDataList.Add($byte)
+            $SMBIOSProperty = ($AppleSMBIOSProperty -Split "= ")[1].TrimStart("<").TrimEnd(">")
+
+            $length = $SMBIOSProperty.Length / 2
+
+            for ($i = 0; $i -lt $length ; $i++) 
+            {
+                $hex = $SMBIOSProperty.SubString($i * 2, 2)
+                $byte = [Convert]::ToByte($hex, 16)
+                $tableDataList.Add($byte)
+            }
         }
     
         return $tableDataList.ToArray()
@@ -913,6 +1315,7 @@ class SMBIOS
 
         $majorVersion = 0
         $minorVersion = 0
+        $revisionVersion = 0
 
         if ([Linq.Enumerable]::SequenceEqual($anchor, $_SM_))
         {
@@ -932,66 +1335,101 @@ class SMBIOS
                 [SMBIOS]::TableDataSize = [BitConverter]::ToUInt16($entryPoint, 0x16)
                 $majorVersion = $entryPoint[0x06]
                 $minorVersion = $entryPoint[0x07]
+                $revisionVersion = $entryPoint[0x1E]
 
-                [SMBIOS]::Version = [Version]::new($majorVersion, $minorVersion)
+                [SMBIOS]::StructureTableAddress = [BitConverter]::ToUInt32($entryPoint, 0x18)
             }
             3 {  
                 [SMBIOS]::TableDataSize = [BitConverter]::ToUInt32($entryPoint, 0x0C)
                 $majorVersion = $entryPoint[0x07]
                 $minorVersion = $entryPoint[0x08]
+                $revisionVersion = $entryPoint[0x09]
 
-                [SMBIOS]::Version = [Version]::new($majorVersion,  $minorVersion)
+                [SMBIOS]::StructureTableAddress = [BitConverter]::ToUInt64($entryPoint, 0x10)
             }
         }
+
+        [SMBIOS]::Version = [Version]::new($majorVersion, $minorVersion, $revisionVersion)
     }
 
     # Parse the SMBIOS table
-    static [Void]ParseTableData([Byte[]]$tableData)
+    static [Void]ParseTableData()
     {
-        [SMBIOS]::TableData = $tableData
-        
-        $structuresList = [List[Hashtable]]::new()
+        $tableDataHash = $(Get-FileHash -InputStream $([System.IO.MemoryStream]::new([SMBIOS]::TableData)) -Algorithm MD5).Hash
 
-        $tableDataLength = [SMBIOS]::TableDataSize
-
-        $offset = 0
-
-        do
-        {    
-            # Read the header (fixed size)
-            $type = $tableData[$offset] 
-            $length = $tableData[$offset + 1]
-            $handle = [BitConverter]::ToUInt16($tableData, $offset + 2)
-            $data = [ArraySegment[Byte]]::new($tableData, $offset, $length) 
-    
-            $variableLengthBegin = $offset + $length
-            $location = $variableLengthBegin
-            $variableLength = 0
+        if ($tableDataHash -ne [SMBIOS]::Hash)
+        {
+            [SMBIOS]::Hash = $tableDataHash
             
-            # Read the strings (variable size)     
-            while ($location -lt $tableDataLength) 
-            {
-                if (($tableData[$location] -eq 0x00) -and ($tableData[$location + 1] -eq 0x00))
-                {
-                    $variableData = [ArraySegment[Byte]]::new($tableData, $variableLengthBegin, $variableLength)
-                    $strings = [System.Text.Encoding]::ASCII.GetString($variableData) -Split ("`0")
-    
-                    $structure = @{ "Type" = $type; "Length" = $length; "Handle" = $handle; "Data" = $data; "Strings" = $strings }
-                    $structuresList.Add($structure) | Out-Null
+            $structuresList = [List[Hashtable]]::new()
 
-                    $offset = $location + 2
-                    break
-                }
-                else 
+            $tableDataLength = [SMBIOS]::TableData.Count
+
+            $offset = 0
+
+            do
+            {    
+                # Read the header (fixed size)
+                $type = [SMBIOS]::TableData[$offset] 
+                $length = [SMBIOS]::TableData[$offset + 1]
+                $handle = [BitConverter]::ToUInt16([SMBIOS]::TableData, $offset + 2)
+                $data = [ArraySegment[Byte]]::new([SMBIOS]::TableData, $offset, $length)
+
+                $variableLengthBegin = $offset + $length
+                $location = $variableLengthBegin
+                $variableLength = 0
+                
+                # Read the strings (variable size)     
+                while ($location -lt $tableDataLength) 
                 {
-                    $location = $location + 1
-                    $variableLength = $variableLength + 1
-                }
-            }   
+                    if (([SMBIOS]::TableData[$location] -eq 0x00) -and ([SMBIOS]::TableData[$location + 1] -eq 0x00))
+                    {
+                        $variableData = [ArraySegment[Byte]]::new([SMBIOS]::TableData, $variableLengthBegin, $variableLength)
+                            
+                        [ArrayList]$strings = [SMBIOS]::Encoding.GetString($variableData) -Split ("`0")
+                        
+                        $structure = @{ "Type" = $type; "Length" = $length; "Handle" = $handle; "Data" = $data; "Strings" = $strings }
+                        
+                        $structuresList.Add($structure) | Out-Null
+
+                        $offset = $location + 2
+                        break
+                    }
+                    else 
+                    {
+                        $location = $location + 1
+                        $variableLength = $variableLength + 1
+                    }
+                }   
+            }
+            while ($offset -lt $tableDataLength)
+
+            [SMBIOS]::Structures = $structuresList
         }
-        while ($offset -lt $tableDataLength)
+    }
+}
 
-        [SMBIOS]::Structures = $structuresList
+###################################################################################################################################
+# class SMBIOSStructureHeader                                                                                                     #
+###################################################################################################################################
+class SMBIOSStructureHeader
+{
+    [Byte]$Type
+    [String]$Description
+    [Byte]$Length
+    [UInt16]$Handle
+
+    SMBIOSStructureHeader([Byte]$type, [String]$description, [Byte]$length, [UInt16]$handle)
+    {
+        $this.Type = $type
+        $this.Description = $description
+        $this.Length = $length
+        $this.Handle = $handle  
+    }
+    
+    [String]ToString()
+    {
+        return [String]::Format($(Get-LocalizedString "SMBIOS_HEADER"), $this.Handle, $this.Type, $this.Description, $this.Length)
     }
 }
 
@@ -1014,8 +1452,8 @@ class SMBIOSStructure
         [SMBIOSStructure]::StringArrayNameAlias = $stringTables.StringArrayNameAlias
     }
 
-    hidden [Byte]$SMBType
-    hidden [String]$SMBDescription
+    hidden [Byte]$Type
+    hidden [String]$Description
     hidden [Byte]$Length
     hidden [UInt16]$Handle
     hidden [OrderedDictionary]$Properties
@@ -1024,31 +1462,46 @@ class SMBIOSStructure
     hidden [String[]]$Strings
     hidden [Boolean]$Obsolete
 
+    # for compatibility with version 0.8
+    hidden [Byte]$_Type
+    hidden [String]$_Description
+    hidden [UInt16]$_Handle
+
     SMBIOSStructure([Byte]$type, [String]$description, [String[]]$keywords, [Byte]$length, [UInt16]$handle, [Byte[]]$data, [String[]]$strings)
     {
-        $this.SMBType = $type
-        $this.SMBDescription = $description
+        $this.Type = $type
+        $this.Description = $description
         $this.Length = $length
         $this.Keywords = $keywords
         $this.Handle = $handle
         $this.Data = $data
         $this.Strings = $strings
         $this.Properties = [Ordered]@{}
+
+        # for compatibility with version 0.8
+        $this._Type = $this.Type
+        $this._Description = $this.Description
+        $this._Handle = $this.Handle
     }
 
     hidden [Byte]Get_Type()
     {
-        return $this.SMBType
+        return $this.Type
     }
 
     hidden [String]Get_Description()
     {
-        return $this.SMBDescription
+        return $this.Description
     }
 
     hidden [UInt16]Get_Handle()
     {
         return $this.Handle
+    }
+
+    hidden [SMBIOSStructureHeader]Get_Header()
+    {
+        return [SMBIOSStructureHeader]::new($this.Type, $this.Description, $this.Length, $this.Handle)
     }
 
     hidden [ArraySegment[Byte]]Get_Data()
@@ -1108,51 +1561,30 @@ class SMBIOSStructure
         }
     }
 
-    hidden [String]GetStringAtOffset1([int]$offset)
-    {
-        $index = $this.data[$offset] - 1
-        
-        if ($index -ge 0)
-        {
-            return $this.strings[$index]
-        }
-        else 
-        {
-            return $null
-        }
-    }
-
     hidden [SMBString]GetStringAtOffset([Byte]$offset)
     {
         $index = $this.data[$offset] - 1
-        
-        if ($index -ge 0)
-        {
-            return [SMBString]::new($this.strings[$index], $index)
-        }
-        else 
-        {
-            return [SMBString]::new([String]::Empty, 255)
-        }
-    }
 
-    hidden [SMBString]GetStringAtOffset2([int]$offset)
-    {
-        $index = $this.data[$offset] - 1
-        
         if ($index -ge 0)
         {
-            return [SMBString]::new($this.strings[$index], $index)
+            if ( [String]::IsNullOrEmpty( $this.strings[$index] ) )
+            {
+                return [SMBString]::new([String]::Empty, [Byte]::MaxValue)   
+            }
+            else
+            {
+                return [SMBString]::new($this.strings[$index], $index)   
+            }
         }
         else 
         {
-            return [SMBString]::new($null, 255)
+            return [SMBString]::new([String]::Empty, [Byte]::MaxValue)
         }
     }
 
     hidden [ArraySegment[Byte]]GetData()
     {
-        return $this.data
+        return $this.Data
     }
 
     hidden [String[]]GetStrings()
@@ -1162,7 +1594,7 @@ class SMBIOSStructure
 
     hidden [Byte]GetDMIType()
     {
-        return $this.SMBType
+        return $this.Type
     }
 
     hidden [int]GetLength()
@@ -1182,7 +1614,17 @@ class SMBIOSStructure
 
     hidden static [Hashtable]GetStringTables([String]$type)
     {  
-        $xml = [xml](Get-Content -Path "$PSScriptRoot/en-US/$type.xml")
+        $cultureName = (Get-Culture).Name
+
+        if (Test-Path -Path $(Join-Path -Path $PSScriptRoot -ChildPath $cultureName))
+        {
+            $xml = [xml](Get-Content -Path "$PSScriptRoot/$cultureName/$type.xml")
+
+        }
+        else
+        {
+            $xml = [xml](Get-Content -Path "$PSScriptRoot/en-US/$type.xml")
+        }
         
         $_stringArrays = @{}
 
@@ -1225,7 +1667,7 @@ class SMBIOSStructure
     }
 
     hidden [void]SetProperties([array]$propertiesList)
-    {        
+    {         
         $runtimeType = $this.GetType() 
 
         if ($propertiesList -eq "*")
@@ -1233,28 +1675,48 @@ class SMBIOSStructure
             $propertiesList = $runtimeType::PropertyNames
         }
 
-        $propertiesList = @("_Type", "_Description", "_Handle") + $propertiesList 
+        if ($this.PropertyNamesEx)
+        {
+            $propertiesList = $propertiesList + $this.PropertyNamesEx
+        }
 
+        if (-Not [Settings]::HideHeader)
+        {
+            $propertiesList = @("_Header") + $propertiesList
+        }
+   
         foreach ($property in $propertiesList)
         {
             try
             {
                 $methodInfo = $runtimeType.GetMethod("Get$property")
+                
+                if ($property.StartsWith("_"))
+                {
+                    $propertyName = $property.Replace("_","")
+                }
+                else 
+                {
+                    $propertyName = $property
+                }
 
                 try
                 {
+                    [System.Runtime.CompilerServices.RuntimeHelpers]::PrepareMethod($methodInfo.MethodHandle)
+
                     $object = $methodInfo.Invoke($this, $null)
 
-                    $this.Properties.Add($property, $object) | Out-Null      
+                    $this.Properties.Add($propertyName, $object) | Out-Null      
                 }
                 catch
                 {
-                    Write-Warning "Property `"$property`" Not Found For Type $($this.SMBType) ($( $this.SMBDescription ))"
+                    
+                    Write-Warning "Property `"$propertyName`" Not Found For Type $($this.Type) ($( $this.Description ))"
                 }
             }
             catch
             {
-                Write-Warning ($error[0].Exception)
+                Write-Warning ($error[0].Exception.Message)
             }  
         }
     }
@@ -1262,6 +1724,31 @@ class SMBIOSStructure
     hidden [OrderedDictionary]GetProperties()
     {        
        return $this.Properties
+    }
+
+    # Used by types 9, 41 and 42
+    # Segment Group Number, Bus Number, Device/Function Number
+    hidden [StringValue]Get_BusAddress([Byte]$offset)
+    {
+        $segmentGroupNumber = $this.GetWordAtOffset($offset)
+        $busNumber = $this.GetByteAtOffset($offset + 0x02)
+        $deviceAndFunctionNumber = $this.GetByteAtOffset($offset + 0x03)
+
+        if (($segmentGroupNumber -ne 0xFFFF) -or ($busNumber -ne 0xFF) -or ($deviceAndFunctionNumber -ne 0xFF))
+        {
+            $busAddress = "{0:x4}:{1:x2}:{2:x2}.{3}" -f $segmentGroupNumber, $busNumber, ($deviceAndFunctionNumber -shr 3), ($deviceAndFunctionNumber -band 0x7)
+            
+            return [StringValue]::new( [Ordered]@{ SegmentGroupNumber = $segmentGroupNumber; 
+                                                   BusNumber          = $busNumber;
+                                                   DeviceNumber       = ($deviceAndFunctionNumber -shr 3);
+                                                   FunctionNumber     = ($deviceAndFunctionNumber -band 0x7) }, $busAddress.ToUpper() )
+        }
+        else 
+        {
+            $notDefined = Get-LocalizedString "NOT_DEFINED"
+
+            return [StringValue]::new(-1, $notDefined)
+        }
     }
 }
 
@@ -1333,21 +1820,28 @@ class BIOSInformation : SMBIOSStructure
     # Get ReleaseDate
     hidden [StringValueDateTime]GetReleaseDate() 
     {      
-        $releaseDate = $this.GetStringAtOffset(0x08)
+        $releaseDate = $($this.GetStringAtOffset(0x08)).DisplayValue
 
-        $culture = [CultureInfo]::CreateSpecificCulture("en-US")
-        
-        try
+        if ([String]::IsNullOrEmpty($releaseDate))
         {
-            $date = [DateTime]::Parse($releaseDate, $culture)
-
-            return [StringValueDateTime]::new($date)
+            $notAvailable = Get-LocalizedString "NOT_AVAILABLE"
+        
+            return [StringValueDateTime]::new($null, $notAvailable)
         }
-        catch
-        {   
-            $notAvailable = [Localization]::LocalizedString("NOT_AVAILABLE")
+        else 
+        {
+            $culture = [CultureInfo]::CreateSpecificCulture("en-US")
             
-            return [StringValueDateTime]::new([DateTime]::new(1), $notAvailable)
+            [DateTime]$date = [DateTime]::new(0)
+
+            if( [DateTime]::TryParse($releaseDate, $culture, [DateTimeStyles]::None, [ref]$date) )
+            {         
+                return [StringValueDateTime]::new($date)
+            }
+            else 
+            {
+                return [StringValueDateTime]::new($releaseDate, $releaseDate)
+            }
         }
     }
 
@@ -1447,7 +1941,10 @@ class BIOSInformation : SMBIOSStructure
         {
             $characteristicsByte1 = $this.GetByteAtOffset(0x12)
 
-            $featuresList = $featuresList + [BitFieldConverter]::ToStringValueArray($characteristicsByte1, 8, "CharacteristicsByte1", $offset, [ref]$this)
+            if ($characteristicsByte1 -gt 0)
+            {
+                $featuresList = $featuresList + [BitFieldConverter]::ToStringValueArray($characteristicsByte1, 8, "CharacteristicsByte1", $offset, [ref]$this)
+            }
 
             $offset = $offset + 8
         }
@@ -1456,7 +1953,10 @@ class BIOSInformation : SMBIOSStructure
         {    
             $characteristicsByte2 = $this.GetByteAtOffset(0x13)
 
-            $featuresList = $featuresList + [BitFieldConverter]::ToStringValueArray($characteristicsByte2, 8, "CharacteristicsByte2", $offset, [ref]$this)
+            if ($characteristicsByte2 -gt 0)
+            {
+                $featuresList = $featuresList + [BitFieldConverter]::ToStringValueArray($characteristicsByte2, 8, "CharacteristicsByte2", $offset, [ref]$this)
+            }
 
             $offset = $offset + 8
         }
@@ -1571,33 +2071,36 @@ class SystemInformation : SMBIOSStructure
     }
 
     # Get UUID
-    hidden [String]GetUUID()
+    hidden [StringValue]GetUUID()
     {
         $UUID = $null
         
-        $bytes = [ArraySegment[Byte]]::new($this.data, 0x08, 16)
-        
-        [Byte[]]$a = [System.Linq.Enumerable]::ToArray($bytes)
+        $rawUUID = [Byte[]][ArraySegment[Byte]]::new($this.data, 0x08, 16)
 
-        $only0x00 = [Array]::FindAll($a, [Predicate[Byte]] { $args[0] -eq 0x00 } )
-        
-        $only0xFF = [Array]::FindAll($a, [Predicate[Byte]] { $args[0] -eq 0xFF } )
+        $only0x00 = [Linq.Enumerable]::All($rawUUID, [Func[byte,bool]]{ $args[0] -eq 0x00 })
 
-        if ($only0x00.Count -eq 16)
+        $only0xFF = [Linq.Enumerable]::All($rawUUID, [Func[byte,bool]]{ $args[0] -eq 0xFF })
+
+        if ($only0x00)
         {
-            $UUID = [Localization]::LocalizedString("NOT_SETTABLE")
+            $value = 0x00
+            
+            $UUID = Get-LocalizedString "NOT_SETTABLE"
         }
-        elseif ($only0xFF.Count -eq 16)
+        elseif ($only0xFF)
         { 
-            $UUID = [Localization]::LocalizedString("NOT_PRESENT")
+            $value = 0xFF
+            
+            $UUID = Get-LocalizedString "NOT_PRESENT"
         } 
         else
         {
-            $UUID = [String]::Format( "{0:X02}{1:X02}{2:X02}{3:X02}-{4:X02}{5:X02}-{6:X02}{7:X02}-{8:X02}{9:X02}-{10:X02}{11:X02}{12:X02}{13:X02}{14:X02}{15:X02}",
-                                         $a[3], $a[2], $a[1], $a[0],  $a[5], $a[4],  $a[7], $a[6],  $a[8], $a[9],  $a[10], $a[11], $a[12], $a[13], $a[14], $a[15] )
+            $value = [Guid]::new($rawUUID)
+            
+            $UUID = $value.ToString().ToUpper()
         }
 
-        return $UUID
+        return [StringValue]::new($value, $UUID)
     }
 
     # Get WakeUpType
@@ -1644,16 +2147,16 @@ class BaseboardInformation : SMBIOSStructure
 
         if ( [SMBIOS]::Version -ge [Version]::new(2, 0) )
         {
-            $labels.Add( "Manufacturer"            )
-            $labels.Add( "Product"                 ) 
-            $labels.Add( "Version"                 ) 
-            $labels.Add( "SerialNumber"            )
-            $labels.Add( "AssetTag"                )    
-            $labels.Add( "Features"                ) 
-            $labels.Add( "LocationInChassis"       ) 
-            $labels.Add( "ChassisHandle"           ) 
-            $labels.Add( "BoardType"               ) 
-            $labels.Add( "ContainedObjectsHandles" ) 
+            $labels.Add( "Manufacturer"           )
+            $labels.Add( "Product"                ) 
+            $labels.Add( "Version"                ) 
+            $labels.Add( "SerialNumber"           )
+            $labels.Add( "AssetTag"               )    
+            $labels.Add( "Features"               ) 
+            $labels.Add( "LocationInChassis"      ) 
+            $labels.Add( "ChassisHandle"          ) 
+            $labels.Add( "BoardType"              ) 
+            $labels.Add( "ContainedObjectHandles" ) 
         }
 
         [BaseboardInformation]::PropertyNames = $labels
@@ -1722,18 +2225,25 @@ class BaseboardInformation : SMBIOSStructure
     }
     
     # Get ContainedObjectsHandles
-    hidden [Array]GetContainedObjectsHandles()
+    hidden [Array]GetContainedObjectHandles()
     {
-        $numberOfContainedObjectsHandles = $this.GetByteAtOffset(0x0E)
+        $numberOfContainedObjectHandles = $this.GetByteAtOffset(0x0E)
 
-        $objectsHandles = [Collections.ArrayList]::new()
+        $objectsHandles = [List[UInt16]]::new()
 
-        for ($objectHandle = 0 ; $objectHandle -lt $numberOfContainedObjectsHandles ; $objectHandle++) 
+        if ($numberOfContainedObjectHandles -gt 0)
         {
-            $handle = $this.GetWordAtOffset(0x0F + ($objectHandle * 2))
+            for ($objectHandle = 0 ; $objectHandle -lt $numberOfContainedObjectHandles ; $objectHandle++) 
+            {
+                $handle = $this.GetWordAtOffset(0x0F + ($objectHandle * 2))
 
-            $objectsHandles.Add( $handle )
-        }
+                $objectsHandles.Add( $handle )
+            }
+    
+            return $objectsHandles
+        } 
+
+        $objectsHandles.Add($numberOfContainedObjectHandles)
 
         return $objectsHandles
     }
@@ -1749,6 +2259,8 @@ class SystemEnclosure : SMBIOSStructure
     hidden static [Hashtable]$StringArrayNameAlias
     
     hidden static [Array]$PropertyNames
+
+    hidden [ArrayList]$PropertyNamesEx
 
     static SystemEnclosure()
     {
@@ -1785,17 +2297,20 @@ class SystemEnclosure : SMBIOSStructure
             $labels.Add( "NumberOfPowerCords" ) 
             $labels.Add( "ContainedElements"  ) 
         }
-
-        if ( [SMBIOS]::Version -ge [Version]::new(2, 7) )
-        {
-            $labels.Add( "SKUNumber"          )     
-        }
         
         [SystemEnclosure]::PropertyNames = $labels
     }
 
     SystemEnclosure([Byte]$type, [String]$description, [String[]]$keywords, [Byte]$length, [UInt16]$handle, [Byte[]]$data, [String[]]$strings) : base($type, $description, $keywords, $length, $handle, $data, $strings) 
-    { 
+    {
+        $labels = [Collections.ArrayList]::new()
+
+        if ( [SMBIOS]::Version -ge [Version]::new(2, 7) )
+        {
+            $labels.Add( "SKUNumber"          )     
+        }
+
+        $this.PropertyNamesEx = $labels
     }
 
     # Get Manufacturer
@@ -1909,37 +2424,44 @@ class SystemEnclosure : SMBIOSStructure
 
         $containedElementRecordLength = $this.GetByteAtOffset(0x14)
 
-        $containedElements = [ArraySegment[Byte]]::new($this.data, 0x15, $containedElementCount * $containedElementRecordLength)
-
         $containedElementsList = [Collections.ArrayList]::new()
 
-        for ($containedElement = 0 ; $containedElement -lt $containedElementCount * $containedElementRecordLength ; $containedElement = $containedElement + $containedElementRecordLength)
+        if ($containedElementCount -gt 0)
         {
-            $containedElementType = $containedElements.Array[$containedElement]
-            
-            $type = [BitField]::Extract($containedElementType, 0, 7)
+            $containedElements = [ArraySegment[Byte]]::new($this.data, 0x15, $containedElementCount * $containedElementRecordLength)
 
-            $minValue = $containedElements.Array[$containedElement + 1]
-
-            $maxValue =  $containedElements.Array[$containedElement + 2]
-
-            if ([BitField]::Get($containedElementType, 7))
+            for ($containedElement = 0 ; $containedElement -lt $containedElementCount * $containedElementRecordLength ; $containedElement = $containedElement + $containedElementRecordLength)
             {
-                $element = [Ordered]@{ TypeSelect = 1 ; Type = $type ; NumberOfElements = @($minValue..$maxValue) }
+                $containedElementType = $containedElements.Array[$containedElement]
+                
+                $type = [BitField]::Extract($containedElementType, 0, 7)
 
-                $containedElementsList.Add([StringValue]::new($element, "$([SMBIOS]::Types[$type].Name) ($minValue..$maxValue)"))
+                $minValue = $containedElements.Array[$containedElement + 1]
+
+                $maxValue =  $containedElements.Array[$containedElement + 2]
+
+                if ([BitField]::Get($containedElementType, 7))
+                {
+                    $element = [Ordered]@{ TypeSelect = 1 ; Type = $type ; NumberOfElements = @($minValue..$maxValue) }
+
+                    $containedElementsList.Add([StringValue]::new($element, "$([SMBIOS]::Types[$type].Name) ($minValue..$maxValue)"))
+                }
+                else
+                {
+                    $boardTypes = [BaseboardInformation]::StringArrays["BoardType"]
+
+                    $element = [Ordered]@{ TypeSelect = 0 ; Type = $type ; NumberOfElements = @($minValue..$maxValue) }
+
+                    $containedElementsList.Add([StringValue]::new($element, "$($boardTypes.$type) ($minValue..$maxValue)"))
+                }
             }
-            else
-            {
-                $boardTypes = [BaseboardInformation]::StringArrays["BoardType"]
 
-                $element = [Ordered]@{ TypeSelect = 0 ; Type = $type ; NumberOfElements = @($minValue..$maxValue) }
-
-                $containedElementsList.Add([StringValue]::new($element, "$($boardTypes.$type) ($minValue..$maxValue)"))
-            }
+            return $containedElementsList
         }
 
-        return $containedElementsList
+        $none = Get-LocalizedString "NONE"
+            
+        return [StringValue]::new(-1, $none) 
     }
 
     # Get SKUNumber
@@ -1957,24 +2479,14 @@ class SystemEnclosure : SMBIOSStructure
 ###################################################################################################################################
 # Type 4                                                                                                                          #
 ###################################################################################################################################
-
-# Used for compatibility with .NET Framework versions prior to 4.7.2.
-enum ProcessorArchitecture
-{
-    X86     = 1  
-    X64     = 2  
-    IA64    = 3 
-    ARM     = 4 
-    ARM64   = 5
-    UNKNOWN = [UInt16]::MaxValue
-}
-
 class ProcessorInformation : SMBIOSStructure 
 {
     hidden static [Hashtable]$StringArrays
     hidden static [Hashtable]$StringArrayNameAlias
 
     hidden static [Array]$PropertyNames
+
+    hidden [ArrayList]$PropertyNamesEx
 
     static ProcessorInformation()
     {
@@ -1989,8 +2501,7 @@ class ProcessorInformation : SMBIOSStructure
         if ( [SMBIOS]::Version -ge [Version]::new(2, 0) )
         {
             $labels.Add( "SocketDesignation" )
-            $labels.Add( "ProcessorType"     ) 
-            $labels.Add( "Architecture"      )
+            $labels.Add( "_Type"             )
             $labels.Add( "Family"            ) 
             $labels.Add( "Manufacturer"      )
             $labels.Add( "ID"                )  
@@ -2002,7 +2513,7 @@ class ProcessorInformation : SMBIOSStructure
             $labels.Add( "MaxSpeed"          )
             $labels.Add( "CurrentSpeed"      )
             $labels.Add( "SocketPopulated"   )
-            $labels.Add( "ProcessorStatus"   )
+            $labels.Add( "Status"            )
             $labels.Add( "Upgrade"           )
         }    
         if ( [SMBIOS]::Version -ge [Version]::new(2, 1) )
@@ -2017,6 +2528,14 @@ class ProcessorInformation : SMBIOSStructure
             $labels.Add( "AssetTag"          )
             $labels.Add( "PartNumber"        )
         }
+  
+        [ProcessorInformation]::PropertyNames = $labels
+    }
+
+    ProcessorInformation([Byte]$type, [String]$description, [String[]]$keywords, [Byte]$length, [UInt16]$handle, [Byte[]]$data, [String[]]$strings) : base($type, $description, $keywords, $length, $handle, $data, $strings) 
+    {   
+        $labels = [Collections.ArrayList]::new()
+
         if ( [SMBIOS]::Version -ge [Version]::new(2, 5) )
         {    
             $labels.Add( "CoreCount"         )
@@ -2024,71 +2543,49 @@ class ProcessorInformation : SMBIOSStructure
             $labels.Add( "ThreadCount"       )
             $labels.Add( "Characteristics"   )
         }
-  
-        [ProcessorInformation]::PropertyNames = $labels
-    }
 
-    ProcessorInformation([Byte]$type, [String]$description, [String[]]$keywords, [Byte]$length, [UInt16]$handle, [Byte[]]$data, [String[]]$strings) : base($type, $description, $keywords, $length, $handle, $data, $strings) 
-    {   
+        if ( [SMBIOS]::Version -ge [Version]::new(3, 6) )
+        {    
+            $labels.Add( "ThreadEnabled"     )
+        }
+
+        $this.PropertyNamesEx = $labels
     }
     
-    # Get Architecture
-    hidden [ProcessorArchitecture]GetArchitecture()
-    {   
-        $architecture = [ProcessorArchitecture]::UNKNOWN
-
-        if ([OSPlatform]::IsWindows)
-        {
-            $processorArchitecture = (Get-CimInstance -ClassName Win32_Processor | Select-Object Architecture).Architecture
-
-            switch ($processorArchitecture)
-            {
-                0       { $architecture = [ProcessorArchitecture]::X86   }
-                5       { $architecture = [ProcessorArchitecture]::ARM   }
-                9       { $architecture = [ProcessorArchitecture]::X64   }
-                12      { $architecture = [ProcessorArchitecture]::ARM64 }
-            }
-        }
-        else
-        {
-            $runtimeInformation = [System.Runtime.InteropServices.RuntimeInformation]
-                
-            $OSArchitecture = $runtimeInformation::OSArchitecture
-
-            if ($OSArchitecture)
-            {
-                switch ("$OSArchitecture")
-                {
-                    "X86"   { $architecture = [ProcessorArchitecture]::X86   }
-                    "X64"   { $architecture = [ProcessorArchitecture]::X64   }
-                    "Arm"   { $architecture = [ProcessorArchitecture]::ARM   }
-                    "Arm64" { $architecture = [ProcessorArchitecture]::ARM64 }
-                } 
-            }
-        }
-   
-        return $architecture
-    }
-
     # Get VendorID
     hidden [String]GetVendorID()
     {        
-        $vendorID = $null
+        $manufacturer = $this.GetManufacturer()
 
-        if ([OSPlatform]::IsWindows)
+        $version = $this.GetVersion()
+
+        # GenuineIntel 
+        if ( $manufacturer -like "*Intel*" )
         {
-            $vendorID = (Get-CimInstance -ClassName Win32_Processor).Manufacturer
-        }
-        elseif ([OSPlatform]::IsLinux) 
-        {
-            $vendorID = ((Select-String -Path "/proc/cpuinfo" -Pattern "vendor_id") -Split ": ")[1]
-        }
-        elseif ([OSPlatform]::IsMacOS)
-        {
-            $vendorID = (sysctl -n machdep.cpu.vendor)
+            return "GenuineIntel"
         }
 
-        return $vendorID
+        # AuthenticAMD
+        if ( ($manufacturer -like "*AMD*") -or ($version -like "*AMD*") )
+        {
+            return "AuthenticAMD"
+        }
+
+        # Red Hat (Nutanix)
+        if ( $manufacturer -like "*Red Hat*" )
+        {
+            return "GenuineIntel"
+        }
+
+        # ARM
+        $family = $this.GetFamily().Value
+
+        if ($(@(0x100..0x103) + 0x118 + 0x119) -contains $family)
+        {
+            return "ARM"
+        }
+
+        return $null
     }
        
     # Get SocketDesignation
@@ -2097,9 +2594,9 @@ class ProcessorInformation : SMBIOSStructure
         return $this.GetStringAtOffset(0x04)
     }
 
-    # Get ProcessorType
-    hidden [StringValue]GetProcessorType()
-    {
+    # Get Type
+    hidden [StringValue]Get_Type()
+    {   
         $processorType = $this.GetByteAtOffset(0x05)
 
         return [StringValue]::new($processorType, "ProcessorType", [ref]$this)
@@ -2109,8 +2606,8 @@ class ProcessorInformation : SMBIOSStructure
     hidden [StringValue]GetFamily()
     {
         $family = $this.GetByteAtOffset(0x06)
-        
-        if ( ( $family -eq 0xFE) -and ( [SMBIOS]::Version -ge [Version]::new(2, 6) ) )
+
+        if ($family -eq 0xFE)
         {
             $family = $this.GetFamily2()
         }
@@ -2128,13 +2625,12 @@ class ProcessorInformation : SMBIOSStructure
     hidden [StringValue]GetID()
     {
         $id = $this.GetQuadWordAtOffset(0x08)
-        
-        $bytes = [ArraySegment[Byte]]::new($this.data, 0x08, 8)
 
-        [Byte[]]$a = [System.Linq.Enumerable]::ToArray($bytes)
+        [Byte[]]$array = [BitConverter]::GetBytes([UInt64]$id)
         
-        $processorId = [String]::Format( "{0:X02}{1:X02}{2:X02}{3:X02}{4:X02}{5:X02}{6:X02}{7:X02}",
-                                            $a[7], $a[6], $a[5], $a[4], $a[3], $a[2], $a[1], $a[0] )
+        [Byte[]]$reverseArray = [Linq.Enumerable]::Reverse($array)
+
+        $processorId = [BitConverter]::ToString($reverseArray).Replace("-","")
 
         return [StringValue]::new($id, $processorId)
     }
@@ -2212,20 +2708,47 @@ class ProcessorInformation : SMBIOSStructure
     }
 
     hidden [StringValueOrderedDictionary]GetSignatureArm([UInt32]$signature)
-    {
-        $implementer = [BitField]::Extract($signature, 24, 8)
-                
-        $variant = [BitField]::Extract($signature, 20, 4)
-                
-        $arch = [BitField]::Extract($signature, 16, 4)
-                
-        $partNum = [BitField]::Extract($signature, 4, 12)
+    {   
+        $value = $this.GetWordAtOffset(0x26)
+        
+        $arm64SocID = [BitField]::Get($value, 9)
 
-        $revision = [BitField]::Extract($signature, 0, 4)
+        if ($arm64SocID)
+        {
+            $bank = [BitField]::Extract($signature, 24, 7)
 
-        $orderedSignature = [Ordered]@{ Implementer = $implementer ; Variant = $variant ; Architecture = $arch ; PartNum = $partNum ; Revision = $revision}
+            $manufacturer = [BitField]::Extract($signature, 16, 8)
 
-        return [StringValueOrderedDictionary]::new($orderedSignature)
+            $id = [BitField]::Extract($signature, 0, 16)
+
+            $processorID = $this.GetID().Value
+
+            $highWord = [BitField]::HighUInt64($processorID)
+
+            $revision = [BitField]::Extract($highWord, 0, 32)
+
+            $orderedSignature = [Ordered]@{ JEP106Bank = $bank ; JEP106Manufacturer = $manufacturer ; ID = $id ; Revision = $revision }
+
+            return [StringValueOrderedDictionary]::new($orderedSignature)
+        }
+        else
+        {   
+            $implementer = [BitField]::Extract($signature, 24, 8)
+        
+            $variant = [BitField]::Extract($signature, 20, 4)
+                
+            $arch = [BitField]::Extract($signature, 16, 4)
+                
+            $part = [BitField]::Extract($signature, 4, 12)
+
+            $revision = [BitField]::Extract($signature, 0, 4)
+
+            $orderedSignature = [Ordered]@{ Implementer = $implementer ; Variant = $variant ; Architecture = $arch ; Part = $part ; Revision = $revision }
+
+            return [StringValueOrderedDictionary]::new($orderedSignature)
+        }
+
+        return $null
     }
 
     # Get Signature
@@ -2235,25 +2758,19 @@ class ProcessorInformation : SMBIOSStructure
 
         $signature = [BitField]::LowUInt64($id)
 
-        $architecture = $this.GetArchitecture()
-
         $vendorID = $this.GetVendorID()
 
-        switch ($architecture)
+        switch ($vendorID)
         {
-            ( { [ProcessorArchitecture]::X86, [ProcessorArchitecture]::X64 -contains $_ } )
+            "GenuineIntel"
             {
-                if ( $vendorID -eq "GenuineIntel" )
-                {
-                    return $this.GetSignatureGenuineIntel($signature) 
-                }
-                elseif ( $vendorID -eq "AuthenticAMD" )
-                {
-                    return $this.GetSignatureAuthenticAMD($signature)
-                }
+                return $this.GetSignatureGenuineIntel($signature)
             }
-
-            ( { [ProcessorArchitecture]::Arm, [ProcessorArchitecture]::Arm64 -contains $_ } ) 
+            "AuthenticAMD"
+            {
+                return $this.GetSignatureAuthenticAMD($signature)
+            }
+            "ARM"
             {
                 return $this.GetSignatureArm($signature)
             }
@@ -2273,10 +2790,11 @@ class ProcessorInformation : SMBIOSStructure
 
         if ( ($vendorID -eq "GenuineIntel") -or ($vendorID -eq "AuthenticAMD") )
         {
-            if (($id -and 0xBFEFFBFF) -ne 0)
-            {
-                return [BitFieldConverter]::ToStringValueArray($flags, $vendorID + "Features", [ref]$this)
-            }
+            return [BitFieldConverter]::ToStringValueArray($flags, $vendorID + "Features", [ref]$this)
+        }
+        else
+        {
+            return [StringValue]::new(0, 0x00, $null, $(Get-LocalizedString "UNKNOWN"))
         }
         
         return @()
@@ -2292,33 +2810,37 @@ class ProcessorInformation : SMBIOSStructure
     hidden [StringValue[]]GetVoltage()
     {
         $value = $this.GetByteAtOffset(0x11)
-        
+
         $voltagesList = [Collections.ArrayList]::new()
 
         # Legacy voltage mode
-        if ($value -and 0x80) 
-        {
+        if ($value -band 0x80) 
+        {            
             [Float]$voltage = ($value -band 0x7F) / 10
 
             $voltagesList.Add( [StringValue]::new($voltage, "{0:F01} V") )
         }
+        elseif (($value -band 0x07) -eq 0x00)
+        {
+            $voltagesList.Add( [StringValue]::new($value, 0x00, $null, "UNKNOWN") )
+        }
         else 
-        { 
+        {    
             $voltageCapability = @(
                 [Float]5.0,
                 [Float]3.3,
                 [Float]2.9
             )
 
-            $voltages = [BitFieldConverter]::ToArray($value, 2, $voltageCapability)
+            $voltages = [BitFieldConverter]::ToArray($value, 3, $voltageCapability)
 
-            foreach($voltage in $voltages)
+            if ($voltages)
             {
-                if ($voltage)
+                foreach($voltage in $voltages)
                 {
-                    $voltagesList.Add([StringValue]::new($voltage, "{0:F01} V"))
-                }
-            }  
+                    $voltagesList.Add( [StringValue]::new($voltage, "{0:F01} V") )
+                }  
+            }     
         }
 
         return $voltagesList
@@ -2329,7 +2851,14 @@ class ProcessorInformation : SMBIOSStructure
     {
         $externalClock = $this.GetWordAtOffset(0x12)
         
-        return  [StringValue]::new($externalClock, "{0} MHz")
+        if ($externalClock -eq 0)
+        {
+            return [StringValue]::new($externalClock, 0x00, $null, "UNKNOWN")
+        }
+        else
+        {
+            return  [StringValue]::new($externalClock, "{0} MHz")
+        }
     }
     
     # Get MaxSpeed
@@ -2337,7 +2866,14 @@ class ProcessorInformation : SMBIOSStructure
     {
         $maxSpeed = $this.GetWordAtOffset(0x14)
         
-        return  [StringValue]::new($maxSpeed, "{0} MHz")
+        if ($maxSpeed -eq 0)
+        {
+            return [StringValue]::new($maxSpeed, 0x00, $null, "UNKNOWN")
+        }
+        else
+        {
+            return  [StringValue]::new($maxSpeed, "{0} MHz")
+        }
     }
     
     # Get CurrentSpeed
@@ -2345,19 +2881,30 @@ class ProcessorInformation : SMBIOSStructure
     {
         $currentSpeed = $this.GetWordAtOffset(0x16)
         
-        return  [StringValue]::new($currentSpeed, "{0} MHz")
+        if ($currentSpeed -eq 0)
+        {
+            return [StringValue]::new($currentSpeed, 0x00, $null, "UNKNOWN")
+        }
+        else
+        {
+            return  [StringValue]::new($currentSpeed, "{0} MHz")
+        }
     }
     
     # Get SocketPopulated
     hidden [bool]GetSocketPopulated()
     {
-        return [bool]$this.GetByteAtOffset(0x18) -and 0x40
+        $value = $this.GetByteAtOffset(0x18)
+
+        return [BitField]::Get($value, 6)
     }
     
-    # Get ProcessorStatus
-    hidden [StringValue]GetProcessorStatus()
+    # Get Status
+    hidden [StringValue]GetStatus()
     {
-        [Byte]$status = $this.GetByteAtOffset(0x18) -and 0x07
+        $value = $this.GetByteAtOffset(0x18)
+        
+        $status = [BitField]::Extract($value, 0, 3)
 
         return [StringValue]::new($status, "Status", [ref]$this)
     }
@@ -2378,18 +2925,14 @@ class ProcessorInformation : SMBIOSStructure
         if ($handle -eq 0xFFFF)
         {
             if ([SMBIOS]::Version -lt [Version]::new(2, 3))
-            {
-                $format = [Localization]::LocalizedString("NOT_LN_CACHE")
-                
-                $notLnCache = [String]::Format($format, $level)
+            {   
+                $notLnCache = [String]::Format($(Get-LocalizedString "NOT_LN_CACHE"), $level)
 
                 return [StringValue]::new($handle, $notLnCache)
             }
             else
             {
-                $notProvided = [Localization]::LocalizedString("NOT_PROVIDED")
-                
-                return [StringValue]::new($handle, $notProvided)
+                return [StringValue]::new($handle, $(Get-LocalizedString "NOT_PROVIDED"))
             }
         }
         else
@@ -2481,8 +3024,8 @@ class ProcessorInformation : SMBIOSStructure
         return [BitFieldConverter]::ToStringValueArray($characteristics, "Characteristics", [ref]$this)
     }
     
-    # Get ProcessorFamily2
-    hidden [UInt16]GetProcessorFamily2()
+    # Get Family2
+    hidden [UInt16]GetFamily2()
     {
         return $this.GetWordAtOffset(0x28)
     }
@@ -2499,11 +3042,18 @@ class ProcessorInformation : SMBIOSStructure
         return $this.GetWordAtOffset(0x2C)
     }
 
-     # Get GetCoreCount2
+    # Get GetCoreCount2
     hidden [UInt16]GetThreadCount2()
     {
         return $this.GetWordAtOffset(0x2E)
     }  
+
+    # Get GetThreadEnabled
+    hidden [UInt16]GetThreadEnabled()
+    {
+        return $this.GetWordAtOffset(0x30)
+    }
+    
 }
 
 
@@ -2695,13 +3245,15 @@ class MemoryModuleInformation : SMBIOSStructure
 
         if ( [SMBIOS]::Version -ge [Version]::new(2, 0) )
         {
-            $labels.Add( "SocketDesignation" )
-            $labels.Add( "BankConnections"   )
-            $labels.Add( "CurrentSpeed"      )
-            $labels.Add( "CurrentMemoryType" )
-            $labels.Add( "InstalledSize"     )
-            $labels.Add( "EnabledSize"       )
-            $labels.Add( "ErrorStatus"       )
+            $labels.Add( "SocketDesignation"       )
+            $labels.Add( "BankConnections"         )
+            $labels.Add( "CurrentSpeed"            )
+            $labels.Add( "CurrentMemoryType"       )
+            $labels.Add( "InstalledSize"           )
+            $labels.Add( "InstalledSizeConnection" )
+            $labels.Add( "EnabledSize"             )
+            $labels.Add( "EnabledSizeConnection"   )
+            $labels.Add( "ErrorStatus"             )
         }
       
         [MemoryModuleInformation]::PropertyNames = $labels 
@@ -2727,9 +3279,7 @@ class MemoryModuleInformation : SMBIOSStructure
 
         if ($bankConnections -eq 0xFF)
         {
-            $none = [Localization]::LocalizedString("NONE")
-            
-            $connections.Add( [StringValue]::new($bankConnections, $none) )
+            $connections.Add( [StringValue]::new(-1, $(Get-LocalizedString "NONE")) )
         }
 
         $bank = $bankConnections -shr 4
@@ -2762,18 +3312,31 @@ class MemoryModuleInformation : SMBIOSStructure
     {
         $currentMemoryType = $this.GetWordAtOffset(0x07)
 
-        return [BitFieldConverter]::ToStringValueArray($currentMemoryType, "CurrentMemoryType", [ref]$this)
+        if (($currentMemoryType -band 0x07FF) -eq 0)
+        {
+            return [StringValue]::new(-1, $(Get-LocalizedString "NONE"))
+        }
+        else
+        {    
+            return [BitFieldConverter]::ToStringValueArray($currentMemoryType, "CurrentMemoryType", [ref]$this)
+        }
     }
 
     hidden [StringValueMemorySize]_Size($size)
-    {
+    {        
         $memorySize = [BitField]::Extract($size, 0, 7)
 
-        if (@(0x7D, 0x7E, 0x7F) -contains $memorySize)
+        if ($memorySize -eq 0x7D)
+        {
+            return [StringValueMemorySize]::new($size, "_Size", [ref]$this, -1, [MemorySizeUnit]::Unknown)
+        }
+        elseif ($memorySize -eq 0x7E)
+        {
+            return [StringValueMemorySize]::new($size, "_Size", [ref]$this, -1, [MemorySizeUnit]::None)
+        }
+        elseif ($memorySize -eq 0x7F)
         {             
-             $none = [Localization]::LocalizedString("NONE")
-             
-             return [StringValue]::new($memorySize, $none)
+            return [StringValueMemorySize]::new($size, "_Size", [ref]$this, -1, [MemorySizeUnit]::None)
         }
         else
         {
@@ -2787,12 +3350,34 @@ class MemoryModuleInformation : SMBIOSStructure
         }
     }
 
+    hidden [StringValue]_SizeConnection($size)
+    {
+        $connection = [BitField]::Get($size, 8)
+        
+        if ($size -eq 0x7F)
+        {                         
+            return [StringValue]::new($connection, $(Get-LocalizedString "NOT_AVAILABLE"))
+        }
+        else
+        {
+             return [StringValue]::new($connection, "_Connection", [ref]$this)
+        }
+    }        
+
     # Get InstalledSize
     hidden [StringValueMemorySize]GetInstalledSize()
     {
         $installedSize =  $this.GetByteAtOffset(0x09)
 
         return $this._Size($installedSize)
+    }
+
+    # Get InstalledSizeConnection
+    hidden [StringValue]GetInstalledSizeConnection()
+    {
+        $installedSize =  $this.GetByteAtOffset(0x09)
+
+        return $this._SizeConnection($installedSize)
     }
 
     # Get EnabledSize
@@ -2803,12 +3388,27 @@ class MemoryModuleInformation : SMBIOSStructure
         return $this._Size($enabledSize)
     }
 
+    # Get EnabledSizeConnection
+    hidden [StringValue]GetEnabledSizeConnection()
+    {
+        $installedSize =  $this.GetByteAtOffset(0x09)
+
+        return $this._SizeConnection($installedSize)
+    }
+
     # Get ErrorStatus
     hidden [StringValue]GetErrorStatus()
     {
         $errorStatus = $this.GetByteAtOffset(0x0B)
-    
-        return [BitFieldConverter]::ToStringValue($errorStatus, "ErrorStatus", [ref]$this)
+
+        if ($errorStatus -le 0x04)
+        {
+            return [StringValue]::new($errorStatus, "ErrorStatus", [ref]$this)
+        }
+        else
+        {
+            return [StringValue]::new($errorStatus -band 0x03)
+        }
     }
 }
 
@@ -2916,9 +3516,7 @@ class CacheInformation : SMBIOSStructure
     {
         if ($maximumSize -eq 0x00)
         {
-            $none = [Localization]::LocalizedString("NONE")
-
-            return [StringValue]::new($maximumSize, $none)
+            return [StringValueMemorySize]::new($maximumSize, "_Size", [ref]$this, -1, [MemorySizeUnit]::None)
         }
         
         $granularity = [BitField]::Get($maximumSize, 16)
@@ -3102,6 +3700,8 @@ class SystemSlots : SMBIOSStructure
 
     hidden static [Array]$PropertyNames
 
+    hidden [ArrayList]$PropertyNamesEx
+
     static SystemSlots()
     {
         $stringTables = [SystemSlots]::GetStringTables("Type_9")
@@ -3122,23 +3722,34 @@ class SystemSlots : SMBIOSStructure
             $labels.Add( "ID"                   )
             $labels.Add( "Characteristics"      )
         }
-        if ( [SMBIOS]::Version -ge [Version]::new(2, 6) )
-        {
-            $labels.Add( "SegmentGroupNumber"   )
-            $labels.Add( "BusNumber"            )
-            $labels.Add( "DeviceFunctionNumber" )
-        }
-        if ( [SMBIOS]::Version -ge [Version]::new(3, 2) )
-        {
-            $labels.Add( "DataBusWidth"         )
-            $labels.Add( "PeerDevices"          )
-        }
 
         [SystemSlots]::PropertyNames = $labels
     }
     
     SystemSlots([Byte]$type, [String]$description, [String[]]$keywords, [Byte]$length, [UInt16]$handle, [Byte[]]$data, [String[]]$strings) : base($type, $description, $keywords, $length, $handle, $data, $strings)
     {
+        $labels = [Collections.ArrayList]::new()
+
+        if ( [SMBIOS]::Version -ge [Version]::new(2, 6) )
+        {
+            $labels.Add( "BusAddress"           )
+        }
+        if ( [SMBIOS]::Version -ge [Version]::new(3, 2) )
+        {
+            $labels.Add( "PeerDevices"          )
+        }
+        if ( [SMBIOS]::Version -ge [Version]::new(3, 4) )
+        {
+            $labels.Add( "SlotInformation"      )
+            $labels.Add( "SlotPhysicalWidth"    )
+            $labels.Add( "SlotPitch"            )
+        }
+        if ( [SMBIOS]::Version -ge [Version]::new(3, 5) )
+        {
+            $labels.Add( "SlotHeight"           )
+        }
+
+        $this.PropertyNamesEx = $labels
     }
     
     # Get Designation
@@ -3160,7 +3771,7 @@ class SystemSlots : SMBIOSStructure
     {
         $slotDataBusWidth = $this.GetByteAtOffset(0x06)
 
-        return [StringValue]::new($slotDataBusWidth, "SlotDataBusWidth", [ref]$this)
+        return [StringValue]::new($slotDataBusWidth, "_SlotWidth", [ref]$this)
     }
 
      # Get CurrentUsage
@@ -3192,47 +3803,120 @@ class SystemSlots : SMBIOSStructure
 
         $characteristics1 = $this.GetByteAtOffset(0x0B)
 
-        $characteristics =  $characteristics + [BitFieldConverter]::ToStringValueArray($characteristics1, 8, "SlotCharacteristics1", [ref]$this)
+        $characteristics2 = 0
 
         if ( [SMBIOS]::Version -ge [Version]::new(2, 1) )
         {   
             $characteristics2 = $this.GetByteAtOffset(0x0C)
-            
-            $characteristics = $characteristics + [BitFieldConverter]::ToStringValueArray($characteristics2, 4, "SlotCharacteristics2", 8, [ref]$this)
+        }
+
+        if (($characteristics1 -band (1 -shl 0)))
+        {   
+            return [StringValue]::new(0xFE, $(Get-LocalizedString "UNKNOWN"))
+        }
+        elseif (($characteristics1 -band 0xFE) -eq 0 -and ($characteristics2 -band 7) -eq 0)
+        {
+            return [StringValue]::new(-1 , $(Get-LocalizedString "NONE"))
+        }
+        else 
+        {
+            if ($characteristics1 -gt 0)
+            {
+                $characteristics =  $characteristics + [BitFieldConverter]::ToStringValueArray($characteristics1, 8, "SlotCharacteristics1", [ref]$this)
+            }
+
+            if ( [SMBIOS]::Version -ge [Version]::new(2, 1) -and ($characteristics2 -gt 0) )
+            {   
+                $characteristics = $characteristics + [BitFieldConverter]::ToStringValueArray($characteristics2, 4, "SlotCharacteristics2", 8, [ref]$this)
+            }
         }
 
         return $characteristics
     }
 
-    # Get SegmentGroupNumber
-    hidden [UInt16]GetSegmentGroupNumber()
-    {
-        return $this.GetWordAtOffset(0x0D)
+    # Get BusAddress
+    hidden [StringValue]GetBusAddress()
+    { 
+        return ([SMBIOSStructure]$this).Get_BusAddress(0x0D)   
     }
 
-    # Get BusNumber
-    hidden [Byte]GetBusNumber()
-    {
-        return $this.GetByteAtOffset(0x0F)
-    }
-
-    # Get DeviceFunctionNumber
-    hidden [Byte]GetDeviceFunctionNumber()
-    {
-        return $this.GetByteAtOffset(0x10)
-    }
-
-    # Get DataBusWidth
-    hidden [Byte]GetDataBusWidth()
-    {
-        return $this.GetByteAtOffset(0x11)
-    }   
-    
-    # Get PeerDevices
-    hidden [Byte]GetPeerDevices()
-    {
+    # Get PeerDevicesCount
+    hidden [Byte]GetPeerDevicesCount()
+    {       
         return $this.GetByteAtOffset(0x12)
-    }   
+    }
+
+    # Get PeerDevices
+    hidden [StringValue[]]GetPeerDevices()
+    {        
+        $peerDevicesCount = $this.GetPeerDevicesCount()
+        
+        if ($peerDevicesCount -eq 0)
+        { 
+            return [StringValue]::new(-1, $(Get-LocalizedString "NONE"))
+        }
+        
+        $peerDevices = [Collections.ArrayList]::new()
+
+        for ($i = 0; $i -lt $peerDevicesCount; $i++) 
+        {
+            $segmentGroupNumber = $this.GetWordAtOffset(0x13 + ($i * 5))
+            $busNumber = $this.GetByteAtOffset(0x13 + ($i * 5) + 0x02)
+            $deviceAndFunctionNumber = $this.GetByteAtOffset(0x13 + ($i * 5) + 0x03)
+            $width = $this.GetByteAtOffset(0x13 + ($i * 5) + 0x04)
+
+            if (($segmentGroupNumber -ne 0xFFFF) -or ($busNumber -ne 0xFF) -or ($deviceAndFunctionNumber -ne 0xFF))
+            {
+                $busAddress = "{0:x4}:{1:x2}:{2:x2}.{3}" -f $segmentGroupNumber, $busNumber, ($deviceAndFunctionNumber -shr 3), ($deviceAndFunctionNumber -band 0x7)
+                
+                $peerDevice = [StringValue]::new( [Ordered]@{ SegmentGroupNumber = $segmentGroupNumber; 
+                                                    BusNumber          = $busNumber;
+                                                    DeviceNumber       = ($deviceAndFunctionNumber -shr 3);
+                                                    FunctionNumber     = ($deviceAndFunctionNumber -band 0x7);
+                                                    Width              = $width }, $busAddress.ToUpper() + $(" (Width {0})" -f $width) )
+            }
+            else 
+            {
+                return [StringValue]::new(-1, $(Get-LocalizedString "NOT_DEFINED"))
+            }
+            
+            $peerDevices.Add( $peerDevice )
+        }
+        
+        return $peerDevices
+    }
+
+    # Get SlotInformation
+    hidden [StringValue]GetSlotInformation()
+    {         
+        $slotPhysicalWidth = $this.GetByteAtOffset(0x13 + $($this.GetPeerDevicesCount() * 5))
+
+        return [StringValue]::new($slotPhysicalWidth, "_SlotWidth", [ref]$this)
+    }
+
+    # Get SlotPhysicalWidth
+    hidden [StringValue]GetSlotPhysicalWidth()
+    {
+        $slotPhysicalWidth = $this.GetByteAtOffset(0x14 + $($this.GetPeerDevicesCount() * 5))
+
+        return [StringValue]::new($slotPhysicalWidth, "_SlotWidth", [ref]$this)
+    }
+
+    # Get SlotPitch
+    hidden [StringValue]GetSlotPitch()
+    {
+        $slotPitch = $this.GetWordAtOffset(0x15 + $($this.GetPeerDevicesCount() * 5))
+        
+        return [StringValue]::new($slotPitch / 100, 0x00, "{0:N1} mm", $slotPitch, "UNKNOWN")
+    }
+    
+    # Get SlotHeight
+    hidden [StringValue]GetSlotHeight()
+    {
+        $height = $this.GetByteAtOffset(0x17 + $($this.GetPeerDevicesCount() * 5))
+
+        return [StringValue]::new($height, "SlotHeight", [ref]$this)
+    }
 }
 
 
@@ -3251,7 +3935,8 @@ class OnBoardDevice {
         $this.Description = $Description
     }
     
-    [String]ToString() {
+    [String]ToString() 
+    {
         return $this.Description
     }
 }
@@ -3305,8 +3990,13 @@ class OnBoardDevicesInformation : SMBIOSStructure
 
             $deviceStatus = $([StringValue]::new(($deviceInformations -shr 7), $status))
 
-            $description = $this.strings[$this.data[5 + 2 * ($i - 1)] - 1]
+            $description = $($this.strings[$this.data[5 + 2 * ($i - 1)] - 1])
             
+            if ([String]::IsNullOrEmpty($description))
+            {
+                $description = Get-LocalizedString "NOT_SPECIFIED"
+            }
+
             $deviceList.Add([OnBoardDevice]::new($deviceType, $deviceStatus, $description)) | Out-Null
         }
 
@@ -3451,6 +4141,10 @@ class BIOSLanguageInformation : SMBIOSStructure
                 $installableLanguages.Add( $this.strings[$i] )
             }
         }
+        else 
+        {
+            return [StringValue]::new(-1, $(Get-LocalizedString "NONE"))
+        }
         
         return $installableLanguages
     } 
@@ -3527,7 +4221,7 @@ class GroupAssociations : SMBIOSStructure
 
     # Get NumberOfItems
     hidden [Byte]GetNumberOfItems()
-    { 
+    {  
         return ($this.data.length - 5) / 3
     }
 
@@ -3700,7 +4394,7 @@ class SystemEventLog : SMBIOSStructure
         { 
             $descriptorSegment = ([ArraySegment[Byte]]::new($this.data, 0x17 + ($i * $lengthOfDescriptor), $lengthOfDescriptor))
             
-            [Byte[]]$descriptor = [System.Linq.Enumerable]::ToArray($descriptorSegment)
+            [Byte[]]$descriptor = [Linq.Enumerable]::ToArray($descriptorSegment)
 
             $eventLogType = $descriptor[0]
 
@@ -3740,7 +4434,7 @@ class PhysicalMemoryArray : SMBIOSStructure
 
         $labels = [Collections.ArrayList]::new() 
         
-        if ( [SMBIOS]::Version -ge [Version]::new(2, 0) )
+        if ( [SMBIOS]::Version -ge [Version]::new(2, 1) )
         {
             $labels.Add( "Location"                     )
             $labels.Add( "Use"                          )
@@ -3797,7 +4491,7 @@ class PhysicalMemoryArray : SMBIOSStructure
             $sizeInBytes = $this.GetDoubleWordAtOffset(0x0F)    
         }
 
-        $unit = [MemorySizeUnit]::GB
+        $unit = [MemorySizeUnit]::Auto
 
         return [StringValueMemorySize]::new($sizeInBytes, $unit)
     }
@@ -3833,6 +4527,8 @@ class MemoryDevice : SMBIOSStructure
 
     static [Array]$PropertyNames
 
+    hidden [ArrayList]$PropertyNamesEx
+
     static MemoryDevice()
     {
         $stringTables = [MemoryDevice]::GetStringTables("Type_17")
@@ -3865,9 +4561,17 @@ class MemoryDevice : SMBIOSStructure
             $labels.Add( "AssetTag"                                )
             $labels.Add( "PartNumber"                              )
         }
+
+        [MemoryDevice]::PropertyNames = $labels   
+    }
+
+    MemoryDevice([Byte]$type, [String]$description, [String[]]$keywords, [Byte]$length, [UInt16]$handle, [Byte[]]$data, [String[]]$strings) : base($type, $description, $keywords, $length, $handle, $data, $strings)
+    {   
+        $labels = [Collections.ArrayList]::new()
+
         if ( [SMBIOS]::Version -ge [Version]::new(2, 6) )
         {
-            $labels.Add( "Attributes"                              )
+            $labels.Add( "Rank"                                    )
         }
         if ( [SMBIOS]::Version -ge [Version]::new(2, 7) )
         {
@@ -3893,12 +4597,15 @@ class MemoryDevice : SMBIOSStructure
             $labels.Add( "CacheSize"                               )
             $labels.Add( "LogicalSize"                             )
         }
+        if ( [SMBIOS]::Version -ge [Version]::new(3, 7) )
+        {
+            $labels.Add( "PMIC0ManufacturerID"                     )
+            $labels.Add( "PMIC0RevisionNumber"                     )
+            $labels.Add( "RCDManufacturerID"                       )
+            $labels.Add( "RCDRevisionNumber"                       )
+        }
 
-        [MemoryDevice]::PropertyNames = $labels   
-    }
-
-    MemoryDevice([Byte]$type, [String]$description, [String[]]$keywords, [Byte]$length, [UInt16]$handle, [Byte[]]$data, [String[]]$strings) : base($type, $description, $keywords, $length, $handle, $data, $strings)
-    {   
+        $this.PropertyNamesEx = $labels
     }
 
     # Get PhysicalMemoryArrayHandle
@@ -3925,7 +4632,7 @@ class MemoryDevice : SMBIOSStructure
     {
         $totalWidth = $this.GetWordAtOffset(0x08)  
 
-        return [StringValue]::new($totalWidth, 0x0000, "{0} bits", "UNKNOWN")
+        return [StringValue]::new($totalWidth, @(0x00, 0xFFFF), "{0} bits", "UNKNOWN")
     }
 
     # Get DataWidth
@@ -3933,7 +4640,7 @@ class MemoryDevice : SMBIOSStructure
     {
         $dataWidth = $this.GetWordAtOffset(0x0A)  
 
-        return [StringValue]::new($dataWidth, 0x0000, "{0} bits", "UNKNOWN")
+        return [StringValue]::new($dataWidth, @(0x00, 0xFFFF), "{0} bits", "UNKNOWN")
     }
 
     # Get Size
@@ -3943,11 +4650,14 @@ class MemoryDevice : SMBIOSStructure
 
         $sizeInBytes = 0
 
-        $unit = [MemorySizeUnit]::B
-
-        if ( @(0xFFFE, 0x0000) -contains $size )
+        if ($size -eq 0x0000)
         {
-            return [StringValue]::new($size, "Size", [ref]$this)
+            return [StringValueMemorySize]::new($size, "Size", [ref]$this, -1, [MemorySizeUnit]::None)
+        }
+
+        if ($size -eq 0xFFFE)
+        {
+            return [StringValueMemorySize]::new($size, "Size", [ref]$this, -1, [MemorySizeUnit]::Unknown)
         }
 
         if ($size -eq 0x7FFF)
@@ -3957,27 +4667,23 @@ class MemoryDevice : SMBIOSStructure
             $effectiveSize = [BitFieldConverter]::ToInt($size, 0, 30)
 
             $sizeInBytes = $effectiveSize * 1mb
-
-            $unit = [MemorySizeUnit]::GB
         }
         else 
         {
             $effectiveSize = $size -band 0x7FFF
 
             if ($size -band (1 -shl 15))
-            {
-                $unit = [MemorySizeUnit]::kB
-                
+            { 
                 $sizeInBytes = $effectiveSize * 1kb
             }
             else
             {
-                $unit = [MemorySizeUnit]::MB
-
                 $sizeInBytes = $effectiveSize * 1mb
             }
         }
         
+        $unit = [MemorySizeUnit]::Auto
+
         return [StringValueMemorySize]::new($sizeInBytes, $unit)
     }
 
@@ -4027,7 +4733,7 @@ class MemoryDevice : SMBIOSStructure
     {
         $typeDetail = $this.GetWordAtOffset(0x13)
 
-        return [BitFieldConverter]::ToStringValueArray($typeDetail, "TypeDetail", [ref]$this)    
+        return [BitFieldConverter]::ToStringValueArray($typeDetail, "TypeDetail", [ref]$this) 
     }
 
     # Get Speed
@@ -4069,10 +4775,10 @@ class MemoryDevice : SMBIOSStructure
         return $this.GetStringAtOffset(0x1A)
     }
 
-    # Get Attributes
-    hidden [StringValue]GetAttributes()
+    # Get Rank
+    hidden [StringValue]GetRank()
     {
-        $attributes = $this.GetByteAtOffset(0x1A)
+        $attributes = $this.GetByteAtOffset(0x1B)
 
         $rank = [BitField]::Extract($attributes, 0, 4)
 
@@ -4181,20 +4887,16 @@ class MemoryDevice : SMBIOSStructure
     hidden [StringValueMemorySize]_GetSize($size)
     {        
         if (([BitField]::LowUInt64($size) -eq 0xFFFFFFFF) -and ([BitField]::HighUInt64($size) -eq 0xFFFFFFFF))
-        {
-            $unknown = [Localization]::LocalizedString("UNKNOWN")
-            
-            return [StringValue]::new($size, $unknown) 
+        {            
+            return [StringValueMemorySize]::new(0xFFFF, "OtherSize", [ref]$this, -1, [MemorySizeUnit]::Unknown)
         }
         elseif (([BitField]::LowUInt64($size) -eq 0x00) -and ([BitField]::HighUInt64($size) -eq 0x00))
-        {
-            $none = [Localization]::LocalizedString("NONE")
-            
-            return [StringValue]::new($size, $none)
+        {            
+            return [StringValueMemorySize]::new($size, "OtherSize", [ref]$this, -1, [MemorySizeUnit]::None)
         }
         else
         {
-            $unit = [MemorySizeUnit]::B
+            $unit = [MemorySizeUnit]::Auto
             
             return [StringValueMemorySize]::new($size, $unit)
         }
@@ -4232,14 +4934,40 @@ class MemoryDevice : SMBIOSStructure
         return $this._GetSize($logicalSize)   
     }
 
+    # Get ExtendedSpeed
     hidden [UInt32]ExtendedSpeed()
     {
-        return $this.GetDoubleWordAtOffset(0x54)
+        return $this.GetDoubleWordAtOffset(0x54) -band [UInt32]0x7FFFFFFF
     }
 
+    # Get ExtendedConfiguredMemorySpeed
     hidden [UInt32]ExtendedConfiguredMemorySpeed()
     {
-        return $this.GetDoubleWordAtOffset(0x58)
+        return $this.GetDoubleWordAtOffset(0x58) -band [UInt32]0x7FFFFFFF
+    }
+
+    # Get PMIC0ManufacturerID
+    hidden [UInt16]PMIC0ManufacturerID()
+    {
+        return $this.GetWordAtOffset(0x5C)
+    }
+
+    # Get PMIC0RevisionNumber
+    hidden [UInt16]PMIC0RevisionNumber()
+    {
+        return $this.GetWordAtOffset(0x5E)
+    }
+
+    # Get RCDManufacturerID
+    hidden [UInt16]RCDManufacturerID()
+    {
+        return $this.GetWordAtOffset(0x60)
+    }
+
+    # Get RCDRevisionNumber
+    hidden [UInt16]RCDRevisionNumber()
+    {
+        return $this.GetWordAtOffset(0x62)
     }
 }
 
@@ -4379,10 +5107,10 @@ class MemoryArrayMappedAddress : SMBIOSStructure
         {
             $extendedStartingAddress = $this.GetExtendedStartingAddress()
 
-            return [StringValue]::new($extendedStartingAddress, "0x{0:X16}")  
+            return [StringValue]::new($extendedStartingAddress, "0x{0:X16}")
         }
 
-        return [StringValue]::new($startingAddress, "0x{0:X8}")  
+        return [StringValue]::new([UInt64]$startingAddress * 1kb, "0x{0:X16}")
     }
 
     # Get EndingAddress
@@ -4397,19 +5125,24 @@ class MemoryArrayMappedAddress : SMBIOSStructure
             return [StringValue]::new($extendedEndingAddress, "0x{0:X16}")  
         }
 
-        return [StringValue]::new($endingAddress, "0x{0:X8}")  
+        return [StringValue]::new([UInt64]$endingAddress * 1kb + 1023, "0x{0:X16}")
     }
 
     # Get RangeSize
     hidden [StringValueMemorySize]GetRangeSize()
     {
-        $start = $this.GetStartingAddress()
+        $startingAddress = $this.GetStartingAddress().Value
 
-        $end = $this.GetEndingAddress()
+        $endingAddress = $this.GetEndingAddress().Value
 
-        $size = $end.Value - $start.Value
+        if ($startingAddress -eq $endingAddress)
+        {
+            return [StringValueMemorySize]::new(0, [MemorySizeUnit]::B)
+        }
 
-        $unit = [MemorySizeUnit]::B
+        $size = $endingAddress - $startingAddress + 1
+
+        $unit = [MemorySizeUnit]::Auto
 
         return [StringValueMemorySize]::new($size, $unit)
     }
@@ -4485,7 +5218,7 @@ class MemoryDeviceMappedAddress : SMBIOSStructure
             return [StringValue]::new($extendedStartingAddress, "0x{0:X16}")  
         }
 
-        return [StringValue]::new($startingAddress, "0x{0:X8}")    
+        return [StringValue]::new([UInt64]$startingAddress * 1kb, "0x{0:X16}")    
     }
 
     # Get EndingAddress
@@ -4500,19 +5233,24 @@ class MemoryDeviceMappedAddress : SMBIOSStructure
             return [StringValue]::new($extendedEndingAddress, "0x{0:X16}")  
         }
 
-        return [StringValue]::new($endingAddress, "0x{0:X8}")    
+        return [StringValue]::new([UInt64]$endingAddress * 1kb + 1023, "0x{0:X16}")    
     }
 
     # Get RangeSize
     hidden [StringValueMemorySize]GetRangeSize()
     {
-        $start = $this.GetStartingAddress()
+        $startingAddress = $this.GetStartingAddress().Value
 
-        $end = $this.GetEndingAddress()
+        $endingAddress = $this.GetEndingAddress().Value
 
-        $size = $end.Value - $start.Value
+        if ($startingAddress -eq $endingAddress)
+        {
+            return [StringValueMemorySize]::new(0, [MemorySizeUnit]::B)
+        }
 
-        $unit = [MemorySizeUnit]::B
+        $size = $endingAddress - $startingAddress + 1
+
+        $unit = [MemorySizeUnit]::Auto
 
         return [StringValueMemorySize]::new($size, $unit)
     }
@@ -4777,9 +5515,7 @@ class PortableBattery : SMBIOSStructure
 
         if ($BDSManufactureDate -eq 0x00)
         {
-            $unknown = [Localization]::LocalizedString("UNKNOWN")
-            
-            return [StringValueDateTime]::new([DateTime]::new(1), "$unknown")
+            return [StringValueDateTime]::new($null, $(Get-LocalizedString "UNKNOWN"))
         }
         
         $year = 1980 + [BitField]::Extract($BDSManufactureDate, 9, 7)
@@ -4833,7 +5569,7 @@ class SystemReset : SMBIOSStructure
 
         $labels = [Collections.ArrayList]::new() 
 
-        if ( [SMBIOS]::Version -ge [Version]::new(2, 1) )
+        if ( [SMBIOS]::Version -ge [Version]::new(2, 2) )
         {
             $labels.Add( "Status"            )
             $labels.Add( "WatchdogTimer"     )
@@ -5013,8 +5749,7 @@ class SystemPowerControls : SMBIOSStructure
         
         if ( [SMBIOS]::Version -ge [Version]::new(2, 2) )
         {
-            $labels.Add( "Data"    )
-            $labels.Add( "Strings" )
+            $labels.Add( "NextScheduledPowerOn" )
         }
 
         [SystemPowerControls]::PropertyNames = $labels 
@@ -5024,14 +5759,53 @@ class SystemPowerControls : SMBIOSStructure
     {
     }
 
-    hidden [Byte[]]GetData()
+    hidden [StringValueDateTime]GetNextScheduledPowerOn()
     {
-        return $this.Data
+        $schedule = [ArraySegment[Byte]]::new($this.Data, 4, 5)
+
+        if ([Linq.Enumerable]::Sum([Int[]]$schedule) -eq 0)
+        {   
+            return [StringValueDateTime]::new($null, $(Get-LocalizedString "NOT_DEFINED"))   
+        }
+        else
+        {
+            $currentDate = Get-Date
+
+            $year = $currentDate.Year
+            
+            $month  = $this.ValidateData(4, @(1..12), $currentDate.Month)
+
+            $day    = $this.ValidateData(5, @(1..31), $currentDate.Day)
+
+            $hour   = $this.ValidateData(6, @(0..23), $currentDate.Hour)
+
+            $minute = $this.ValidateData(7, @(0..59), $currentDate.Minute)
+
+            $second = $this.ValidateData(8, @(0..59), $currentDate.Second)
+
+            $nextScheduledPowerOn = [DateTime]::new($year, $month, $day, $hour, $minute, $second)
+
+            if ($nextScheduledPowerOn -lt $currentDate)
+            {
+                $nextScheduledPowerOn = $nextScheduledPowerOn.AddYears(1)
+            }
+
+            $format = [CultureInfo]::CurrentCulture.DateTimeFormat.FullDateTimePattern
+
+            return [StringValueDateTime]::new($nextScheduledPowerOn, "{0:$format}")    
+        }
     }
 
-    hidden [String[]]GetStrings()
+    hidden [Int]ValidateData([Int]$offset, [Array]$range, [Int]$defaultResult)
     {
-        return $this.Strings
+        $unitOftime = [Int][BitConverter]::ToString($this.Data, $offset, 1)
+    
+        if (-Not ($unitOftime -in $range) )
+        {
+            $unitOftime = $defaultResult
+        }
+    
+        return $unitOftime
     }
 }
 
@@ -5104,7 +5878,7 @@ class VoltageProbe : SMBIOSStructure
     }
 
     # Get VoltageValue
-     hidden [StringValue]GetVoltageValue($voltage)
+    hidden [StringValue]GetVoltageValue($voltage)
     {
         return [StringValue]::new($voltage, 0x8000, "{0:F03} V", $voltage / 1000, "UNKNOWN")
     }
@@ -5216,7 +5990,7 @@ class CoolingDevice : SMBIOSStructure
     # Get DeviceType
     hidden [StringValue]GetDeviceType()
     {
-        $deviceTypeAndStatus = $this.GetByteAtOffset(0x06)
+        $deviceTypeAndStatus = 103 #$this.GetByteAtOffset(0x06)
         
         $deviceType = [BitField]::Extract($deviceTypeAndStatus, 0, 5)
 
@@ -5226,7 +6000,7 @@ class CoolingDevice : SMBIOSStructure
     # Get Status
     hidden [StringValue]GetStatus()
     {
-        $deviceTypeAndStatus = $this.GetByteAtOffset(0x06)
+        $deviceTypeAndStatus = 103 #$this.GetByteAtOffset(0x06)
         
         $status = [BitField]::Extract($deviceTypeAndStatus, 5, 3)
 
@@ -5330,24 +6104,22 @@ class TemperatureProbe : SMBIOSStructure
 
     # Get TemperatureValue
     hidden [StringValueTemperature]GetTemperatureValue($temperature)
-    {
+    {        
         if ($temperature -eq 0x8000)
         {
-            $unknown = [Localization]::LocalizedString("UNKNOWN")
-            
-            return [StringValue]::new($temperature, $unknown) 
+            return [StringValueTemperature]::new($temperature, $(Get-LocalizedString "UNKNOWN")) 
         }
         else
         {
-            return  [StringValueTemperature]::new($temperature / 10, [TemperatureUnit]::Celsius, 1)
-        }  
+            return [StringValueTemperature]::new($temperature / 10, [TemperatureUnit]::Celsius, 1)
+        }
     }
 
     # Get MaximumValue
     hidden [StringValueTemperature]GetMaximumValue()
     {
         $maximumValue = $this.GetWordAtOffset(0x06)
-        
+
         return $this.GetTemperatureValue($maximumValue)   
     }
 
@@ -5355,7 +6127,7 @@ class TemperatureProbe : SMBIOSStructure
     hidden [StringValueTemperature]GetMinimumValue()
     {
         $minimumValue = $this.GetWordAtOffset(0x08)
-        
+
         return $this.GetTemperatureValue($minimumValue)   
     }
 
@@ -5366,9 +6138,7 @@ class TemperatureProbe : SMBIOSStructure
 
         if ($resolution -eq 0x8000)
         {
-            $unknown = [Localization]::LocalizedString("UNKNOWN")
-            
-            return [StringValue]::new($resolution, $unknown) 
+            return [StringValueTemperature]::new($resolution, $(Get-LocalizedString "UNKNOWN"))
         }
         else
         {
@@ -5428,7 +6198,7 @@ class ElectricalCurrentProbe : SMBIOSStructure
         
         $labels = [Collections.ArrayList]::new() 
         
-        if ( [SMBIOS]::Version -ge [Version]::new(2, 1) )
+        if ( [SMBIOS]::Version -ge [Version]::new(2, 2) )
         {
             $labels.Add( "Description"           )
             $labels.Add( "Location"              )
@@ -5557,7 +6327,7 @@ class OutOfBandRemoteAccess : SMBIOSStructure
         
         $labels = [Collections.ArrayList]::new() 
         
-        if ( [SMBIOS]::Version -ge [Version]::new(2, 1) )
+        if ( [SMBIOS]::Version -ge [Version]::new(2, 2) )
         {
             $labels.Add( "ManufacturerName"          )
             $labels.Add( "InboundConnectionEnabled"  )
@@ -5610,9 +6380,10 @@ class BootIntegrityServicesEntryPoint : SMBIOSStructure
         $labels = [Collections.ArrayList]::new() 
         
         if ( [SMBIOS]::Version -ge [Version]::new(2, 3) )
-        {
-            $labels.Add( "Data"    )
-            $labels.Add( "Strings" )
+        {   
+            $labels.Add( "Checksum"               )
+            $labels.Add( "16bitEntryPointAddress" )
+            $labels.Add( "32bitEntryPointAddress" )
         }
 
         [BootIntegrityServicesEntryPoint]::PropertyNames = $labels 
@@ -5621,15 +6392,55 @@ class BootIntegrityServicesEntryPoint : SMBIOSStructure
     BootIntegrityServicesEntryPoint([Byte]$type, [String]$description, [String[]]$keywords, [Byte]$length, [UInt16]$handle, [Byte[]]$data, [String[]]$strings) : base($type, $description, $keywords, $length, $handle, $data, $strings)
     {
     }
-
-    hidden [Byte[]]GetData()
+    
+    # Calculate Checksum
+    hidden [bool]CalculateChecksum([byte[]]$data) 
     {
-        return $this.Data
+        $checksum = 0
+
+        for ($i = 0; $i -lt $data.Length; $i++)
+        {
+            $checksum = $checksum -bxor $data[$i]
+        }
+
+        return $checksum
     }
 
-    hidden [String[]]GetStrings()
+    # Get Checksum
+    hidden [StringValue]GetChecksum()
     {
-        return $this.Strings
+        if ($this.Checksum($this.Data))
+        {
+            return [StringValue]::new($true, $(Get-LocalizedString "OK"))
+        }
+        else 
+        {
+            return [StringValue]::new($false, $(Get-LocalizedString "INVALID"))
+        }
+    }
+
+    # Get 16bitEntryPointAddress
+    hidden [StringValue]Get16bitEntryPointAddress()
+    {
+        $bisEntry16 = $this.GetDoubleWordAtOffset(0x08)
+        
+        $segment = $bisEntry16 -shr  16
+        $offset  = $bisEntry16 -band 0xFFFF
+        
+        $string = [String]::Format("{0:X4}:{1:X4}", $segment, $offset)
+
+        $value = [Ordered]@{ Segment = $([StringValue]::new($segment, [String]::Format("{0:X4}", $segment))); 
+                             Offset  = $([StringValue]::new($offset,  [String]::Format("{0:X4}", $offset ))) }
+
+        return [StringValue]::new($value, $string)
+    }
+
+    # Get 32bitEntryPointAddress
+    hidden [StringValue]Get32bitEntryPointAddress()
+    {
+        $bisEntry32 = $this.GetDoubleWordAtOffset(0x0C)
+        
+        return [StringValue]::new($bisEntry32, "0x{0:X8}")  
     }
 }
 
@@ -5764,9 +6575,7 @@ class _64BitMemoryErrorInformation : SMBIOSStructure
         
         if (([BitField]::HighUInt64($memoryArrayErrorAddress) -eq -0x80000000) -and ([BitField]::LowUInt64($memoryArrayErrorAddress) -eq 0x00))
         {
-            $unknown = [Localization]::LocalizedString("UNKNOWN")
-            
-            return [StringValue]::new($memoryArrayErrorAddress, $unknown) 
+            return [StringValue]::new($memoryArrayErrorAddress, $(Get-LocalizedString "UNKNOWN")) 
         }
 
         return [StringValue]::new($memoryArrayErrorAddress, "0x{0:X16}")
@@ -5779,9 +6588,7 @@ class _64BitMemoryErrorInformation : SMBIOSStructure
 
         if (([BitField]::HighUInt64($deviceErrorAddress) -eq -0x80000000) -and ([BitField]::LowUInt64($deviceErrorAddress) -eq 0x00))
         {
-            $unknown = [Localization]::LocalizedString("UNKNOWN")
-            
-            return [StringValue]::new($deviceErrorAddress, $unknown) 
+            return [StringValue]::new($deviceErrorAddress, $(Get-LocalizedString "UNKNOWN")) 
         }
 
         return [StringValue]::new($deviceErrorAddress, "0x{0:X16}")  
@@ -5792,7 +6599,7 @@ class _64BitMemoryErrorInformation : SMBIOSStructure
     {
         $errorResolution = $this.GetDoubleWordAtOffset(0x1B)
 
-        return [StringValue]::new($errorResolution, -0x80000000, "0x{0:X16}", "UNKNOWN")
+        return [StringValue]::new($errorResolution, -0x80000000, "0x{0:X16}", $(Get-LocalizedString "UNKNOWN"))
     }
 }
 
@@ -5809,7 +6616,7 @@ class ManagementDevice : SMBIOSStructure
 
     static ManagementDevice()
     {
-         $stringTables = [ManagementDevice]::GetStringTables("Type_34")
+        $stringTables = [ManagementDevice]::GetStringTables("Type_34")
 
         [ManagementDevice]::StringArrays = $stringTables.StringArrays
                                 
@@ -6009,6 +6816,23 @@ class ManagementDeviceThresholdData : SMBIOSStructure
 ###################################################################################################################################
 # Type 37                                                                                                                         #
 ###################################################################################################################################
+class MemoryChannelDevice
+{
+    [String]$Load
+    [UInt16]$Handle
+    
+    MemoryChannelDevice([String]$load, [UInt16]$handle)
+    {
+        $this.Load = $load
+        $this.Handle = $handle
+    }
+
+    [String]ToString()
+    {
+        return [String]::Format("Load {0} Handle 0x{1:X4}", $($this.Load),$($this.Handle))
+    }
+}
+
 class MemoryChannel : SMBIOSStructure 
 {    
     hidden static [Hashtable]$StringArrays
@@ -6018,12 +6842,19 @@ class MemoryChannel : SMBIOSStructure
 
     static MemoryChannel()
     {
+        $stringTables = [MemoryChannel]::GetStringTables("Type_37")
+
+        [MemoryChannel]::StringArrays = $stringTables.StringArrays
+                                
+        [MemoryChannel]::StringArrayNameAlias = $stringTables.StringArrayNameAlias
+        
         $labels = [Collections.ArrayList]::new() 
         
-        if ( [SMBIOS]::Version -ge [Version]::new(2, 3) )
+        if ( [SMBIOS]::Version -ge [Version]::new(2, 3, 1) )
         {
-            $labels.Add( "Data"    )
-            $labels.Add( "Strings" )
+            $labels.Add( "_Type"       )
+            $labels.Add( "MaximumLoad" )
+            $labels.Add( "Devices"     )
         }
 
         [MemoryChannel]::PropertyNames = $labels 
@@ -6033,14 +6864,39 @@ class MemoryChannel : SMBIOSStructure
     {    
     }
 
-    hidden [Byte[]]GetData()
+    # Get ChannelType
+    hidden [StringValue]Get_Type()
     {
-        return $this.Data
+        $channelType = $this.GetByteAtOffset(0x04)
+
+        return [StringValue]::new($channelType, "ChannelType", [ref]$this)
     }
 
-    hidden [String[]]GetStrings()
+    # Get MaximumLoad
+    hidden [Int]GetMaximumLoad()
     {
-        return $this.Strings
+        $maximumLoad = $this.GetByteAtOffset(0x05)
+
+        return $maximumLoad
+    }
+
+    # Get Devices
+    hidden [Array]GetDevices()
+    {
+        $deviceCount = $this.GetByteAtOffset(0x06)
+
+        $devices = [Collections.ArrayList]::new() 
+
+        for ($i = 0; $i -lt $deviceCount; $i++)
+        {
+            $load = $this.GetByteAtOffset(0x07 + 3 * $i)
+            
+            $handle = [BitConverter]::ToUInt16($this.data, 0x07 + 3 * $i + 1) 
+
+            $devices.Add( [MemoryChannelDevice]::new($load, $handle) )
+        }
+        
+        return $devices
     }
 }
 
@@ -6057,12 +6913,27 @@ class IPMIDeviceInformation : SMBIOSStructure
 
     static IPMIDeviceInformation()
     {
+        $stringTables = [IPMIDeviceInformation]::GetStringTables("Type_38")
+
+        [IPMIDeviceInformation]::StringArrays = $stringTables.StringArrays
+                                
+        [IPMIDeviceInformation]::StringArrayNameAlias = $stringTables.StringArrayNameAlias
+        
         $labels = [Collections.ArrayList]::new() 
         
-        if ( [SMBIOS]::Version -ge [Version]::new(2, 3) )
+        if ( [SMBIOS]::Version -ge [Version]::new(2, 3, 1) )
         {
-            $labels.Add( "Data"    )
-            $labels.Add( "Strings" )
+            $labels.Add( "InterfaceType"          )
+			$labels.Add( "SpecificationRevision"  )
+            $labels.Add( "I2CTargetAddress"       )
+            $labels.Add( "I2CSlaveAddress"        )
+            $labels.Add( "NVStorageDeviceAddress" )
+            $labels.Add( "BaseAddress"            )
+            $labels.Add( "Bus"                    )
+            $labels.Add( "RegisterSpacing"        )
+            $labels.Add( "InterruptPolarity"      )
+            $labels.Add( "InterruptTriggerMode"   )
+            $labels.Add( "InterruptNumber"        )
         }
 
         [IPMIDeviceInformation]::PropertyNames = $labels 
@@ -6072,14 +6943,187 @@ class IPMIDeviceInformation : SMBIOSStructure
     {
     }
 
-    hidden [Byte[]]GetData()
+    # Get InterfaceType
+    hidden [StringValue]GetInterfaceType()
     {
-        return $this.Data
+        $interfaceType = $this.GetByteAtOffset(0x04)
+
+        return [StringValue]::new($interfaceType, "InterfaceType", [ref]$this)
     }
 
-    hidden [String[]]GetStrings()
+    # Get SpecificationRevision
+    hidden [Version]GetSpecificationRevision()
     {
-        return $this.Strings
+        $revision = $this.GetByteAtOffset(0x05)
+        
+        $major = [BitField]::Extract($revision, 4, 4)
+
+        $minor = [BitField]::Extract($revision, 0, 4)
+
+        return [Version]::new($major, $minor)
+    }
+
+    # Get I2CTargetAddress
+    hidden [StringValue]GetI2CTargetAddress()
+    {
+        $I2CTargetAddress = $this.GetByteAtOffset(0x06)
+
+        return [StringValue]::new($I2CTargetAddress, "0x{0:X2}")
+    }
+
+    # Get I2CSlaveAddress
+    hidden [StringValue]GetI2CSlaveAddress()
+    {
+        $I2CTargetAddress = $this.GetByteAtOffset(0x06)
+
+        return [StringValue]::new($I2CTargetAddress -shr 1, "0x{0:X2}")
+    }
+
+    # Get NVStorageDeviceAddress
+    hidden [StringValue]GetNVStorageDeviceAddress()
+    {
+        $NVStorageDeviceAddress = $this.GetByteAtOffset(0x07)
+
+        return [StringValue]::new($NVStorageDeviceAddress, 0xFF, "0x{0:X}", "NOT_PRESENT")
+    }
+
+    # Get BaseAddress
+    hidden [StringValue]GetBaseAddress()
+    {
+        $interfaceType = $this.GetByteAtOffset(0x04)
+
+        $baseAddress = $this.GetQuadWordAtOffset(0x08)
+
+        if ($interfaceType -eq 0x04)
+        {
+            $format = "0x{0:X2}"
+
+            $baseAddress = [BitField]::Extract($baseAddress, 0, 7)
+        }
+        else
+        {
+            [UInt32]$baseAddressHigh = [BitField]::HighUInt64($baseAddress)
+            [UInt32]$baseAddressLow  = [BitField]::LowUInt64($baseAddress) -shr 1
+
+            $format = "0x{0:X8}{1:X8}"
+
+            $string = [String]::Format($format, $baseAddressLow, $baseAddressHigh)
+
+            return [StringValue]::new($baseAddress, $string)
+            
+        }
+
+       return [StringValue]::new() 
+    }
+
+    # Get Bus
+    hidden [StringValue]GetBus()
+    {
+        $interfaceType = $this.GetByteAtOffset(0x04)
+
+        if ($interfaceType -eq 0x04)
+        {
+            $bus = 0x04
+        }
+        else
+        {
+            $baseAddress = $this.GetQuadWordAtOffset(0x08)
+            $lowPart = [BitField]::LowUInt64($baseAddress)
+            $bus = [BitField]::Get($lowPart, 0)
+        }
+
+        return [StringValue]::new($bus, "Bus", [ref]$this)
+    }
+
+    # Get BaseAddressModifier
+    hidden [StringValue]BaseAddressModifier()
+    {
+        $baseAddressModifier = $this.GetByteAtOffset(0x10)
+        
+        return [StringValue]::new($baseAddressModifier, 0x00, "{0:G}", "UNUSED")
+    }
+
+    # Get RegisterSpacing
+    hidden [StringValue]GetRegisterSpacing()
+    {
+        $interfaceType = $this.GetByteAtOffset(0x04)
+
+        if ($interfaceType -eq 0x04)
+        {            
+            return [StringValue]::new(-1, $(Get-LocalizedString "NOT_APPLICABLE"))
+        }
+        else
+        {   
+            $baseAddressModifier = $this.GetByteAtOffset(0x10)
+
+            $registerSpacing = [BitField]::Extract($baseAddressModifier, 6, 2)
+
+            return [StringValue]::new($registerSpacing, "RegisterSpacing", [ref]$this)
+        }
+    }
+
+    # Get InterruptPolarity
+    hidden [StringValue]GetInterruptPolarity()
+    {
+        $interfaceType = $this.GetByteAtOffset(0x04)
+
+        if ($interfaceType -eq 0x04)
+        {
+            return [StringValue]::new(-1, $(Get-LocalizedString "NOT_APPLICABLE"))
+        }
+        else
+        {
+            $baseAddressModifier = $this.GetByteAtOffset(0x10)
+            
+            $interruptInfo = [BitField]::Get($baseAddressModifier, 4)
+
+            if ($interruptInfo)
+            {
+                $interruptPolarity = [BitField]::Get($baseAddressModifier, 1)
+            
+                return [StringValue]::new($interruptPolarity, "InterruptPolarity", [ref]$this)
+            }
+            else
+            {
+                return [StringValue]::new(-1, $(Get-LocalizedString "NOT_APPLICABLE"))
+            }
+        }
+    }
+
+    # Get InterruptTriggerMode
+    hidden [StringValue]GetInterruptTriggerMode()
+    {
+        $interfaceType = $this.GetByteAtOffset(0x04)
+
+        if ($interfaceType -eq 0x04)
+        {
+            return [StringValue]::new(-1, $(Get-LocalizedString "NOT_APPLICABLE"))
+        }
+        else
+        {
+            $baseAddressModifier = $this.GetByteAtOffset(0x10)
+            
+            $interruptInfo = [BitField]::Get($baseAddressModifier, 4)
+
+            if ($interruptInfo)
+            {
+                $interruptTriggerMode = [BitField]::Get($baseAddressModifier, 0)
+            
+                return [StringValue]::new($interruptTriggerMode, "InterruptTriggerMode", [ref]$this)
+            }
+            else
+            {
+                return [StringValue]::new(-1, $(Get-LocalizedString "NOT_APPLICABLE"))
+            }
+        }
+    }
+
+    # Get InterruptNumber
+    hidden [StringValue]GetInterruptNumber()
+    {
+       $interruptNumber = $this.GetByteAtOffset(0x11)
+
+       return [StringValue]::new($interruptNumber, 0x00, "{0:G}", $(Get-LocalizedString "UNSPECIFIED"))
     }
 }
 
@@ -6104,7 +7148,7 @@ class SystemPowerSupply : SMBIOSStructure
 
         $labels = [Collections.ArrayList]::new() 
         
-        if ( [SMBIOS]::Version -ge [Version]::new(2, 31) )
+        if ( [SMBIOS]::Version -ge [Version]::new(2, 3, 1) )
         {
             $labels.Add( "PowerUnitGroup"             )
             $labels.Add( "Location"                   )
@@ -6359,7 +7403,7 @@ class OnboardDevicesExtendedInformation : SMBIOSStructure
 
     static OnboardDevicesExtendedInformation()
     {
-         $stringTables = [OnboardDevicesExtendedInformation]::GetStringTables("Type_41")
+        $stringTables = [OnboardDevicesExtendedInformation]::GetStringTables("Type_41")
         
         [OnboardDevicesExtendedInformation]::StringArrays = $stringTables.StringArrays
                                 
@@ -6373,9 +7417,7 @@ class OnboardDevicesExtendedInformation : SMBIOSStructure
             $labels.Add( "DeviceType"           )
             $labels.Add( "DeviceStatus"         )
             $labels.Add( "DeviceTypeInstance"   )
-            $labels.Add( "SegmentGroupNumber"   )
-            $labels.Add( "BusNumber"            )
-            $labels.Add( "DeviceFunctionNumber" )
+            $labels.Add( "BusAddress"           )
         }
 
         [OnboardDevicesExtendedInformation]::PropertyNames = $labels 
@@ -6417,22 +7459,10 @@ class OnboardDevicesExtendedInformation : SMBIOSStructure
         return $this.GetByteAtOffset(0x06) 
     }
 
-    # Get SegmentGroupNumber
-    hidden [UInt16]GetSegmentGroupNumber()
+    # Get BusAddress
+    hidden [StringValue]GetBusAddress()
     {
-        return $this.GetWordAtOffset(0x07) 
-    }
-
-    # Get BusNumber
-    hidden [Byte]GetBusNumber()
-    {
-        return $this.GetByteAtOffset(0x09)  
-    }
-
-    # Get DeviceFunctionNumber
-    hidden [Byte]GetDeviceFunctionNumber()
-    {
-        return $this.GetByteAtOffset(0x0A)   
+        return ([SMBIOSStructure]$this).Get_BusAddress(0x07)
     }
 }
 
@@ -6440,11 +7470,18 @@ class OnboardDevicesExtendedInformation : SMBIOSStructure
 ###################################################################################################################################
 # Type 42                                                                                                                         #
 ###################################################################################################################################
-class ProtocolRecordDataFormat
-{
-    $ProtocolType
-    $ProtocolTypeSpecificDataLength
-    $ProtocolTypeSpecificData
+enum IPAddressFormat {
+    Unknown = 0x00
+    IPv4    = 0x01
+    IPv6    = 0x02
+}
+
+enum AssignmentOrDiscovery {
+    Unknown       = 0x00
+    Static        = 0x01
+    DHCP          = 0x02
+    AutoConfigure = 0x03
+    HostSelected  = 0x04
 }
 
 class ManagementControllerHostInterface : SMBIOSStructure 
@@ -6452,33 +7489,545 @@ class ManagementControllerHostInterface : SMBIOSStructure
     hidden static [Hashtable]$StringArrays
     hidden static [Hashtable]$StringArrayNameAlias
 
-    static [Array]$PropertyNames
+    hidden static [ArrayList]$PropertyNames
+
+    hidden [ArrayList]$PropertyNamesEx
 
     static ManagementControllerHostInterface()
     {
-        $labels = [Collections.ArrayList]::new() 
+        $stringTables = [ManagementControllerHostInterface]::GetStringTables("Type_42")
         
-        if ( [SMBIOS]::Version -ge [Version]::new(2, 6) )
-        {
-            $labels.Add( "Data"    )
-            $labels.Add( "Strings" )
-        }
+        [ManagementControllerHostInterface]::StringArrays = $stringTables.StringArrays
+                                
+        [ManagementControllerHostInterface]::StringArrayNameAlias = $stringTables.StringArrayNameAlias
+        
+        $labels = [Collections.ArrayList]::new()
 
         [ManagementControllerHostInterface]::PropertyNames = $labels 
     }
 
     ManagementControllerHostInterface([Byte]$type, [String]$description, [String[]]$keywords, [Byte]$length, [UInt16]$handle, [Byte[]]$data, [String[]]$strings) : base($type, $description, $keywords, $length, $handle, $data, $strings)
     {
+        $labels = [Collections.ArrayList]::new() 
+        
+        if ( [SMBIOS]::Version -lt [Version]::new(3, 2) )
+        {
+            $labels.Add( "InterfaceType" )
+
+            $interfaceType = $this.GetByteAtOffset(0x04)
+
+            # OEM
+            if ( ( $interfaceType -eq 0xF0 ) -and ( $this.Data.Length -ge 0x09 ) )
+            {
+                $labels.Add( "VendorID")
+            }
+        }
+        if ( [SMBIOS]::Version -ge [Version]::new(3, 2) )
+        {
+            $labels.Add( "HostInterfaceType" )
+            $labels.Add( "DeviceType"        )
+
+            $interfaceSpecificDataLength = $this.GetByteAtOffset(0x05)
+
+            if ($interfaceSpecificDataLength -gt 0)
+            {
+                $deviceType = $this.GetByteAtOffset(0x06)
+
+                switch ($deviceType)
+                { 
+                    0x02 { # USB Network Interface
+                        $labels.Add( "VendorID"                      )
+                        $labels.Add( "ProductID"                     )
+                        $labels.Add( "SerialNumber"                  )
+                    }
+                    0x03 { # PCI/PCIe Network Interface
+                        $labels.Add( "VendorID"                      )
+                        $labels.Add( "ProductID"                     )
+                        $labels.Add( "SubsystemVendorID"             )
+                        $labels.Add( "SubsystemID"                   )
+                    }
+                    0x04 { # USB Network Interface v2
+                        $labels.Add( "VendorID"                      )
+                        $labels.Add( "ProductID"                     )
+                        $labels.Add( "SerialNumber"                  )
+                        $labels.Add( "MACAddress"                    )
+                        
+                        if ( $interfaceSpecificDataLength -eq 0x11 ) # v1.3
+                        {
+                            $labels.Add( "Characteristics"               )
+                            $labels.Add( "CredentialBootstrappingHandle" )
+                        }
+                    }
+                    0x05 { # PCI/PCIe Network Interface v2
+                        $labels.Add( "VendorID"                      )
+                        $labels.Add( "ProductID"                     )
+                        $labels.Add( "SubsystemVendorID"             )
+                        $labels.Add( "SubsystemID"                   )
+                        $labels.Add( "MACAddress"                    )
+                        $labels.Add( "BusAddress"                    )
+                        
+                        if ( $interfaceSpecificDataLength -eq 0x18 ) # v1.3
+                        {              
+                            $labels.Add( "Characteristics"               )
+                            $labels.Add( "CredentialBootstrappingHandle" )
+                        }
+                    }
+                    {$_ -ge 0x80 -and $_ -le 0xFF} 
+                    { # OEM
+                        $labels.Add( "VendorIANA"                    )
+                        $labels.Add( "VendorData"                    )
+                    }
+                }
+            }
+
+            $interfaceTypeDataLength = $this.GetByteAtOffset(0x05)
+    
+            $protocolsCount = $this.GetByteAtOffset(0x06 + $interfaceTypeDataLength)
+
+            if ($protocolsCount -gt 0)
+            {
+                $labels.Add( "ProtocolType" )
+
+                $base = 0x08 + $interfaceTypeDataLength
+
+                $protocolType = $this.GetByteAtOffset($base + 0x00)
+
+                switch ($protocolType) {
+                    0x04 { # RedfishOverIP
+                        $labels.Add( "ServiceUUID"                   )
+                        $labels.Add( "HostIPAssignmentType"          )
+                        $labels.Add( "HostIPAddress"                 )
+                        $labels.Add( "HostIPMask"                    )
+                        $labels.Add( "RedfishServiceIPDiscoveryType" )
+                        $labels.Add( "RedfishServiceIPAddress"       )
+                        $labels.Add( "RedfishServiceIPMask"          )
+                        $labels.Add( "RedfishServiceIPPort"          )
+                        $labels.Add( "RedfishServiceVlanId"          )
+                        $labels.Add( "RedfishServiceHostname"        )
+                        break
+                    }
+                    Default {
+                        $labels.Add( "Protocols"                     )
+                    }
+                }
+            }
+        }
+        
+        $this.PropertyNamesEx = $labels
     }
 
-    hidden [Byte[]]GetData()
+    # Get InterfaceType
+    hidden [StringValue]GetInterfaceType()
     {
-        return $this.Data
+        $interfaceType = $this.GetByteAtOffset(0x04) 
+
+        return [StringValue]::new($interfaceType, "InterfaceType", [ref]$this)
     }
 
-    hidden [String[]]GetStrings()
+    # Get HostInterfaceType
+    hidden [StringValue]GetHostInterfaceType()
     {
-        return $this.Strings
+        return $this.GetInterfaceType()
+    }
+    
+    hidden [StringValue]GetDeviceType()
+    {        
+        $deviceType = $this.GetByteAtOffset(0x06)
+
+        return [StringValue]::new($deviceType, "DeviceType", [ref]$this)
+    }
+
+    hidden [StringValue]GetVendorID()
+    {
+        if ( [SMBIOS]::Version -lt [Version]::new(3, 2) ) 
+        {
+            $vendorId = [Byte[]][ArraySegment[Byte]]::new($this.data, 0x05, 4)
+            
+            return [StringValue]::new($vendorId, [String]::Format("0x{0:X2}{1:X2}{2:X2}{3:X2}", $vendorId[0x00], $vendorId[0x01], $vendorId[0x02], $vendorId[0x03] ) )      
+        }
+        else 
+        {
+            $deviceType = $this.GetByteAtOffset(0x06)
+
+            $offset = 0
+    
+            switch ($deviceType) {
+                0x04 { $offset = 0x01 } # USB Network Interface v2
+                0x05 { $offset = 0x01 } # PCI/PCIe Network Interface v2
+            }
+
+            $vendorId = $this.GetWordAtOffset(0x07 + $offset)
+        }
+
+        return [StringValue]::new($vendorId, "0x{0:X4}")
+    }
+
+    hidden [StringValue]GetProductID()
+    {
+        $deviceType = $this.GetByteAtOffset(0x06)
+
+        $offset = 0
+
+        switch ($deviceType) {
+            0x04 { $offset = 0x01 } # USB Network Interface v2
+            0x05 { $offset = 0x01 } # PCI/PCIe Network Interface v2
+        }
+        
+        $productId = $this.GetWordAtOffset(0x07 + $offset + 0x02)
+
+        return [StringValue]::new($productId, "0x{0:X4}")
+    }
+
+    hidden [SMBString]GetSerialNumber()
+    {    
+        $deviceType = $this.GetByteAtOffset(0x06)
+
+        switch ($deviceType) 
+        {
+            0x02 { # USB Network Interface
+                $serialNumberLength = $this.GetByteAtOffset(0x07 + 0x04) - 2
+
+                $rawSerialNumber = [ArraySegment[Byte]]::new($this.data, 0x07 + 0x06, $serialNumberLength)
+                
+                $serialNumber = [UnicodeEncoding]::Unicode.GetString($rawSerialNumber)
+                
+                if ($serialNumberLength -eq 0)
+                {
+                    return $this.GetStringAtOffset(0xFF)
+                }
+                else
+                {
+                    return [SMBString]::new($serialNumber)
+                }
+            }
+            0x04 { # USB Network Interface v2
+
+                return $this.GetStringAtOffset(0x07 + 0x05)
+            }
+        }
+
+        return [StringValue]::new()      
+    }
+    
+    # Get SubsystemVendorID
+    hidden [StringValue]GetSubsystemVendorID()
+    {
+        $deviceType = $this.GetByteAtOffset(0x06)
+
+        $offset = 0
+
+        switch ($deviceType) {
+            0x05 { $offset = 0x01 }
+        }
+        
+        $subsystemVendorID = $this.GetWordAtOffset(0x07 + $offset + 0x04)
+
+        return [StringValue]::new($subsystemVendorID, "0x{0:X4}")
+    }
+
+    # Get SubsystemID
+    hidden [StringValue]GetSubsystemID()
+    {
+        $deviceType = $this.GetByteAtOffset(0x06)
+
+        $offset = 0
+
+        switch ($deviceType) {
+            0x05 { $offset = 0x01 }
+        }
+        
+        $subsystemID = $this.GetWordAtOffset(0x07 + $offset + 0x06)
+
+        return [StringValue]::new($subsystemID, "0x{0:X4}")
+    }
+
+    # Get MACAddress
+    hidden [StringValue]GetMACAddress()
+    {
+        $deviceType = $this.GetByteAtOffset(0x06)
+
+        $offset = 0
+
+        switch ($deviceType) {
+            0x04 { $offset = 0x06 } # USB Network Interface v2
+            0x05 { $offset = 0x09 } # PCI/PCIe Network Interface v2
+        }
+
+        $MACAddress = [Byte[]][Linq.Enumerable]::Reverse( [ArraySegment[Byte]]::new($this.data, 0x07 + $offset, 6) )
+
+        return [StringValue]::new( [PhysicalAddress]::new($MACAddress), [BitConverter]::ToString($MACAddress) )
+    }
+
+    # Get Address
+    hidden [StringValue]GetBusAddress()
+    {
+        return ([SMBIOSStructure]$this).Get_BusAddress(0x0F)
+    }
+   
+    # Get Characteristics
+    hidden [StringValue[]]GetCharacteristics()
+    {
+        $deviceType = $this.GetByteAtOffset(0x06)
+
+        $offset = 0
+
+        switch ($deviceType) {
+            0x04 { $offset = 0x0C } # USB Network Interface v2
+            0x05 { $offset = 0x13 } # PCI/PCIe Network Interface v2
+        }
+        
+        $characteristics = $this.GetWordAtOffset(0x07 + $offset)
+
+        return [BitFieldConverter]::ToStringValueArray($characteristics, 1, "Characteristics", [ref]$this)
+    }
+
+    # Get CredentialBootstrappingHandle
+    hidden [StringValue]GetCredentialBootstrappingHandle()
+    {
+        $deviceType = $this.GetByteAtOffset(0x06)
+
+        $offset = 0
+
+        switch ($deviceType) {
+            0x04 { $offset = 0x0E } # USB Network Interface v2
+            0x05 { $offset = 0x15 } # PCI/PCIe Network Interface v2
+        }
+
+        $handle = $this.GetWordAtOffset(0x07 + $offset)
+
+        if ($handle -eq [UInt16]::MaxValue)
+        {         
+            return [StringValue]::new($handle, $(Get-LocalizedString "NOT_SUPPORTED"))
+        }
+        else
+        {
+            return [StringValue]::new($handle, "0x{0:X4}")
+        }
+
+    }
+   
+    # Get VendorIANA
+    hidden [StringValue]GetVendorIANA()
+    {
+        $vendorIANA = [Byte[]][ArraySegment[Byte]]::new($this.data, 0x07, 4)
+
+        return [StringValue]::new($vendorIANA, [String]::Format("0x{0:X2}{1:X2}{2:X2}{3:X2}", $vendorIANA[0x00], $vendorIANA[0x01], $vendorIANA[0x02], $vendorIANA[0x03] ) ) 
+    }
+
+    # Get VendorData
+    hidden [StringValue]GetVendorData()
+    {
+        $vendorData = [Byte[]][ArraySegment[Byte]]::new($this.data, 0x07 + 0x04, $this.Data.Length - 0x07 - 0x04) 
+
+        if ($vendorData.Length -eq 0)
+        {
+            return [StringValue]::new(-1, $(Get-LocalizedString "NONE"))
+        }
+        else 
+        {
+            return [StringValue]::new($vendorData, [BitConverter]::ToString($vendorData).Replace("-", "") ) 
+        }  
+    }
+
+    # Get GetProtocolBaseAddress
+    hidden [Int]GetProtocolBaseAddress()
+    {
+        $interfaceTypeDataLength = $this.GetByteAtOffset(0x05)
+
+        $base = 0x08 + $interfaceTypeDataLength + 0x02
+
+        return $base
+    }
+
+    # Get GetProtocolType
+    hidden [StringValue]GetProtocolType()
+    {
+        $interfaceTypeDataLength = $this.GetByteAtOffset(0x05)
+        
+        $base = 0x08 + $interfaceTypeDataLength
+
+        $protocolType = $this.GetByteAtOffset($base + 0x00)
+
+        return [StringValue]::new($protocolType, "ProtocolType", [ref]$this)
+    }
+
+    # Get ServiceUUID
+    hidden [StringValue]GetServiceUUID()
+    {
+        $base = $this.GetProtocolBaseAddress()
+        
+        $serviceUUID = [Byte[]][ArraySegment[Byte]]::new($this.data, $base + 0x00, 16)
+
+        $guid = [Guid]::new($serviceUUID).Guid.ToUpper()
+
+        return [StringValue]::new([Guid]::new($serviceUUID), $guid)
+    }
+
+    # Get IPAssignmentOrDiscoveryType
+    hidden [StringValue]GetIPAssignmentOrDiscoveryType([int]$offset)
+    {
+        $base = $this.GetProtocolBaseAddress()
+        
+        $hostIPAssignmentType = $this.GetByteAtOffset($base + $offset)
+
+        return [StringValue]::new($hostIPAssignmentType, "AssignmentType", [ref]$this)
+    }
+
+    # Get IPAddressFormat
+    hidden [StringValue]GetIPAddressFormat([int]$offset)
+    {
+        $base = $this.GetProtocolBaseAddress()
+        
+        $IPAddressFormat = $this.GetByteAtOffset($base + $offset)
+
+        return [StringValue]::new($IPAddressFormat, "IPAddressFormat", [ref]$this)
+    }
+
+    # Get IsStaticOrAutoConfigure
+    hidden [bool]IsStaticOrAutoConfigure([int]$offset)
+    {
+        $assignmentOrDiscoveryType = $this.GetIPAssignmentOrDiscoveryType($offset)
+
+        if ( ($assignmentOrDiscoveryType.Value -eq  [AssignmentOrDiscovery]::Static ) -or ($assignmentOrDiscoveryType.Value -eq [AssignmentOrDiscovery]::AutoConfigure) )
+        {
+            return $true
+        }
+    
+        return $false
+    }
+
+    # Get IPAddress
+    hidden [StringValue]GetIPAddress([int]$offset, [StringValue]$IPAddressFormat, [bool]$IsStaticOrAutoConfigure)
+    {
+        
+        if ($IsStaticOrAutoConfigure)
+        {
+            $base = $this.GetProtocolBaseAddress()
+            
+            $IPAddress = 0
+
+            $IPAddressLength = 0
+
+            if ($IPAddressFormat.Value -eq [IPAddressFormat]::IPv4)
+            {
+                $IPAddressLength = 4
+            }
+            elseif ($IPAddressFormat.Value -eq [IPAddressFormat]::IPv6) 
+            {
+                $IPAddressLength = 16
+            }
+            else 
+            {
+                $IPAddressLength = 0
+            }
+            
+            $IPAddress = [Byte[]][ArraySegment[Byte]]::new($this.data, $base + $offset, $IPAddressLength)
+
+            return [StringValue]::new([IPAddress]::new($IPAddress))
+        }
+
+        return [StringValue]::new(-1, $(Get-LocalizedString "NOT_DEFINED"))
+    }
+
+    # Get HostIPAssignmentType
+    hidden [StringValue]GetHostIPAssignmentType()
+    {
+        return $this.GetIPAssignmentOrDiscoveryType(0x10)
+    }
+
+    # Get HostIPAddress
+    hidden [StringValue]GetHostIPAddress()
+    {
+        return $this.GetIPAddress(0x12, $this.GetIPAddressFormat(0x11), $this.IsStaticOrAutoConfigure(0x10))
+    }
+    
+    hidden [StringValue]GetHostIPMask()
+    {
+        return $this.GetIPAddress(0x22, $this.GetIPAddressFormat(0x11), $this.IsStaticOrAutoConfigure(0x10))
+    }
+
+    # Get RedfishServiceIPDiscoveryType
+    hidden [StringValue]GetRedfishServiceIPDiscoveryType()
+    {
+        return $this.GetIPAssignmentOrDiscoveryType(0x32)
+    }
+
+    # Get RedfishServiceIPAddress
+    hidden [StringValue]GetRedfishServiceIPAddress()
+    {
+        return $this.GetIPAddress(0x34, $this.GetIPAddressFormat(0x33), $this.IsStaticOrAutoConfigure(0x32))
+    }
+    
+   # Get RedfishServiceIPMask
+    hidden [StringValue]GetRedfishServiceIPMask()
+    {
+        return $this.GetIPAddress(0x44, $this.GetIPAddressFormat(0x33), $this.IsStaticOrAutoConfigure(0x32))
+    }
+
+    # Get RedfishServiceIPPort
+    hidden [StringValue]GetRedfishServiceIPPort()
+    {
+        if ($this.IsStaticOrAutoConfigure(0x32))
+        {
+            $base = $this.GetProtocolBaseAddress()
+
+            $redfishServiceIPPort = $this.GetWordAtOffset($base + 0x54)
+
+            return [StringValue]::new($redfishServiceIPPort)
+        }
+  
+        return [StringValue]::new(-1, $(Get-LocalizedString "NOT_DEFINED"))
+    }
+
+    # Get RedfishServiceVlanId
+    hidden [StringValue]GetRedfishServiceVlanId()
+    {
+        if ($this.IsStaticOrAutoConfigure(0x32))
+        {
+            $base = $this.GetProtocolBaseAddress()
+
+            $redfishServiceVlanId = $this.GetDoubleWordAtOffset($base + 0x56)
+            
+            return [StringValue]::new($redfishServiceVlanId)
+        }
+
+        return [StringValue]::new(-1, $(Get-LocalizedString "NOT_DEFINED"))
+    }
+
+    # Get RedfishServiceHostname
+    hidden [SMBString]GetRedfishServiceHostname()
+    {
+        $base = $this.GetProtocolBaseAddress()
+        
+        $redfishServiceHostnameLength = $this.GetByteAtOffset($base + 0x5A)
+
+        $rawRedfishServiceHostname = [Byte[]][ArraySegment[Byte]]::new($this.data, $base + 0x5B, $redfishServiceHostnameLength) 
+
+        $redfishServiceHostname = [UnicodeEncoding]::ASCII.GetString($rawRedfishServiceHostname)
+                
+        if ($redfishServiceHostnameLength -eq 0)
+        {
+            return $this.GetStringAtOffset(0xFF)
+        }
+        else
+        {
+            return [SMBString]::new($redfishServiceHostname)
+        }
+    }
+
+    # Get Protocols
+    hidden [StringValue]GetProtocols()
+    {
+        $base = $this.GetProtocolBaseAddress()
+
+        $protocols = [Byte[]][ArraySegment[Byte]]::new($this.data, $base, $this.data.Length - $base) 
+        
+        if ($protocols)
+        {
+            return [StringValue]::new($protocols, [BitConverter]::ToString($protocols).Replace("-",""))
+        }
+               
+        return [StringValue]::new(-1, $(Get-LocalizedString "NOT_DEFINED"))
     }
 }
 
@@ -6506,12 +8055,11 @@ class TPMDevice : SMBIOSStructure
         if ( [SMBIOS]::Version -ge [Version]::new(3, 1) )
         {
             $labels.Add( "VendorID"              )
-            $labels.Add( "SpecVersion"           )
+            $labels.Add( "SpecificationVersion"  )
             $labels.Add( "FirmwareVersion"       )
             $labels.Add( "Description"           )
             $labels.Add( "Characteristics"       )
-            $labels.Add( "OEMDefinedInformation" )
-            
+            $labels.Add( "OEMDefinedInformation" )  
         }
 
         [TPMDevice]::PropertyNames = $labels 
@@ -6524,21 +8072,31 @@ class TPMDevice : SMBIOSStructure
     # Get VendorID
     hidden [StringValue]GetVendorID()
     {
-        $id = [ArraySegment[Byte]]::new($this.data, 0x04, 4)
+        $vendor = [ArraySegment[Byte]]::new($this.data, 0x04, 4)
 
-        [Byte[]]$array = [System.Linq.Enumerable]::ToArray($id)
-        
-        [Byte[]]$reverseArray = [System.Linq.Enumerable]::Reverse($array)
+        $vendorID = "'"
 
-        $vendorID = [Text.Encoding]::ASCII.GetString($reverseArray)
+        foreach ($char in $vendor) 
+        {
+            if (($char -eq 0x00) -or ($char -eq 0x20))
+            {
+                $vendorID = $vendorID + " "
+            }
+            else 
+            {
+                $vendorID = $vendorID + $([Text.Encoding]::ASCII.GetChars($char))
+            }
+        }
 
-        return [StringValue]::new($id, $vendorID)
+        $vendorID = $vendorID + "'"
+
+        return [StringValue]::new($vendor, $vendorID)
     }
 
     # Get SpecVersion
-    hidden [Version]GetSpecVersion()
+    hidden [Version]GetSpecificationVersion()
     {
-        $majorSpecVersion = $this.GetByteAtOffset(0x08) 
+        $majorSpecVersion = $this.GetByteAtOffset(0x08)
 
         $minorSpecVersion = $this.GetByteAtOffset(0x09)  
 
@@ -6546,18 +8104,24 @@ class TPMDevice : SMBIOSStructure
     }
 
     # Get FirmwareVersion
-    hidden [UInt32]GetFirmwareVersion()
+    hidden [Version]GetFirmwareVersion()
     {
-        # TMP 1.X
-        return $this.GetDoubleWordAtOffset(0x0A)
-    }
+        $major = 0
+        $minor = 0
+        
+        switch ($this.GetSpecificationVersion().Major) 
+        {
+            0x01 { 
+                $major = $this.GetByteAtOffset(0x0C)
+                $minor = $this.GetByteAtOffset(0x0D)
+             } 
+            0x02 { 
+                $major = [BitField]::Extract($this.GetDoubleWordAtOffset(0x0A), 16, 16)
+                $minor = [BitField]::Extract($this.GetDoubleWordAtOffset(0x0A),  0, 16)
+             }
+        }
 
-    
-    # Get FirmwareVersion2
-    hidden [UInt32]GetFirmwareVersion2()
-    {
-        # TMP 2.X
-        return $this.GetDoubleWordAtOffset(0x0E)
+        return [version]::new($major, $minor)
     }
 
     # Get Description
@@ -6594,12 +8158,18 @@ class ProcessorAdditionalInformation : SMBIOSStructure
 
     static ProcessorAdditionalInformation()
     {
+        $stringTables = [ProcessorAdditionalInformation]::GetStringTables("Type_44")
+
+        [ProcessorAdditionalInformation]::StringArrays = $stringTables.StringArrays
+                                
+        [ProcessorAdditionalInformation]::StringArrayNameAlias = $stringTables.StringArrayNameAlias
+        
         $labels = [Collections.ArrayList]::new() 
         
         if ( [SMBIOS]::Version -ge [Version]::new(3, 3) )
         {
-            $labels.Add( "Data"    )
-            $labels.Add( "Strings" )
+            $labels.Add( "ReferencedHandle" )
+            $labels.Add( "ProcessorType"    )
         }
 
         [ProcessorAdditionalInformation]::PropertyNames = $labels 
@@ -6607,6 +8177,263 @@ class ProcessorAdditionalInformation : SMBIOSStructure
 
     ProcessorAdditionalInformation([Byte]$type, [String]$description, [String[]]$keywords, [Byte]$length, [UInt16]$handle, [Byte[]]$data, [String[]]$strings) : base($type, $description, $keywords, $length, $handle, $data, $strings)
     {
+    }
+
+    hidden [UInt16]GetReferencedHandle()
+    {
+        return $this.GetWordAtOffset(0x04)
+    }
+
+    hidden [StringValue]GetProcessorType()
+    {
+        $processorType = $this.GetByteAtOffset(0x07)
+
+        return [StringValue]::new($processorType, "ProcessorType", [ref]$this)
+    }
+}
+
+
+###################################################################################################################################
+# Type 45                                                                                                                         #
+###################################################################################################################################
+class FirmwareInventoryInformation : SMBIOSStructure 
+{    
+    hidden static [Hashtable]$StringArrays
+    hidden static [Hashtable]$StringArrayNameAlias
+
+    static [Array]$PropertyNames
+
+    static FirmwareInventoryInformation()
+    {
+         $stringTables = [FirmwareInventoryInformation]::GetStringTables("Type_45")
+
+        [FirmwareInventoryInformation]::StringArrays = $stringTables.StringArrays
+                                
+        [FirmwareInventoryInformation]::StringArrayNameAlias = $stringTables.StringArrayNameAlias
+        
+        $labels = [Collections.ArrayList]::new() 
+        
+        if ( [SMBIOS]::Version -ge [Version]::new(3, 5) )
+        {
+            $labels.Add( "FirmwareComponentName"  )
+            $labels.Add( "FirmwareVersion"        )
+            $labels.Add( "FirmwareId"             )
+            $labels.Add( "ReleaseDate"            )
+            $labels.Add( "Manufacturer"           )
+            $labels.Add( "LowestSupportedVersion" )
+            $labels.Add( "ImageSize"              )
+            $labels.Add( "Characteristics"        )
+            $labels.Add( "State"                  )
+            $labels.Add( "AssociatedComponents"   )
+        }
+
+        [FirmwareInventoryInformation]::PropertyNames = $labels 
+    }
+
+    FirmwareInventoryInformation([Byte]$type, [String]$description, [String[]]$keywords, [Byte]$length, [UInt16]$handle, [Byte[]]$data, [String[]]$strings) : base($type, $description, $keywords, $length, $handle, $data, $strings)
+    {
+    }
+
+    # Get Version
+    hidden [StringValue]GetVersion([String]$version)
+    {
+        $versionFormat = $this.GetByteAtOffset(0x06)
+
+        return [StringValue]::new($versionFormat, $version)
+    }
+
+    # Get FirmwareComponentName
+    hidden [SMBString]GetFirmwareComponentName()
+    {
+        return $this.GetStringAtOffset(0x04)
+    }
+
+    # Get FirmwareVersion
+    hidden [StringValue]GetFirmwareVersion()
+    {
+        $firmwareVersion = $($this.GetStringAtOffset(0x05)).DisplayValue
+
+        return $this.GetVersion($firmwareVersion)
+    }
+
+    # Get FirmwareId
+    hidden [StringValue]GetFirmwareId()
+    {
+        $firmwareIdFormat = $this.GetByteAtOffset(0x08)
+        
+        $firmwareId = $($this.GetStringAtOffset(0x07)).DisplayValue
+
+        return [StringValue]::new($firmwareIdFormat, $firmwareId)
+    }
+
+    # Get ReleaseDate
+    hidden [StringValueDateTime]GetReleaseDate()
+    {
+        $releaseDate = $($this.GetStringAtOffset(0x09)).DisplayValue
+
+        if ([String]::IsNullOrEmpty($releaseDate))
+        {
+            return [StringValueDateTime]::new($null, $(Get-LocalizedString "NOT_AVAILABLE"))
+        }
+        else 
+        {
+            $culture = [CultureInfo]::CreateSpecificCulture("en-US")
+            
+            [DateTime]$date = [DateTime]::new(0)
+
+            if( [DateTime]::TryParse($releaseDate, $culture, [DateTimeStyles]::None, [ref]$date) )
+            {
+                if ($date -eq $([DateTime]"2021-05-15T00:00:00Z") )
+                {
+                    return [StringValueDateTime]::new($date, $(Get-LocalizedString "UNKNOWN"))  
+                }
+                else
+                {
+                    return [StringValueDateTime]::new($date)
+                }
+            }
+            else
+            {   
+                return [StringValueDateTime]::new($releaseDate, $releaseDate)
+            }
+        }
+    }
+
+    # Get Manufacturer
+    hidden [SMBString]GetManufacturer()
+    {
+        return $this.GetStringAtOffset(0x0A)
+    }
+
+    # Get LowestSupportedVersion
+    hidden [StringValue]GetLowestSupportedVersion()
+    {
+        $lowestSupportedVersion =  $($this.GetStringAtOffset(0x0B)).DisplayValue
+
+        return $this.GetVersion($lowestSupportedVersion)
+    }
+
+    # Get ImageSize
+    hidden [StringValueMemorySize]GetImageSize()
+    {
+        $sizeInBytes = $this.GetQuadWordAtOffset(0x0C)
+        
+        if ($sizeInBytes -eq  [UInt64]::MaxValue)
+        {
+            return [StringValueMemorySize]::new(0xFFFFFFFF, "Size", [ref]$this, -1, [MemorySizeUnit]::Unknown)
+        }
+        else
+        {
+            $unit = [MemorySizeUnit]::B
+        }
+
+        return [StringValueMemorySize]::new($sizeInBytes, $unit)
+    }
+
+    # Get Characteristics
+    hidden [StringValue[]]GetCharacteristics()
+    {
+        $characteristics = $this.GetWordAtOffset(0x14)
+
+        return [BitFieldConverter]::ToStringValueArray($characteristics, 2, "Characteristics", [ref]$this)
+    }
+
+    # Get State
+    hidden [StringValue]GetState()
+    {
+        $state = $this.GetByteAtOffset(0x16)
+
+        return [StringValue]::new($state, "State", [ref]$this)
+    }
+
+    # Get AssociatedComponents
+    hidden [UInt16[]]GetAssociatedComponents()
+    {
+        $components = $this.GetByteAtOffset(0x17)
+
+        $associatedComponents = [Collections.ArrayList]::new()
+
+        if ($components.Count -ge 1)
+        {
+            for ($component=0; $component -lt $components; $component++)
+            {
+                $handle = $this.GetWordAtOffset(0x18 + $component * 2)
+
+                $associatedComponents.Add($handle)
+            }
+        }
+
+        return $associatedComponents
+    }
+}
+
+
+###################################################################################################################################
+# Type 46                                                                                                                         #
+###################################################################################################################################
+class StringProperty : SMBIOSStructure 
+{    
+    hidden static [Hashtable]$StringArrays
+    hidden static [Hashtable]$StringArrayNameAlias
+
+    static [Array]$PropertyNames
+
+    static StringProperty()
+    {
+        $labels = [Collections.ArrayList]::new()
+        
+        if ( [SMBIOS]::Version -ge [Version]::new(3, 5) )
+        {
+            $labels.Add( "StringPropertyID"    )
+            $labels.Add( "StringPropertyValue" )
+            $labels.Add( "ParentHandle"        )
+        }
+
+        [StringProperty]::PropertyNames = $labels 
+    }
+
+    StringProperty([Byte]$type, [String]$description, [String[]]$keywords, [Byte]$length, [UInt16]$handle, [Byte[]]$data, [String[]]$strings) : base($type, $description, $keywords, $length, $handle, $data, $strings)
+    {
+    }
+
+    # Get StringPropertyID
+    hidden [UInt16]GetStringPropertyID()
+    {
+        return $this.GetWordAtOffset(0x04)
+    }
+
+    # Get StringPropertyValue
+    hidden [Byte]GetStringPropertyValue()
+    {
+        return $this.GetByteAtOffset(0x6)
+    }
+    
+    # Get ParentHandle
+    hidden [UInt16]GetParentHandle()
+    {
+        return $this.GetWordAtOffset(0x07)
+    }
+}
+
+###################################################################################################################################
+# Type 47..125                                                                                                                   #
+###################################################################################################################################
+class Reserved : SMBIOSStructure
+{ 
+    static [Array]$PropertyNames
+
+    static Reserved()
+    {
+        $labels = [Collections.ArrayList]::new() 
+    
+        $labels.Add( "Data"    )
+        $labels.Add( "Strings" )
+
+        [Reserved]::PropertyNames = $labels 
+    }
+    
+    Reserved([Byte]$type, [String]$description, [String[]]$keywords, [Byte]$length, [UInt16]$handle, [Byte[]]$data, [String[]]$strings) : base($type, $description, $keywords, $length, $handle, $data, $strings)
+    {   
     }
 
     hidden [Byte[]]GetData()
@@ -6618,8 +8445,7 @@ class ProcessorAdditionalInformation : SMBIOSStructure
     {
         return $this.Strings
     }
- }
-
+}
 
 ###################################################################################################################################
 # Type 126                                                                                                                        #
