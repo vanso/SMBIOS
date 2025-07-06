@@ -12,7 +12,7 @@
 RootModule = 'SMBIOS.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.8'
+ModuleVersion = '1.0'
 
 # Supported PSEditions
 CompatiblePSEditions = @('Desktop','Core')
@@ -30,7 +30,7 @@ Author = 'Vincent Anso'
 Copyright = '(c) Vincent Anso. All rights reserved.'
 
 # Description of the functionality provided by this module
-Description = 'Gets the System Management BIOS (SMBIOS) informations.'
+Description = 'Gets the System Management BIOS (SMBIOS) information.'
 
 # Minimum version of the PowerShell engine required by this module
 PowerShellVersion = '5.1'
@@ -63,13 +63,22 @@ PowerShellVersion = '5.1'
 # TypesToProcess = @()
 
 # Format files (.ps1xml) to be loaded when importing this module
-# FormatsToProcess = @()
+FormatsToProcess = @('Formats.ps1xml')
 
 # Modules to import as nested modules of the module specified in RootModule/ModuleToProcess
 NestedModules = 'SMBIOSLib.psm1'
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = 'Get-SMBIOS'
+FunctionsToExport = @(
+    'Get-SMBIOS',
+    'Get-SMBIOSVersion',
+    'Get-SMBIOSInfo',
+    'Export-SMBIOS',
+    'Get-SMBIOSTypes',
+    'Get-SMBIOSAvailableTypes',
+    'Get-SMBIOSTableData',
+    'Get-SMBIOSEntryPoint'
+    )
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()
@@ -95,7 +104,7 @@ PrivateData = @{
     PSData = @{
 
         # Tags applied to this module. These help with module discovery in online galleries.
-        Tags = @('SMBIOS','Windows','Linux','MacOS')
+        Tags = @('SMBIOS','Windows','Linux','macOS')
 
         # A URL to the license for this module.
         LicenseUri = 'https://github.com/vanso/SMBIOS/blob/master/LICENSE'
