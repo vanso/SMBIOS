@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<strings>
+    <table name="ProcessorType" alias="ProcessorType" kind="Ordered" reference="7.45.1">
+        <entry key="0x00" value="Reserved"/>
+        <entry key="0x01" value="X86"/>
+        <entry key="0x02" value="X64"/>
+        <entry key="0x03" value="Itanium"/>
+        <entry key="0x04" value="Aarch32"/>
+        <entry key="0x05" value="Aarch64"/>
+        <entry key="0x06" value="RV32"/>     
+        <entry key="0x07" value="RV64"/>
+        <entry key="0x08" value="RV128"/>
+        <entry key="0x09" value="LoongArch32"/>
+        <entry key="0x0A" value="LoongArch64"/>   
+    </table>
+</strings>

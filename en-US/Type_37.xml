@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<strings>
+    <!-- 7.38.1 -->
+    <table name="ChannelType" alias="ChannelType" kind="Ordered" reference="7.38.1">
+        <entry key="0x01" value="Other"/>
+        <entry key="0x02" value="Unknown"/>
+        <entry key="0x03" value="Rambus"/>
+        <entry key="0x04" value="SyncLink"/>
+    </table>
+</strings>

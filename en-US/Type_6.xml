@@ -1,11 +1,12 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <strings>
     <!-- 7.7 -->
-    <table name="ErrorStatus" alias="ErrorStatus" kind="Array" reference="7.7">
-        <entry value="OK"/>
-        <entry value="Uncorrectable Errors"/>
-        <entry value="Correctable Errors"/>
-        <entry value="Correctable and Uncorrectable Errors"/>
+    <table name="ErrorStatus" alias="ErrorStatus" kind="Ordered" reference="7.7">
+        <entry key="0x00" value="OK"/>
+        <entry key="0x01" value="Uncorrectable Errors"/>
+        <entry key="0x02" value="Correctable Errors"/>
+        <entry key="0x03" value="Correctable and Uncorrectable Errors"/>
+        <entry key="0x04" value="See Event Log"/>
     </table>
     <!-- 7.7.1 -->
     <table name="CurrentMemoryType" alias="CurrentMemoryType" kind="Array" reference="7.7.1">
@@ -23,8 +24,12 @@
     </table>
     <!-- 7.7.2 -->
     <table name="_Size" alias="_Size" kind="Ordered" reference="7.7.2">
-        <entry key="0x7D" value="Not determinable"/>
-        <entry key="0x7E" value="Module is installed"/>
+        <entry key="0x7D" value="Not Determinable"/>
+        <entry key="0x7E" value="Disabled"/>
         <entry key="0x7F" value="Not installed"/>
+    </table>
+    <table name="_Connection" alias="_Connection" kind="Ordered" reference="7.7.2">
+        <entry key="0x00" value="Single-bank Connection"/>
+        <entry key="0x01" value="Double-bank Connection"/>
     </table>
 </strings>

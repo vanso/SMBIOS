@@ -1,0 +1,311 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<strings>
+    <!-- 7.43.1 -->
+    <table name="InterfaceType" alias="InterfaceType" kind="Ordered" reference="7.43.1">
+        <entry key="0x00" value="Reserved"/>
+        <entry key="0x01" value="Reserved"/>
+        <entry key="0x02" value="KCS: Keyboard Controller Style"/>
+        <entry key="0x03" value="8250 UART Register Compatible"/>
+        <entry key="0x04" value="16450 UART Register Compatible"/>
+        <entry key="0x05" value="16550/16550A UART Register Compatible"/>
+        <entry key="0x06" value="16650/16650A UART Register Compatible"/>
+        <entry key="0x07" value="16750/16750A UART Register Compatible"/>
+        <entry key="0x08" value="16850/16850A UART Register Compatible"/>
+        <entry key="0x09" value="I2C / SMBUS"/>
+        <entry key="0x0A" value="I3C"/>
+        <entry key="0x0B" value="PCIe VDM"/>
+        <entry key="0x0C" value="Reserved"/>
+        <entry key="0x0D" value="Reserved"/>
+        <entry key="0x0E" value="Reserved"/>
+        <entry key="0x0F" value="Reserved"/>
+        <entry key="0x10" value="Reserved"/>
+        <entry key="0x11" value="Reserved"/>
+        <entry key="0x12" value="Reserved"/>
+        <entry key="0x13" value="Reserved"/>
+        <entry key="0x14" value="Reserved"/>
+        <entry key="0x15" value="Reserved"/>
+        <entry key="0x16" value="Reserved"/>
+        <entry key="0x17" value="Reserved"/>
+        <entry key="0x18" value="Reserved"/>
+        <entry key="0x19" value="Reserved"/>
+        <entry key="0x1A" value="Reserved"/>
+        <entry key="0x1B" value="Reserved"/>
+        <entry key="0x1C" value="Reserved"/>
+        <entry key="0x1D" value="Reserved"/>
+        <entry key="0x1E" value="Reserved"/>
+        <entry key="0x1F" value="Reserved"/>
+        <entry key="0x20" value="Reserved"/>
+        <entry key="0x21" value="Reserved"/>
+        <entry key="0x22" value="Reserved"/>
+        <entry key="0x23" value="Reserved"/>
+        <entry key="0x24" value="Reserved"/>
+        <entry key="0x25" value="Reserved"/>
+        <entry key="0x26" value="Reserved"/>
+        <entry key="0x27" value="Reserved"/>
+        <entry key="0x28" value="Reserved"/>
+        <entry key="0x29" value="Reserved"/>
+        <entry key="0x2A" value="Reserved"/>
+        <entry key="0x2B" value="Reserved"/>
+        <entry key="0x2C" value="Reserved"/>
+        <entry key="0x2D" value="Reserved"/>
+        <entry key="0x2E" value="Reserved"/>
+        <entry key="0x2F" value="Reserved"/>
+        <entry key="0x30" value="Reserved"/>
+        <entry key="0x31" value="Reserved"/>
+        <entry key="0x32" value="Reserved"/>
+        <entry key="0x33" value="Reserved"/>
+        <entry key="0x34" value="Reserved"/>
+        <entry key="0x35" value="Reserved"/>
+        <entry key="0x36" value="Reserved"/>
+        <entry key="0x37" value="Reserved"/>
+        <entry key="0x38" value="Reserved"/>
+        <entry key="0x39" value="Reserved"/>
+        <entry key="0x3A" value="Reserved"/>
+        <entry key="0x3B" value="Reserved"/>
+        <entry key="0x3C" value="Reserved"/>
+        <entry key="0x3D" value="Reserved"/>
+        <entry key="0x3E" value="Reserved"/>
+        <entry key="0x3F" value="Reserved"/>
+        <entry key="0x40" value="Network"/>
+        <entry key="0xF0" value="OEM"/>
+        <entry key="0xF1" value="Reserved"/>
+        <entry key="0xF2" value="Reserved"/>
+        <entry key="0xF3" value="Reserved"/>
+        <entry key="0xF4" value="Reserved"/>
+        <entry key="0xF5" value="Reserved"/>
+        <entry key="0xF6" value="Reserved"/>
+        <entry key="0xF7" value="Reserved"/>
+        <entry key="0xF8" value="Reserved"/>
+        <entry key="0xF9" value="Reserved"/>
+        <entry key="0xFA" value="Reserved"/>
+        <entry key="0xFB" value="Reserved"/>
+        <entry key="0xFC" value="Reserved"/>
+        <entry key="0xFD" value="Reserved"/>
+        <entry key="0xFE" value="Reserved"/>
+        <entry key="0xFF" value="Reserved"/>
+    </table>
+    <table name="DeviceType" alias="DeviceType" kind="Ordered" reference="7.43.1">
+        <entry key="0x00" value="Reserved"/>
+        <entry key="0x01" value="Reserved"/>
+        <entry key="0x02" value="USB Network Interface"/>
+        <entry key="0x03" value="PCI/PCIe Network Interface"/>
+        <entry key="0x04" value="USB Network Interface v2"/>
+        <entry key="0x05" value="PCI/PCIe Network Interface v2"/>
+        <entry key="0x06" value="Reserved"/>
+        <entry key="0x07" value="Reserved"/>
+        <entry key="0x08" value="Reserved"/>
+        <entry key="0x09" value="Reserved"/>
+        <entry key="0x0A" value="Reserved"/>
+        <entry key="0x0B" value="Reserved"/>
+        <entry key="0x0C" value="Reserved"/>
+        <entry key="0x0D" value="Reserved"/>
+        <entry key="0x0E" value="Reserved"/>
+        <entry key="0x0F" value="Reserved"/>
+        <entry key="0x80" value="OEM"/>
+        <entry key="0x81" value="OEM"/>
+        <entry key="0x82" value="OEM"/>
+        <entry key="0x83" value="OEM"/>
+        <entry key="0x84" value="OEM"/>
+        <entry key="0x85" value="OEM"/>
+        <entry key="0x86" value="OEM"/>
+        <entry key="0x87" value="OEM"/>
+        <entry key="0x88" value="OEM"/>
+        <entry key="0x89" value="OEM"/>
+        <entry key="0x8A" value="OEM"/>
+        <entry key="0x8B" value="OEM"/>
+        <entry key="0x8C" value="OEM"/>
+        <entry key="0x8D" value="OEM"/>
+        <entry key="0x8E" value="OEM"/>
+        <entry key="0x8F" value="OEM"/>
+        <entry key="0x90" value="OEM"/>
+        <entry key="0x91" value="OEM"/>
+        <entry key="0x92" value="OEM"/>
+        <entry key="0x93" value="OEM"/>
+        <entry key="0x94" value="OEM"/>
+        <entry key="0x95" value="OEM"/>
+        <entry key="0x96" value="OEM"/>
+        <entry key="0x97" value="OEM"/>
+        <entry key="0x98" value="OEM"/>    
+        <entry key="0x99" value="OEM"/>
+        <entry key="0x9A" value="OEM"/>
+        <entry key="0x9B" value="OEM"/>
+        <entry key="0x9C" value="OEM"/>
+        <entry key="0x9D" value="OEM"/>
+        <entry key="0x9E" value="OEM"/>
+        <entry key="0x9F" value="OEM"/>
+        <entry key="0xA0" value="OEM"/>
+        <entry key="0xA1" value="OEM"/>
+        <entry key="0xA2" value="OEM"/>
+        <entry key="0xA3" value="OEM"/>
+        <entry key="0xA4" value="OEM"/>
+        <entry key="0xA5" value="OEM"/>
+        <entry key="0xA6" value="OEM"/>
+        <entry key="0xA7" value="OEM"/>
+        <entry key="0xA8" value="OEM"/>
+        <entry key="0xA9" value="OEM"/>
+        <entry key="0xAA" value="OEM"/>
+        <entry key="0xAB" value="OEM"/>
+        <entry key="0xAC" value="OEM"/>
+        <entry key="0xAD" value="OEM"/>
+        <entry key="0xAE" value="OEM"/>
+        <entry key="0xAF" value="OEM"/>
+        <entry key="0xB0" value="OEM"/>
+        <entry key="0xB1" value="OEM"/>
+        <entry key="0xB2" value="OEM"/>
+        <entry key="0xB3" value="OEM"/>
+        <entry key="0xB4" value="OEM"/>
+        <entry key="0xB5" value="OEM"/>
+        <entry key="0xB6" value="OEM"/>
+        <entry key="0xB7" value="OEM"/>
+        <entry key="0xB8" value="OEM"/>
+        <entry key="0xB9" value="OEM"/>
+        <entry key="0xBA" value="OEM"/>
+        <entry key="0xBB" value="OEM"/>    
+        <entry key="0xBC" value="OEM"/>
+        <entry key="0xBD" value="OEM"/>
+        <entry key="0xBE" value="OEM"/>
+        <entry key="0xBF" value="OEM"/>
+        <entry key="0xC0" value="OEM"/>
+        <entry key="0xC1" value="OEM"/>
+        <entry key="0xC2" value="OEM"/>
+        <entry key="0xC3" value="OEM"/>
+        <entry key="0xC4" value="OEM"/>
+        <entry key="0xC5" value="OEM"/>
+        <entry key="0xC6" value="OEM"/>
+        <entry key="0xC7" value="OEM"/>
+        <entry key="0xC8" value="OEM"/>
+        <entry key="0xC9" value="OEM"/>
+        <entry key="0xCA" value="OEM"/>
+        <entry key="0xCB" value="OEM"/>    
+        <entry key="0xCC" value="OEM"/>
+        <entry key="0xCD" value="OEM"/>
+        <entry key="0xCE" value="OEM"/>
+        <entry key="0xCF" value="OEM"/>
+        <entry key="0xD0" value="OEM"/>
+        <entry key="0xD1" value="OEM"/>
+        <entry key="0xD2" value="OEM"/>
+        <entry key="0xD3" value="OEM"/>
+        <entry key="0xD4" value="OEM"/>
+        <entry key="0xD5" value="OEM"/>
+        <entry key="0xD6" value="OEM"/>
+        <entry key="0xD7" value="OEM"/>
+        <entry key="0xD8" value="OEM"/>
+        <entry key="0xD9" value="OEM"/>
+        <entry key="0xDA" value="OEM"/>
+        <entry key="0xDB" value="OEM"/>
+        <entry key="0xDC" value="OEM"/>
+        <entry key="0xDD" value="OEM"/>
+        <entry key="0xDE" value="OEM"/>
+        <entry key="0xDF" value="OEM"/>
+        <entry key="0xE0" value="OEM"/>
+        <entry key="0xE1" value="OEM"/>
+        <entry key="0xE2" value="OEM"/>
+        <entry key="0xE3" value="OEM"/>
+        <entry key="0xE4" value="OEM"/>
+        <entry key="0xE5" value="OEM"/>
+        <entry key="0xE6" value="OEM"/>
+        <entry key="0xE7" value="OEM"/>
+        <entry key="0xE8" value="OEM"/>
+        <entry key="0xE9" value="OEM"/>
+        <entry key="0xEA" value="OEM"/>
+        <entry key="0xEB" value="OEM"/>
+        <entry key="0xEC" value="OEM"/>
+        <entry key="0xED" value="OEM"/>
+        <entry key="0xEE" value="OEM"/>
+        <entry key="0xEF" value="OEM"/>
+        <entry key="0xF0" value="OEM"/>
+        <entry key="0xF1" value="OEM"/>
+        <entry key="0xF2" value="OEM"/>
+        <entry key="0xF3" value="OEM"/>
+        <entry key="0xF4" value="OEM"/>
+        <entry key="0xF5" value="OEM"/>
+        <entry key="0xF6" value="OEM"/>
+        <entry key="0xF7" value="OEM"/>
+        <entry key="0xF8" value="OEM"/>
+        <entry key="0xF9" value="OEM"/>
+        <entry key="0xFA" value="OEM"/>
+        <entry key="0xFB" value="OEM"/>
+        <entry key="0xFC" value="OEM"/>
+        <entry key="0xFD" value="OEM"/>
+        <entry key="0xFE" value="OEM"/>
+        <entry key="0xFF" value="OEM"/>
+    </table>
+    <table name="ProtocolType" alias="ProtocolType" kind="Ordered" reference="7.43.2">
+        <entry key="0x00" value="Reserved"/>
+        <entry key="0x01" value="Reserved"/>
+        <entry key="0x02" value="IPMI"/>
+        <entry key="0x03" value="MCTP"/>
+        <entry key="0x04" value="RedfishOverIP"/>
+        <entry key="0x05" value="Reserved"/>
+        <entry key="0x06" value="Reserved"/>
+        <entry key="0x07" value="Reserved"/>
+        <entry key="0x08" value="Reserved"/>
+        <entry key="0x09" value="Reserved"/>
+        <entry key="0x0A" value="Reserved"/>
+        <entry key="0x0B" value="Reserved"/>
+        <entry key="0x0C" value="Reserved"/>
+        <entry key="0x0D" value="Reserved"/>
+        <entry key="0x0E" value="Reserved"/>
+        <entry key="0x0F" value="Reserved"/>
+        <entry key="0xF0" value="OEM"/>
+        <entry key="0xF1" value="Reserved"/>
+        <entry key="0xF2" value="Reserved"/>
+        <entry key="0xF3" value="Reserved"/>
+        <entry key="0xF4" value="Reserved"/>
+        <entry key="0xF5" value="Reserved"/>
+        <entry key="0xF6" value="Reserved"/>
+        <entry key="0xF7" value="Reserved"/>
+        <entry key="0xF8" value="Reserved"/>
+        <entry key="0xF9" value="Reserved"/>
+        <entry key="0xFA" value="Reserved"/>
+        <entry key="0xFB" value="Reserved"/>
+        <entry key="0xFC" value="Reserved"/>
+        <entry key="0xFD" value="Reserved"/>
+        <entry key="0xFE" value="Reserved"/>
+        <entry key="0xFF" value="Reserved"/>
+    </table>
+    <table name="Characteristics" alias="Characteristics" kind="Array" reference="7.X">
+        <entry value="Credential bootstrapping via IPMI commands is supported"/>
+        <entry value="Reserved"/>
+        <entry value="Reserved"/>
+        <entry value="Reserved"/>
+        <entry value="Reserved"/>
+        <entry value="Reserved"/>
+        <entry value="Reserved"/>
+        <entry value="Reserved"/>
+        <entry value="Reserved"/>
+        <entry value="Reserved"/>
+        <entry value="Reserved"/>
+        <entry value="Reserved"/>
+        <entry value="Reserved"/>
+        <entry value="Reserved"/>
+        <entry value="Reserved"/>
+        <entry value="Reserved"/>
+    </table>
+    <table name="AssignmentType" alias="DiscoveryType" kind="Ordered" reference="8.4.2">
+        <entry key="0x00" value="Unknown"/>
+        <entry key="0x01" value="Static"/>
+        <entry key="0x02" value="DHCP"/>
+        <entry key="0x03" value="AutoConfigure"/>
+        <entry key="0x04" value="HostSelected"/>
+        <entry key="0x05" value="Reserved"/>
+        <entry key="0x06" value="Reserved"/>   
+        <entry key="0x07" value="Reserved"/>   
+        <entry key="0x08" value="Reserved"/>   
+        <entry key="0x09" value="Reserved"/>   
+        <entry key="0x0A" value="Reserved"/>
+    </table>
+    <table name="IPAddressFormat" alias="IPAddressFormat" kind="Ordered" reference="8.4.3">
+        <entry key="0x00" value="Unknown"/>
+        <entry key="0x01" value="IPv4"/>
+        <entry key="0x02" value="IPv6"/>
+        <entry key="0x03" value="Reserved"/>
+        <entry key="0x04" value="Reserved"/>
+        <entry key="0x05" value="Reserved"/>
+        <entry key="0x06" value="Reserved"/>   
+        <entry key="0x07" value="Reserved"/>   
+        <entry key="0x08" value="Reserved"/>   
+        <entry key="0x09" value="Reserved"/>   
+        <entry key="0x0A" value="Reserved"/>
+    </table>
+</strings>

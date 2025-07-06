@@ -21,7 +21,7 @@
         <entry value="Selectable boot is supported"/>
         <entry value="BIOS ROM is socketed"/>
         <entry value="Boot from PC card (PCMCIA) is supported"/>
-        <entry value="EDD specification is supported"/>
+        <entry value="EDD (Enhanced Disk Drive) specification is supported"/>
         <entry value="Int 13h — Japanese floppy for NEC 9800 1.2 MB (3.5&quot;, 1K bytes/sector, 360 RPM) is supported"/>
         <entry value="Int 13h — Japanese floppy for Toshiba 1.2 MB (3.5&quot;, 360 RPM) is supported"/>
         <entry value="Int 13h — 5.25&quot; / 360 kB floppy services are supported"/>

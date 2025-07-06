@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<strings>
+    <!-- 7.39 -->
+    <table name="RegisterSpacing" alias="RegisterSpacing" kind="Ordered" reference="7.39">
+        <entry key="0x00" value="Successive Byte Boundaries"/>
+        <entry key="0x01" value="32-bit Boundaries"/>
+        <entry key="0x02" value="16-byte Boundaries"/>
+    </table>
+     <!-- 7.39 -->
+    <table name="InterruptPolarity" alias="InterruptPolarity" kind="Ordered" reference="7.39">
+        <entry key="0x00" value="Active High"/>
+        <entry key="0x01" value="Active Low"/>
+    </table>
+    <table name="InterruptTriggerMode" alias="InterruptTriggerMode" kind="Ordered" reference="7.39">
+        <entry key="0x00" value="Edge"/>
+        <entry key="0x01" value="Level"/>
+    </table>
+    <table name="Bus" alias="Bus" kind="Ordered" reference="7.39">
+        <entry key="0x00" value="Memory-mapped"/>
+        <entry key="0x01" value="I/O"/>
+        <entry key="0x04" value="SMBus"/>
+    </table>
+    <!-- 7.39.1 -->
+    <table name="InterfaceType" alias="InterfaceType" kind="Ordered" reference="7.39.1">
+        <entry key="0x00" value="Unknown"/>
+        <entry key="0x01" value="KCS: Keyboard Controller Style"/>
+        <entry key="0x02" value="SMIC: Server Management Interface Chip"/>
+        <entry key="0x03" value="BT: Block Transfer"/>
+        <entry key="0x04" value="SSIF: SMBus System Interface"/>
+    </table>
+</strings>

@@ -14,6 +14,9 @@
         <entry key="0x02" value="Reserved"/>
         <entry key="0x03" value="Unknown"/>
     </table>
+     <table name="_Size" alias="_Size" kind="Ordered" reference="7.7.2">
+        <entry key="0x00" value="None"/>
+    </table>
     <!-- 7.8.2 -->
     <table name="_SRAMType" alias="_SRAMType" kind="Array" reference="7.8.2">
         <entry value="Other"/>
@@ -28,6 +31,7 @@
     <table name="ErrorCorrectionType" alias="ErrorCorrectionType" kind="Ordered" reference="7.8.3">
         <entry key="0x01" value="Other"/>
         <entry key="0x02" value="Unknown"/>
+        <entry key="0x03" value="None"/>
         <entry key="0x04" value="Parity"/>
         <entry key="0x05" value="Single-bit ECC"/>
         <entry key="0x06" value="Multi-bit ECC"/>

@@ -37,6 +37,13 @@
         <entry key="0x21" value="PCI Express Mini 52-pin with bottom-side keep-outs"/>
         <entry key="0x22" value="PCI Express Mini 52-pin without bottom-side keep-outs"/>
         <entry key="0x23" value="PCI Express Mini 76-pin"/>
+        <entry key="0x24" value="PCI Express Gen 4 SFF-8639"/>
+        <entry key="0x25" value="PCI Express Gen 5 SFF-8639"/>
+        <entry key="0x26" value="OCP NIC 3.0 Small Form Factor"/>
+        <entry key="0x27" value="OCP NIC 3.0 Large Form Factor"/>
+        <entry key="0x28" value="OCP NIC 3.0 Prior to 3.0"/>
+
+        <entry key="0x30" value="CXL Flexbus 1.0"/>
 
         <entry key="0xA0" value="PC-98/C20"/>
         <entry key="0xA1" value="PC-98/C24"/>
@@ -67,9 +74,18 @@
         <entry key="0xBB" value="PCI Express 4 x4"/>
         <entry key="0xBC" value="PCI Express 4 x8"/>
         <entry key="0xBD" value="PCI Express 4 x16"/>
+        <entry key="0xBE" value="PCI Express 5"/>
+        <entry key="0xBF" value="PCI Express 5 x1"/>
+        <entry key="0xC0" value="PCI Express 5 x2"/>
+        <entry key="0xC1" value="PCI Express 5 x4"/>
+        <entry key="0xC2" value="PCI Express 5 x8"/>
+        <entry key="0xC3" value="PCI Express 5 x16"/>
+        <entry key="0xC4" value="PCI Express Gen 6+"/>
+        <entry key="0xC5" value="EDSFF E1"/>
+        <entry key="0xC6" value="EDSFF E3"/>
     </table>
     <!-- 7.10.2 -->
-    <table name="SlotDataBusWidth" alias="SlotDataBusWidth" kind="Ordered" reference="7.10.2">
+    <table name="_SlotWidth" alias="SlotDataBusWidth,SlotPhysicalWidth" kind="Ordered" reference="7.10.2">
         <entry key="0x01" value="Other"/>
         <entry key="0x02" value="Unknown"/>
         <entry key="0x03" value="8 bit"/>
@@ -97,8 +113,8 @@
     <table name="SlotLength" alias="SlotLength" kind="Ordered" reference="7.10.4">
         <entry key="0x01" value="Other"/>
         <entry key="0x02" value="Unknown"/>
-        <entry key="0x03" value="Short Length"/>
-        <entry key="0x04" value="Long Length"/>
+        <entry key="0x03" value="Short"/>
+        <entry key="0x04" value="Long"/>
         <entry key="0x05" value="2.5&quot; drive form factor"/>
         <entry key="0x06" value="3.5&quot; drive form factor"/>
     </table>
@@ -129,5 +145,16 @@
         <entry value="Hot-plug devices are supported"/>
         <entry value="SMBus signal is supported"/>
         <entry value="PCIe slot bifurcation is supported"/>
+        <entry value="Flexbus slot, CXL 1.0 capable"/>
+        <entry value="Flexbus slot, CXL 2.0 capable"/>
+        <entry value="Flexbus slot, CXL 3.0 capable"/>
+    </table>
+    <!-- 7.10.13 -->
+    <table name="SlotHeight" alias="SlotHeight" kind="Ordered" reference="7.10.13">
+        <entry key="0x00" value="Not applicable"/>
+        <entry key="0x01" value="Other"/>
+        <entry key="0x02" value="Unknown"/>
+        <entry key="0x03" value="Full height"/>
+        <entry key="0x04" value="Low-profile"/>
     </table>
 </strings>

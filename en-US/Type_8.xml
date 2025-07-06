@@ -36,8 +36,8 @@
         <entry key="0x1F" value="Mini Jack (headphones)"/>
         <entry key="0x20" value="BNC"/>
         <entry key="0x21" value="IEEE 1394"/>
-        <entry key="0x23" value="SAS/SATA Plug Receptacle"/>
-        <entry key="0x24" value="USB Type-C Receptacle"/>
+        <entry key="0x22" value="SAS/SATA Plug Receptacle"/>
+        <entry key="0x23" value="USB Type-C Receptacle"/>
 
         <entry key="0xA0" value="PC-98"/>
         <entry key="0xA1" value="PC-98Hireso"/>

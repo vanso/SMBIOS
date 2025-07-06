@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<strings>
+    <table name="Characteristics" alias="Characteristics" kind="Array" reference="7.46.3">
+        <entry value="Updatable"/>
+        <entry value="Write-Protect"/>
+        <entry value="Reserved"/>
+        <entry value="Reserved"/>
+        <entry value="Reserved"/>
+        <entry value="Reserved"/>
+        <entry value="Reserved"/>
+        <entry value="Reserved"/>
+        <entry value="Reserved"/>
+        <entry value="Reserved"/>
+        <entry value="Reserved"/>
+        <entry value="Reserved"/>
+        <entry value="Reserved"/>
+        <entry value="Reserved"/>
+        <entry value="Reserved"/>
+        <entry value="Reserved"/>
+    </table>
+    <table name="State" alias="State" kind="Ordered" reference="7.46.4">
+        <entry key="0x01" value="Other"/>
+        <entry key="0x02" value="Unknown"/>
+        <entry key="0x03" value="Disabled"/>
+        <entry key="0x04" value="Enabled"/>
+        <entry key="0x05" value="Absent"/>
+        <entry key="0x06" value="Stand-by Offline"/>
+        <entry key="0x07" value="Stand-by Spare"/>
+        <entry key="0x08" value="Unavailable Offline"/>
+    </table>
+    <table name="Size" alias="Size" kind="Ordered" reference="7.46">
+        <entry key="0xFFFFFFFF" value="Unknown"/>
+    </table>
+</strings>

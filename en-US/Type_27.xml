@@ -24,7 +24,7 @@
         <entry key="0x07" value="Power Supply Fan"/>
         <entry key="0x08" value="Heat Pipe"/>
         <entry key="0x09" value="Integrated Refrigeration"/>
-        <entry key="0x10" value="Active Cooling"/>   
-        <entry key="0x11" value="Passive Cooling"/> 
+        <entry key="0x0A" value="Active Cooling"/>   
+        <entry key="0x0B" value="Passive Cooling"/> 
     </table>    
 </strings>

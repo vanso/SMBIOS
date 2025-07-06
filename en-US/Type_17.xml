@@ -11,6 +11,11 @@
         <entry key="0xFFFF" value="Unknown"/>
     </table>
     <!-- 7.18 -->
+    <table name="OtherSize" alias="OtherSize" kind="Ordered" reference="7.18">
+        <entry key="0x0000" value="None"/>
+        <entry key="0xFFFF" value="Unknown"/>
+    </table>
+    <!-- 7.18 -->
     <table name="DeviceSet" alias="DeviceSet" kind="Ordered" reference="7.18">
         <entry key="0x00" value="None"/>
         <entry key="0xFF" value="Unknown"/>
@@ -56,7 +61,9 @@
         <entry key="0x12" value="DDR"/>
         <entry key="0x13" value="DDR2"/>
         <entry key="0x14" value="DDR2 FB-DIMM"/>
-
+        <entry key="0x15" value="Reserved"/>
+        <entry key="0x16" value="Reserved"/>
+        <entry key="0x17" value="Reserved"/>
         <entry key="0x18" value="DDR3"/>
         <entry key="0x19" value="FBD2"/>
         <entry key="0x1A" value="DDR4"/>
@@ -67,6 +74,9 @@
         <entry key="0x1F" value="Logical non-volatile device"/>
         <entry key="0x20" value="HBM (High Bandwidth Memory)"/>
         <entry key="0x21" value="HBM2 (High Bandwidth Memory Generation 2)"/>
+        <entry key="0x22" value="DDR5"/>
+        <entry key="0x23" value="LPDDR5"/>
+        <entry key="0x24" value="HBM3 (High Bandwidth Memory Generation 3)"/>
     </table>
     <!-- 7.18.3 -->
     <table name="TypeDetail" alias="TypeDetail" kind="Array" reference="7.18.3">
@@ -104,9 +114,17 @@
         <entry value="Other"/>
         <entry value="Unknown"/>
         <entry value="Volatile memory"/>
-        <entry value="Static column"/>
         <entry value="Byte-accessible persistent memory"/>
-        <entry value="RAMBUS"/>
         <entry value="Block-accessible persistent memory"/>
+        <entry value="Reserved"/>
+        <entry value="Reserved"/>
+        <entry value="Reserved"/>
+        <entry value="Reserved"/>
+        <entry value="Reserved"/>
+        <entry value="Reserved"/>
+        <entry value="Reserved"/>
+        <entry value="Reserved"/>
+        <entry value="Reserved"/>
+        <entry value="Reserved"/>
     </table>
 </strings>

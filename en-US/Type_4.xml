@@ -236,6 +236,7 @@
 
         <entry key="0x100" value="ARMv7"/>
         <entry key="0x101" value="ARMv8"/>
+        <entry key="0x102" value="ARMv9"/>
         <entry key="0x104" value="SH-3"/>
         <entry key="0x105" value="SH-4"/>
         <entry key="0x118" value="ARM"/>
@@ -250,6 +251,25 @@
         <entry key="0x200" value="RISC-V RV32"/>
         <entry key="0x201" value="RISC-V RV64"/>
         <entry key="0x202" value="RISC-V RV128"/>
+
+        <entry key="0x258" value="LoongArch"/>
+        <entry key="0x259" value="Loongson™ 1 Processor Family"/>
+        <entry key="0x25A" value="Loongson™ 2 Processor Family"/>
+        <entry key="0x25B" value="Loongson™ 3 Processor Family"/>
+        <entry key="0x25C" value="Loongson™ 2K Processor Family"/>
+        <entry key="0x25D" value="Loongson™ 3A Processor Family"/>
+        <entry key="0x25E" value="Loongson™ 3B Processor Family"/>
+        <entry key="0x25F" value="Loongson™ 3C Processor Family"/>
+        <entry key="0x260" value="Loongson™ 3D Processor Family"/>
+        <entry key="0x261" value="Loongson™ 3E Processor Family"/>
+        <entry key="0x262" value="Dual-Core Loongson™ 2K Processor 2xxx Series"/>
+        <entry key="0x26C" value="Quad-Core Loongson™ 3A Processor 5xxx Series"/>
+        <entry key="0x26D" value="Multi-Core Loongson™ 3A Processor 5xxx Series"/>
+        <entry key="0x26E" value="Quad-Core Loongson™ 3B Processor 5xxx Series"/>
+        <entry key="0x26F" value="Multi-Core Loongson™ 3B Processor 5xxx Series"/>
+        <entry key="0x270" value="Multi-Core Loongson™ 3C Processor 5xxx Series"/>
+        <entry key="0x271" value="Multi-Core Loongson™ 3D Processor 5xxx Series"/>
+
     </table>
     <!-- 7.5.5 -->
     <table name="Upgrade" alias="Upgrade" kind="Ordered" reference="7.5.5">
@@ -313,6 +333,26 @@
         <entry key="0x3A" value="Socket BGA1392"/>
         <entry key="0x3B" value="Socket BGA1510"/>
         <entry key="0x3C" value="Socket BGA1528"/>
+        <entry key="0x3D" value="Socket LGA4189"/>
+        <entry key="0x3E" value="Socket LGA1200"/>
+        <entry key="0x3F" value="Socket LGA4677"/>
+        <entry key="0x40" value="Socket LGA1700"/>
+        <entry key="0x41" value="Socket BGA1744"/>
+        <entry key="0x42" value="Socket BGA1781"/>
+        <entry key="0x43" value="Socket BGA1211"/>
+        <entry key="0x44" value="Socket BGA2422"/>
+        <entry key="0x45" value="Socket LGA1211"/>
+        <entry key="0x46" value="Socket LGA2422"/>
+        <entry key="0x47" value="Socket LGA5773"/>
+        <entry key="0x48" value="Socket BGA5773"/>
+        <entry key="0x49" value="Socket AM5"/>
+        <entry key="0x4A" value="Socket SP5"/>
+        <entry key="0x4B" value="Socket SP6"/>
+        <entry key="0x4C" value="Socket BGA883"/>
+        <entry key="0x4D" value="Socket BGA1190"/>
+        <entry key="0x4E" value="Socket BGA4129"/>
+        <entry key="0x4F" value="Socket LGA4710"/>
+        <entry key="0x50" value="Socket LGA7529"/>
     </table>
     <!-- 7.5.9 -->
     <table name="Characteristics" alias="Characteristics" kind="Array" reference="7.5.9">
@@ -325,6 +365,7 @@
         <entry value="Enhanced Virtualization"/>
         <entry value="Power/Performance Control"/>
         <entry value="128-bit Capable"/>
+        <entry value="Arm64 SoC ID"/>
     </table>
     <!-- -->
     <table name="GenuineIntelFeatures" alias="GenuineIntelFeatures" kind="Array" reference="">

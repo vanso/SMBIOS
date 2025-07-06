@@ -47,8 +47,8 @@
         <entry key="42" value="Management Controller Host Interface"/>
         <entry key="43" value="TPM Device"/>
         <entry key="44" value="Processor Additional Information"/>
-        <entry key="45" value="Reserved"/>
-        <entry key="46" value="Reserved"/>
+        <entry key="45" value="Firmware Inventory Information"/>
+        <entry key="46" value="String Property"/>
         <entry key="47" value="Reserved"/>
         <entry key="48" value="Reserved"/>
         <entry key="49" value="Reserved"/>
@@ -306,8 +306,8 @@
         <entry key="42" value="Management Controller Host Interface"/>
         <entry key="43" value="TPM Device"/>
         <entry key="44" value="Processor Additional Information"/>
-        <entry key="45" value="Reserved"/>
-        <entry key="46" value="Reserved"/>
+        <entry key="45" value="Firmware Inventory Information"/>
+        <entry key="46" value="String Property"/>
         <entry key="47" value="Reserved"/>
         <entry key="48" value="Reserved"/>
         <entry key="49" value="Reserved"/>
