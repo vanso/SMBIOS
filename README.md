@@ -17,7 +17,7 @@ This module allow to get the SMBIOS table contents in the form of objects and va
 
 ## Supported SMBIOS version
 
-[3.8](https://www.dmtf.org/sites/default/files/standards/documents/DSP0134_3.8.0.pdf)
+[3.8.0](https://www.dmtf.org/sites/default/files/standards/documents/DSP0134_3.8.0.pdf)
 
 ## Installation
 
@@ -55,7 +55,7 @@ Get-SMBIOSInfo
 Export-SMBIOS -File C:\users\vanso\Desktop\Dell_XPS.dump
 
 > [!WARNING]
-> The file exported by the Export-SMBIOS function is incompatible with dmdidecode.
+> The file exported by the Export-SMBIOS function is incompatible with dmidecode.
 
 ## Available functions in the module
 
