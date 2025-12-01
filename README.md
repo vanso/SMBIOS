@@ -21,8 +21,9 @@ This module allow to get the SMBIOS table contents in the form of objects and va
 
 ## Installation
 
-```PS> Install-Module -Name SMBIOS```
-
+```powershell
+PS> Install-Module -Name SMBIOS
+```
 ## Usage
 
 Get-SMBIOS
