@@ -1,4 +1,4 @@
-<#
+﻿<#
 
 SMBIOS
 
@@ -383,43 +383,30 @@ function Export-SMBIOS
 
     Get-SMBIOSEntryPoint | Out-Null
 
-    $SMBIOSMajorVersion = [SMBIOS]::Version.Major
+    [Byte[]]$anchor = 0x5F, 0x53, 0x4D, 0x33, 0x5F
 
-    switch ($SMBIOSMajorVersion) {
-        2 { 
-            [Byte[]]$anchor = 0x5F, 0x53, 0x4D, 0x5F
+    $entryPoint = $anchor +
+                  0x00 +
+                  0x18 +
+                  $([SMBIOS]::Version.Major) +
+                  $([SMBIOS]::Version.Minor) +
+                  0x00 +
+                  0x01 +
+                  0x00 +
+                  $([BitConverter]::GetBytes([UInt32][SMBIOS]::TableData.Count)) +
+                  $([BitConverter]::GetBytes([UInt64]0x20)) +
+                  $([BitConverter]::GetBytes([UInt64]0x00))
+    
+    $sum = 0
 
-            $entryPoint = $anchor +
-                          0x00 +
-                          0x1F +
-                          [SMBIOS]::Version.Major +
-                          [SMBIOS]::Version.Minor +
-                          0x00, 0x00 +
-                          0x00 +
-                          0x00, 0x00, 0x00, 0x00, 0x00 +
-                          0x5F, 0x44, 0x4D, 0x49, 0x5F +
-                          0x00 +
-                          [BitConverter]::GetBytes([UInt16][SMBIOS]::TableDataSize) +
-                          $([BitConverter]::GetBytes([UInt64]0x20))
-                          $([BitConverter]::GetBytes([UInt16][SMBIOS]::Structures.Count))
-                          0x00
-        }
-        3 {
-            [Byte[]]$anchor = 0x5F, 0x53, 0x4D, 0x33, 0x5F
-
-            $entryPoint = $anchor +
-                          0x00 +
-                          0x18 +
-                          $([SMBIOS]::Version.Major) +
-                          $([SMBIOS]::Version.Minor) +
-                          0x00 +
-                          0x01 +
-                          0x00 +
-                          $([BitConverter]::GetBytes([UInt32][SMBIOS]::TableData.Count)) +
-                          $([BitConverter]::GetBytes([UInt64]0x20)) +
-                          $([BitConverter]::GetBytes([UInt64]0x00))
-        }
+    foreach ($byte in $entryPoint) 
+    {
+        $sum = ($sum + $byte) % 256
     }
+
+    [byte]$checksum = (256 - $sum) % 256
+
+    $entryPoint[0x05] = $checksum
 
     try 
     {
@@ -674,7 +661,7 @@ function Get-SMBIOS
         [Parameter(ParameterSetName = "Debug")]
         [Parameter(ParameterSetName = "Type")]
         [ValidateNotNullOrEmpty()]
-        [ValidateRange("2.0", "3.7")]
+        [ValidateRange("2.0", "3.9")]
         # Specifies the maximum version of SMBIOS that will be interpreted.
         [Version]$MaximumVersion = [SMBIOS]::Version,
 
@@ -1275,3 +1262,6 @@ Export-ModuleMember -Function @(
     )
 
 Update-FormatData -PrependPath $PSScriptRoot\Formats.ps1xml
+
+
+

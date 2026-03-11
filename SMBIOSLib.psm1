@@ -1,4 +1,4 @@
-<#
+﻿<#
 
 SMBIOSLib
 
@@ -745,14 +745,14 @@ class StringValueArray : StringValue
 enum MemorySizeUnit
 {
     B
-    kB
-    MB
-    GB
-    TB
-    PB
-    EB
-    ZB
-    YB
+    KiB
+    MiB
+    GiB
+    TiB
+    PiB
+    EiB
+    ZiB
+    YiB
     Auto
     None
     Unknown
@@ -772,35 +772,35 @@ class StringValueMemorySize : StringValue
         
         if ($sizeInBytes -ge $1yb)
         {
-            return [MemorySizeUnit]::YB
+            return [MemorySizeUnit]::YiB
         }
         elseif ($sizeInBytes -ge $1zb)
         {
-            return [MemorySizeUnit]::ZB
+            return [MemorySizeUnit]::ZiB
         }
         elseif ($sizeInBytes -ge $1eb)
         {
-            return [MemorySizeUnit]::EB
+            return [MemorySizeUnit]::EiB
         }
         elseif ($sizeInBytes -ge 1pb)
         {
-            return [MemorySizeUnit]::PB
+            return [MemorySizeUnit]::PiB
         }
         elseif ($sizeInBytes -ge 1tb)
         {
-            return [MemorySizeUnit]::TB
+            return [MemorySizeUnit]::TiB
         }
         elseif ($sizeInBytes -ge 1gb)
         {
-            return [MemorySizeUnit]::GB
+            return [MemorySizeUnit]::GiB
         }
         elseif ($sizeInBytes -ge 1mb)
         {
-            return [MemorySizeUnit]::MB
+            return [MemorySizeUnit]::MiB
         }
         elseif ($sizeInBytes -ge 1kb)
         {
-            return [MemorySizeUnit]::kB
+            return [MemorySizeUnit]::KiB
         }
         else
         {
@@ -1249,7 +1249,7 @@ class SMBIOS
     static SMBIOS()
     {
         # Define the supported vesion of SMBIOS
-        [SMBIOS]::SupportedVersion = [Version]::new("3.8.0")
+        [SMBIOS]::SupportedVersion = [Version]::new("3.9.0")
         
         # Generates SMBIOS types list
         $typesList = [ArrayList]::new()
@@ -1854,9 +1854,9 @@ class BIOSInformation : SMBIOSStructure
 
         $sizeInBytes = $ROMSize * 1kb
 
-        $unit = [MemorySizeUnit]::kB
+        $unit = [MemorySizeUnit]::KiB
 
-        if ( $ROMSize -eq 0xFF ) 
+        if ( $ROMSize -eq 0xFF )
         {
             if ( [SMBIOS]::Version -ge [Version]::new(3, 1) ) 
             {    
@@ -1866,7 +1866,7 @@ class BIOSInformation : SMBIOSStructure
                 {
                     if ($extendedSize -shr 14)
                     {  
-                        $unit = [MemorySizeUnit]::GB
+                        $unit = [MemorySizeUnit]::GiB
                         
                         $size = $extendedSize -band 0x3FFF
 
@@ -1874,7 +1874,7 @@ class BIOSInformation : SMBIOSStructure
                     }
                     else
                     {
-                        $unit = [MemorySizeUnit]::MB
+                        $unit = [MemorySizeUnit]::MiB
 
                         $size = $extendedSize -band 0x3FFF
 
@@ -1914,7 +1914,7 @@ class BIOSInformation : SMBIOSStructure
         }
         else
         {
-            $unit = [MemorySizeUnit]::kB
+            $unit = [MemorySizeUnit]::KiB
         }
 
         return [StringValueMemorySize]::new($sizeInBytes, $unit)
@@ -2293,9 +2293,15 @@ class SystemEnclosure : SMBIOSStructure
         if ( [SMBIOS]::Version -ge [Version]::new(2, 3) )
         {
             $labels.Add( "OEMDefined"         ) 
-            $labels.Add( "Heigth"             ) 
+            $labels.Add( "Height"             ) 
             $labels.Add( "NumberOfPowerCords" ) 
             $labels.Add( "ContainedElements"  ) 
+        }
+
+        if ( [SMBIOS]::Version -ge [Version]::new(3, 9) )
+        {
+            $labels.Add( "RackType"           ) 
+            $labels.Add( "RackHeight"         )
         }
         
         [SystemEnclosure]::PropertyNames = $labels
@@ -2401,12 +2407,17 @@ class SystemEnclosure : SMBIOSStructure
         return $this.GetWordAtOffset(0x0D)
     }
 
-    # Get Heigth
-    hidden [StringValue]GetHeigth()
+    # Get Height
+    hidden [StringValue]GetHeight()
     {        
-        $heigth = $this.GetByteAtOffset(0x11)
+        $height = $this.GetByteAtOffset(0x11)
 
-        return [StringValue]::new($heigth, 0x00, "{0} U", "UNSPECIFIED")
+        if ($height -eq 0xFF)
+        {
+            return [StringValue]::new($this.GetRackHeight(), "{0} U")
+        }
+
+        return [StringValue]::new($height, 0x00, "{0} U", "UNSPECIFIED")
     }
 
     # Get NumberOfPowerCords
@@ -2472,6 +2483,28 @@ class SystemEnclosure : SMBIOSStructure
         $containedElementRecordLength = $this.GetByteAtOffset(0x14)
         
         return $this.GetStringAtOffset(0x15 + $containedElementCount * $containedElementRecordLength)
+    }
+
+    # Get RackType
+    hidden [StringValue]GetRackType()
+    {
+        $containedElementCount = $this.GetByteAtOffset(0x13)
+
+        $containedElementRecordLength = $this.GetByteAtOffset(0x14)
+        
+        $rackType = $this.GetByteAtOffset(0x16 + $containedElementCount * $containedElementRecordLength)
+
+        return [StringValue]::new($rackType, "RackType", [ref]$this)
+    }
+
+    # Get RackHeight
+    hidden [byte]GetRackHeight()
+    {
+        $containedElementCount = $this.GetByteAtOffset(0x13)
+
+        $containedElementRecordLength = $this.GetByteAtOffset(0x14)
+        
+        return $this.GetByteAtOffset(0x17 + $containedElementCount * $containedElementRecordLength)
     }
 }
 
@@ -2547,6 +2580,11 @@ class ProcessorInformation : SMBIOSStructure
         if ( [SMBIOS]::Version -ge [Version]::new(3, 6) )
         {    
             $labels.Add( "ThreadEnabled"     )
+        }
+
+        if ( [SMBIOS]::Version -ge [Version]::new(3, 8) )
+        {    
+            $labels.Add( "SocketType"        )
         }
 
         $this.PropertyNamesEx = $labels
@@ -3054,6 +3092,11 @@ class ProcessorInformation : SMBIOSStructure
         return $this.GetWordAtOffset(0x30)
     }
     
+    # Get SocketType
+    hidden [SMBString]GetSocketType()
+    {
+        return $this.GetStringAtOffset(0x32)
+    }
 }
 
 
@@ -3530,7 +3573,7 @@ class CacheInformation : SMBIOSStructure
             $maxSize = [BitField]::Extract($maximumSize, 0, 31)
         }
 
-        $unit = [MemorySizeUnit]::kB
+        $unit = [MemorySizeUnit]::KiB
 
         if ($granularity)
         {
@@ -4856,7 +4899,7 @@ class MemoryDevice : SMBIOSStructure
     {
         $moduleManufacturerID = $this.GetWordAtOffset(0x2C)
        
-        return [StringValue]::new($moduleManufacturerID, 0x00, $null, "UNKNOWN")
+        return [StringValue]::new($moduleManufacturerID, 0x0000, "0x{0:X4}", "UNKNOWN")
     }
 
     # Get ModuleProductID
@@ -4864,7 +4907,7 @@ class MemoryDevice : SMBIOSStructure
     {
         $moduleProductID = $this.GetWordAtOffset(0x2E)
 
-        return [StringValue]::new($moduleProductID, 0x00, $null, "UNKNOWN")
+        return [StringValue]::new($moduleProductID, 0x0000, "0x{0:X4}", "UNKNOWN")
     }
 
     # Get MemorySubsystemControllerManufacturerID
@@ -4872,7 +4915,7 @@ class MemoryDevice : SMBIOSStructure
     {
         $memorySubsystemControllerManufacturerID = $this.GetWordAtOffset(0x30)
 
-        return [StringValue]::new($memorySubsystemControllerManufacturerID, 0x00, $null, "UNKNOWN")     
+        return [StringValue]::new($memorySubsystemControllerManufacturerID, 0x0000, "0x{0:X4}", "UNKNOWN")     
     }
 
     # Get MemorySubsystemControllerProductID
@@ -4880,7 +4923,7 @@ class MemoryDevice : SMBIOSStructure
     {
         $memorySubsystemControllerProductID = $this.GetWordAtOffset(0x32)
 
-        return [StringValue]::new($memorySubsystemControllerProductID, 0x00, $null, "UNKNOWN")     
+        return [StringValue]::new($memorySubsystemControllerProductID, 0x0000, "0x{0:X4}", "UNKNOWN")     
     }
 
     # Utility method for NonVolatileSize, VolatileSize, CacheSize, LogicalSize methods
@@ -4947,27 +4990,39 @@ class MemoryDevice : SMBIOSStructure
     }
 
     # Get PMIC0ManufacturerID
-    hidden [UInt16]PMIC0ManufacturerID()
-    {
-        return $this.GetWordAtOffset(0x5C)
+    hidden [StringValue]GetPMIC0ManufacturerID()
+    {        
+        return $this._GetManufacturerID(0x5C)
     }
 
     # Get PMIC0RevisionNumber
-    hidden [UInt16]PMIC0RevisionNumber()
+    hidden [StringValue]GetPMIC0RevisionNumber()
     {
-        return $this.GetWordAtOffset(0x5E)
+        return $this._GetRevisionNumber(0x5E)
     }
 
     # Get RCDManufacturerID
-    hidden [UInt16]RCDManufacturerID()
+    hidden [StringValue]GetRCDManufacturerID()
     {
-        return $this.GetWordAtOffset(0x60)
+        return $this._GetManufacturerID(0x60)
     }
 
     # Get RCDRevisionNumber
-    hidden [UInt16]RCDRevisionNumber()
+    hidden [StringValue]GetRCDRevisionNumber()
     {
-        return $this.GetWordAtOffset(0x62)
+        return $this._GetRevisionNumber(0x62)
+    }
+
+    # Get RCDManufacturerID
+    hidden [StringValue]_GetManufacturerID($manufacturerID)
+    {
+        return [StringValue]::new($this.GetWordAtOffset($manufacturerID), 0x0000, "0x{0:X4}", "UNKNOWN")
+    }
+
+    # Get RCDRevisionNumber
+    hidden [StringValue]_GetRevisionNumber($revisionNumber)
+    {
+        return [StringValue]::new($this.GetWordAtOffset($revisionNumber), 0xFF00, "0x{0:X4}", "UNKNOWN")
     }
 }
 
@@ -6396,14 +6451,14 @@ class BootIntegrityServicesEntryPoint : SMBIOSStructure
     # Calculate Checksum
     hidden [bool]CalculateChecksum([byte[]]$data) 
     {
-        $checksum = 0
+        $sum = 0
 
-        for ($i = 0; $i -lt $data.Length; $i++)
+        foreach ($byte in $Data) 
         {
-            $checksum = $checksum -bxor $data[$i]
+            $sum = ($sum + $byte) % 256
         }
 
-        return $checksum
+        return ($sum -eq 0)
     }
 
     # Get Checksum
@@ -8074,23 +8129,23 @@ class TPMDevice : SMBIOSStructure
     {
         $vendor = [ArraySegment[Byte]]::new($this.data, 0x04, 4)
 
-        $vendorID = "'"
+        $vendorId = "'"
 
         foreach ($char in $vendor) 
         {
             if (($char -eq 0x00) -or ($char -eq 0x20))
             {
-                $vendorID = $vendorID + " "
+                $vendorId = $vendorId + " "
             }
             else 
             {
-                $vendorID = $vendorID + $([Text.Encoding]::ASCII.GetChars($char))
+                $vendorId = $vendorId + $([Text.Encoding]::ASCII.GetChars($char))
             }
         }
 
-        $vendorID = $vendorID + "'"
+        $vendorId = $vendorId + "'"
 
-        return [StringValue]::new($vendor, $vendorID)
+        return [StringValue]::new($vendor, $vendorId)
     }
 
     # Get SpecVersion
