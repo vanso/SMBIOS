@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.1] - 2026-03-11
+
+### What's new
+- Memory sizes are now expressed in KiB rather than KB
+- Exported files can now be read by dmidecode
+
+### Updates and Fixes
+
+#### Specifications
+- Compliance with SMBIOS version 3.9.0
+
+#### Type 3 (System Enclosure)
+- Fix a typo in the `Height` property
+
+#### Type 17 (Memory Device)
+- Improv properties `PMIC0ManufacturerID`, `PMIC0RevisionNumber`, `RCDManufacturerID`, `RCDRevisionNumber`
+
+[1.1]:  https://github.com/vanso/SMBIOS/releases/tag/v1.1
+
 ## [1.0] - 2024-07-06
 
 ### What's new
