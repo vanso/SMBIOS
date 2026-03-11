@@ -1,13 +1,13 @@
 ﻿ConvertFrom-StringData -StringData @'
 B = bytes
-kB = kB
-MB = MB
-GB = GB
-TB = TB
-PB = PB
-EB = EB
-ZB = ZB
-YB = YB
+KiB = KiB
+MiB = MiB
+GiB = GiB
+TiB = TiB
+PiB = PiB
+EiB = EiB
+ZiB = ZiB
+YiB = YiB
 
 OUT_OF_SPEC = Out-of-Specification
 NOT_DEFINED = Not Defined

@@ -5,7 +5,7 @@
         <entry key="0x00" value="Unknown"/>
         <entry key="0x01" value="Enabled"/>
         <entry key="0x02" value="Disabled by user"/>
-        <entry key="0x03" value="Disabled by BIOS"/>
+        <entry key="0x03" value="Disabled by firmware"/>
         <entry key="0x04" value="Idle"/>
         <entry key="0x07" value="Other"/>
     </table>
@@ -270,6 +270,14 @@
         <entry key="0x270" value="Multi-Core Loongson™ 3C Processor 5xxx Series"/>
         <entry key="0x271" value="Multi-Core Loongson™ 3D Processor 5xxx Series"/>
 
+        <entry key="0x300" value="Intel® Core™ 3"/>
+        <entry key="0x301" value="Intel® Core™ 5"/>
+        <entry key="0x302" value="Intel® Core™ 7"/>
+        <entry key="0x303" value="Intel® Core™ 9"/>
+        <entry key="0x304" value="Intel® Core™ Ultra 3"/>
+        <entry key="0x305" value="Intel® Core™ Ultra 5"/>
+        <entry key="0x306" value="Intel® Core™ Ultra 7"/>
+        <entry key="0x307" value="Intel® Core™ Ultra 9"/>
     </table>
     <!-- 7.5.5 -->
     <table name="Upgrade" alias="Upgrade" kind="Ordered" reference="7.5.5">
@@ -353,6 +361,14 @@
         <entry key="0x4E" value="Socket BGA4129"/>
         <entry key="0x4F" value="Socket LGA4710"/>
         <entry key="0x50" value="Socket LGA7529"/>
+        <entry key="0x51" value="Socket BGA1964"/>
+        <entry key="0x52" value="Socket BGA1792"/>
+        <entry key="0x53" value="Socket BGA2049"/>
+        <entry key="0x54" value="Socket BGA2551"/>
+        <entry key="0x55" value="Socket LGA1851"/>
+        <entry key="0x56" value="Socket BGA2114"/>
+        <entry key="0x57" value="Socket BGA2833"/>
+        <entry key="0xFF" value="Unknown"/>
     </table>
     <!-- 7.5.9 -->
     <table name="Characteristics" alias="Characteristics" kind="Array" reference="7.5.9">

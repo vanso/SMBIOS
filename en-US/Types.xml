@@ -2,7 +2,7 @@
 <strings>
     <!-- 6.1.2-->
     <table name="SMBIOSType" alias="SMBIOSType" kind="Ordered" reference="6.1.2">
-        <entry key="00" value="BIOS"/>
+        <entry key="00" value="Platform Firmware"/>
         <entry key="01" value="System"/>
         <entry key="02" value="Baseboard"/>
         <entry key="03" value="Chassis"/>
@@ -261,7 +261,7 @@
     </table>
     <!-- 6.1.2 -->
     <table name="SMBIOSTypeDescription" alias="SMBIOSTypeDescription" kind="Ordered" reference="6.1.2">
-        <entry key="00" value="BIOS Information"/>
+        <entry key="00" value="Platform Firmware Information"/>
         <entry key="01" value="System Information"/>
         <entry key="02" value="Baseboard (or Module) Information"/>
         <entry key="03" value="System Enclosure or Chassis"/>

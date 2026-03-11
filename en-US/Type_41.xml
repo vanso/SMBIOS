@@ -17,5 +17,10 @@
         <entry key="0x08" value="PATA Controller"/>
         <entry key="0x09" value="SATA Controller"/>
         <entry key="0x0A" value="SAS Controller"/>
+        <entry key="0x0B" value="Wireless LAN"/>
+        <entry key="0x0C" value="Bluetooth"/>
+        <entry key="0x0D" value="WWAN"/>
+        <entry key="0x0F" value="NVMe Controller"/>
+        <entry key="0x10" value="UFS Controller"/>
     </table>
 </strings>

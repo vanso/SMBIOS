@@ -38,6 +38,9 @@
         <entry key="0x0E" value="SRIMM"/>
         <entry key="0x0F" value="FB-DIMM"/>
         <entry key="0x10" value="Die"/>
+        <entry key="0x11" value="CAMM"/>
+        <entry key="0x12" value="CUDIMM"/>
+        <entry key="0x13" value="CSODIMM"/>
     </table>
     <!-- 7.18.2 -->
     <table name="MemoryType" alias="MemoryType" kind="Ordered" reference="7.18.2">
@@ -77,6 +80,7 @@
         <entry key="0x22" value="DDR5"/>
         <entry key="0x23" value="LPDDR5"/>
         <entry key="0x24" value="HBM3 (High Bandwidth Memory Generation 3)"/>
+        <entry key="0x25" value="MRDIMM"/>
     </table>
     <!-- 7.18.3 -->
     <table name="TypeDetail" alias="TypeDetail" kind="Array" reference="7.18.3">
@@ -106,7 +110,8 @@
         <entry key="0x04" value="NVDIMM-N"/>
         <entry key="0x05" value="NVDIMM-F"/>
         <entry key="0x06" value="NVDIMM-P"/>
-        <entry key="0x07" value="Intel Optane DC Persistent Memory"/>
+        <entry key="0x07" value="Intel® Optane™ persistent memory"/>
+        <entry key="0x08" value="MRDIMM"/>
     </table>
     <!-- 7.18.7 -->
     <table name="MemoryOperatingModeCapability" alias="MemoryOperatingModeCapability" kind="Array" reference="7.18.7">

@@ -175,7 +175,7 @@
         <entry key="0x09" value="PCI Parity Error"/>
         <entry key="0x0A" value="PCI System Error"/>
         <entry key="0x0B" value="CPU Failure"/>
-        <entry key="0x0C" value="EISA FailSafe Timer time-out"/>
+        <entry key="0x0C" value="EISA Failsafe Timer time-out"/>
         <entry key="0x0D" value="Correctable memory log disabled"/>
         <entry key="0x0E" value="Logging disabled"/>
         <entry key="0x0F" value="Reserved"/>
@@ -330,8 +330,8 @@
     <!-- 7.16.6.4 -->
     <table name="POSTResultsBitmapFirstDoubleWord" alias="POSTResultsBitmapFirstDoubleWord" kind="Array" reference="7.16.6.4">
         <entry value="Channel 2 Timer error"/>
-        <entry value="Master PIC (8259 #1) error"/>
-        <entry value="Slave PIC (8259 #2) error"/>
+        <entry value="Primary PIC (8259 #1) error"/>
+        <entry value="Secondary PIC (8259 #2) error"/>
         <entry value="CMOS RAM Battery Failure"/>
         <entry value="CMOS RAM System Options Not Set"/>
         <entry value="CMOS RAM Checksum Error"/>

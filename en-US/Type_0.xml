@@ -5,7 +5,7 @@
         <entry value="Reserved"/>
         <entry value="Reserved"/>
         <entry value="Unknown"/>
-        <entry value="BIOS Characteristics are not supported"/>
+        <entry value="Firmware Characteristics are not supported"/>
         <entry value="ISA is supported"/>
         <entry value="MCA is supported"/>
         <entry value="EISA is supported"/>
@@ -13,13 +13,13 @@
         <entry value="PC card (PCMCIA) is supported"/>
         <entry value="Plug and Play is supported"/>
         <entry value="APM is supported"/>
-        <entry value="BIOS is upgradeable (Flash)"/>
-        <entry value="BIOS shadowing is allowed"/>
+        <entry value="Firmware is upgradeable (Flash)"/>
+        <entry value="Firmware shadowing is allowed"/>
         <entry value="VL-VESA is supported"/>
         <entry value="ESCD support is available"/>
         <entry value="Boot from CD is supported"/>
         <entry value="Selectable boot is supported"/>
-        <entry value="BIOS ROM is socketed"/>
+        <entry value="Firmware ROM is socketed"/>
         <entry value="Boot from PC card (PCMCIA) is supported"/>
         <entry value="EDD (Enhanced Disk Drive) specification is supported"/>
         <entry value="Int 13h — Japanese floppy for NEC 9800 1.2 MB (3.5&quot;, 1K bytes/sector, 360 RPM) is supported"/>
@@ -37,22 +37,22 @@
     </table>
     <!-- 7.1.1 -->
     <table name="ReservedCharacteristics" alias="ReservedCharacteristics" kind="Array" reference="7.1.1">
-        <entry value="BIOS Vendor Specific Information"/>
-        <entry value="BIOS Vendor Specific Information"/>
-        <entry value="BIOS Vendor Specific Information"/>
-        <entry value="BIOS Vendor Specific Information"/>
-        <entry value="BIOS Vendor Specific Information"/>
-        <entry value="BIOS Vendor Specific Information"/>
-        <entry value="BIOS Vendor Specific Information"/>
-        <entry value="BIOS Vendor Specific Information"/>
-        <entry value="BIOS Vendor Specific Information"/>
-        <entry value="BIOS Vendor Specific Information"/>
-        <entry value="BIOS Vendor Specific Information"/>
-        <entry value="BIOS Vendor Specific Information"/>
-        <entry value="BIOS Vendor Specific Information"/>
-        <entry value="BIOS Vendor Specific Information"/>
-        <entry value="BIOS Vendor Specific Information"/>
-        <entry value="BIOS Vendor Specific Information"/>
+        <entry value="Platform Firmware Vendor Specific Information"/>
+        <entry value="Platform Firmware Vendor Specific Information"/>
+        <entry value="Platform Firmware Vendor Specific Information"/>
+        <entry value="Platform Firmware Vendor Specific Information"/>
+        <entry value="Platform Firmware Vendor Specific Information"/>
+        <entry value="Platform Firmware Vendor Specific Information"/>
+        <entry value="Platform Firmware Vendor Specific Information"/>
+        <entry value="Platform Firmware Vendor Specific Information"/>
+        <entry value="Platform Firmware Vendor Specific Information"/>
+        <entry value="Platform Firmware Vendor Specific Information"/>
+        <entry value="Platform Firmware Vendor Specific Information"/>
+        <entry value="Platform Firmware Vendor Specific Information"/>
+        <entry value="Platform Firmware Vendor Specific Information"/>
+        <entry value="Platform Firmware Vendor Specific Information"/>
+        <entry value="Platform Firmware Vendor Specific Information"/>
+        <entry value="Platform Firmware Vendor Specific Information"/>
         <entry value="System Vendor Specific Information"/>
         <entry value="System Vendor Specific Information"/>
         <entry value="System Vendor Specific Information"/>
@@ -88,8 +88,8 @@
         <entry value="Enable targeted content distribution"/>
         <entry value="UEFI Specification is supported"/>
         <entry value="SMBIOS table describes a virtual machine"/>
-        <entry value="Reserved"/>
-        <entry value="Reserved"/>
+        <entry value="Manufacturing mode is supported"/>
+        <entry value="Manufacturing mode is enable"/>
         <entry value="Reserved"/>
     </table>
 </strings>

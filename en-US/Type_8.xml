@@ -70,7 +70,7 @@
         <entry key="0x12" value="PCMCIA Type I"/>
         <entry key="0x13" value="PCMCIA Type II"/>
         <entry key="0x14" value="PCMCIA Type III"/>
-        <entry key="0x15" value="Cardbus"/>
+        <entry key="0x15" value="Card bus"/>
         <entry key="0x16" value="Access Bus Port"/>
         <entry key="0x17" value="SCSI II"/>
         <entry key="0x18" value="SCSI Wide"/>

@@ -61,4 +61,10 @@
         <entry key="0x04" value="External Interface Locked Out"/>
         <entry key="0x05" value="External Interface Enabled"/>
     </table>
+
+    <table name="RackType" alias="RackType" kind="Ordered" reference="">
+        <entry key="0x00" value="Unspecified"/>
+        <entry key="0x01" value="OU"/>
+    </table>
+
 </strings>
